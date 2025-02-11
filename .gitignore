@@ -3,3 +3,11 @@
 
 #ignore ppm image files for now
 *.ppm
+
+#ignore vs
+.vs/
+
+#ignore build
+out/
+CMakeLists.txt
+CMakePresets.json
