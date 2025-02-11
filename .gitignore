@@ -1,0 +1,5 @@
+#ignore complied files
+*.exe
+
+#ignore ppm image files for now
+*.ppm
