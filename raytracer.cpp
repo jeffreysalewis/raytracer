@@ -1,4 +1,5 @@
-﻿#include "raytracer.h"
+#include "raytracer.h"
+#include "sphere.h"
 
 #include <iostream>
 #include <fstream>
@@ -26,6 +27,9 @@ int main() {
         Render << "\n";
     }
     Render.close();
+    //double s[3] = {0.0, 0.0, 0.0};
+    //Sphere sph(s, 0.4, 0.7, 0.2, 0.1, {1.0, 0.0, 1.0}, {1.0, 1.0, 1.0}, 16.0);
+    //cout << sph.getradius(); << endl;
     cout << "\nthis is a ray tracer!\n" << endl;
     return 0;
 }

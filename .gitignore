@@ -1,13 +1,24 @@
 #ignore complied files
-*.exe
+*.exe*
 
 #ignore ppm image files for now
 *.ppm
 
 #ignore vs
 .vs/
+*.sln
+*.vcxproj*
 
 #ignore build
 out/
 CMakeLists.txt
 CMakePresets.json
+
+./raytracer/*
+./x64
+*.ilk
+*.log
+*.obj
+*.tlog
+*.idb
+*.pdb
