@@ -7,6 +7,11 @@ Rayo::Rayo(const Punto& o, const Vect& dir) {
 	direction = dir;
 }
 
+Rayo::Rayo() {
+	origin = Punto(0, 0, 1);
+	direction = Vect(0, 0, 0);
+}
+
 Punto Rayo::getorigin() {
 	return origin;
 }

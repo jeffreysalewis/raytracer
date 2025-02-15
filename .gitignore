@@ -22,3 +22,4 @@ CMakePresets.json
 *.tlog
 *.idb
 *.pdb
+*.enc

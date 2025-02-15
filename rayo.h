@@ -11,6 +11,7 @@ private:
 	Vect direction;
 public:
 	Rayo(const Punto &o, const Vect &dir);
+	Rayo();
 	Punto getorigin();
 	Vect getdirection();
 };

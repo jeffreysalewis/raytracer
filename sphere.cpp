@@ -1,6 +1,6 @@
 #include "sphere.h"
 
-Sphere::Sphere(double c[], double r, double dk, double sk, double ak, double odd[], double so[], double kgloss) {
+Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss) {
 	center = c;
 	radius = r;
 	kd = dk;
@@ -11,7 +11,18 @@ Sphere::Sphere(double c[], double r, double dk, double sk, double ak, double odd
 	kgls = kgloss;
 }
 
-double* Sphere::getcenter() {
+Sphere::Sphere() {
+	center = Punto(0, 0, 0);
+	radius = 0.4;
+	kd = 0.7;
+	ks = 0.2;
+	ka = 0.1;
+	od = Vect(1, 0, 1);
+	os = Vect(1, 1, 1);
+	kgls = 16;
+}
+
+Punto Sphere::getcenter() {
 	return center;
 }
 
@@ -31,11 +42,11 @@ double Sphere::getka() {
 	return ka;
 }
 
-double* Sphere::getod() {
+Vect Sphere::getod() {
 	return od;
 }
 
-double* Sphere::getos() {
+Vect Sphere::getos() {
 	return os;
 }
 

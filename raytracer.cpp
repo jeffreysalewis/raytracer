@@ -11,17 +11,15 @@ using namespace std;
 const int width = 1920;
 const int height = 1080;
 int img[height][width][3];
+Punto camlookat(0, 0, 0);
+Punto camlookfrom(0, 0, 1);
+Punto camlookup(0, 1, 0);
+const int fov = 90;
+Vect luzdir(0, 1, 0);
+Vect luzcolor(1, 1, 1);
+Vect ambluz(0, 0, 0);
 
 int main() {
-    
-    Punto camlookat(0, 0, 0);
-    Punto camlookfrom(0, 0, 1);
-    Punto camlookup(0, 1, 0);
-    const int fov = 90;
-
-    Vect luzdir(0, 1, 0);
-    Vect luzcolor(1, 1, 1);
-    Vect ambluz(0, 0, 0);
     int backcolor[3] = {51, 51, 51};
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
@@ -53,9 +51,9 @@ int main() {
 }
 
 void trace() {
-    for (int i = 0; i < height / 2; i++) {
-        for (int j = 0; j < width / 3; j++) {
-            img[i][j][0] = 255;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            //aray[i][j] = Rayo();
         }
     }
     return;
