@@ -2,6 +2,7 @@
 #include "sphere.h"
 #include "vect.h"
 #include "punto.h"
+#include "rayo.h"
 
 #include <iostream>
 #include <fstream>
