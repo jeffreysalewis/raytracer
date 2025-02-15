@@ -1,6 +1,7 @@
 #include "raytracer.h"
 #include "sphere.h"
 #include "vect.h"
+#include "punto.h"
 
 #include <iostream>
 #include <fstream>
