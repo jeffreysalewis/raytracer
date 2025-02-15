@@ -1,5 +1,6 @@
 #include "raytracer.h"
 #include "sphere.h"
+#include "vect.h"
 
 #include <iostream>
 #include <fstream>
@@ -8,9 +9,10 @@ using namespace std;
 int main() {
     const int width = 32;
     const int height = 32;
-    int img[width][height][3];
-    for (int i = 0; i < 32; i++) {
-        for (int j = 0; j < 32; j++) {
+    const int fov = 45;
+    int img[height][width][3];
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             img[i][j][0] = 128;
             img[i][j][1] = 128;
             img[i][j][2] = 255;
@@ -18,10 +20,10 @@ int main() {
     }
     ofstream Render("render.ppm");
     Render << "P3\n";
-    Render << width << " " << height << "\n";
+    Render << height << " " << width << "\n";
     Render << "255\n";
-    for (int i = 0; i < 32; i++) {
-        for (int j = 0; j < 32; j++) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             Render << img[i][j][0] << " " << img[i][j][1] << " " << img[i][j][2] << "  ";
         }
         Render << "\n";
