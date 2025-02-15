@@ -18,6 +18,7 @@ const int fov = 90;
 Vect luzdir(0, 1, 0);
 Vect luzcolor(1, 1, 1);
 Vect ambluz(0, 0, 0);
+Sphere sph = Sphere();
 
 int main() {
     int backcolor[3] = {51, 51, 51};
@@ -40,9 +41,6 @@ int main() {
         Render << "\n";
     }
     Render.close();
-    double s[3] = {0.0, 0.0, 0.0};
-    double* sp = s;
-    Sphere sph(sp, 0.4, 0.7, 0.2, 0.1, sp, sp, 16.0);
     cout << sph.getradius() << endl;
     Vect v(0, 0, 1);
     cout << v.getz() << endl;
@@ -51,9 +49,11 @@ int main() {
 }
 
 void trace() {
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            //aray[i][j] = Rayo();
+    for (int i = 0; i < height/2; i++) {
+        for (int j = 0; j < width/3; j++) {
+            if (sph.intersect(Rayo())) {
+                img[i][j][2] = 255;
+            }
         }
     }
     return;

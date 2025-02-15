@@ -1,6 +1,7 @@
 #pragma once
 #include "punto.h"
 #include "vect.h"
+#include "rayo.h"
 
 #ifndef SPHERE_H
 #define SPHERE_H
@@ -25,5 +26,6 @@ public:
 	Vect getod();
 	Vect getos();
 	double getkgls();
+	bool intersect(Rayo r);
 };
 #endif

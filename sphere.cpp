@@ -53,3 +53,7 @@ Vect Sphere::getos() {
 double Sphere::getkgls() {
 	return kgls;
 }
+
+bool Sphere::intersect(Rayo r) {
+	return true;
+}
