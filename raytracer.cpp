@@ -10,13 +10,21 @@ using namespace std;
 int main() {
     const int width = 32;
     const int height = 32;
-    const int fov = 45;
+    Punto camlookat(0, 0, 0);
+    Punto camlookfrom(0, 0, 1);
+    Punto camlookup(0, 1, 0);
+    const int fov = 90;
+
+    Vect luzdir(0, 1, 0);
+    Vect luzcolor(1, 1, 1);
+    Vect ambluz(0, 0, 0);
+    int backcolor[3] = {51, 51, 51};
     int img[height][width][3];
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            img[i][j][0] = 128;
-            img[i][j][1] = 128;
-            img[i][j][2] = 255;
+            img[i][j][0] = backcolor[0];
+            img[i][j][1] = backcolor[1];
+            img[i][j][2] = backcolor[2];
         }
     }
     ofstream Render("render.ppm");

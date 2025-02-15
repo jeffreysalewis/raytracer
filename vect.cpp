@@ -4,10 +4,10 @@
 using namespace std;
 
 Vect::Vect(double a, double b, double c) {
-	double normalize = sqrt(a * a + b * b + c * c);
-	x = a / normalize;
-	y = b / normalize;
-	z = c / normalize;
+	
+	x = a;
+	y = b;
+	z = c;
 }
 
 double Vect::getx() {
@@ -24,6 +24,13 @@ double Vect::getz() {
 
 Vect Vect::getvect() {
 	return *this;
+}
+
+void Vect::normalize() {
+	double len = sqrt(x * x + y * y + z * z);
+	x = x / len;
+	y = y / len;
+	z = z / len;
 }
 
 double Vect::dot(Vect other) {
