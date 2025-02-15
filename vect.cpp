@@ -1,9 +1,13 @@
 #include "vect.h"
+#include <cmath>
+
+using namespace std;
 
 Vect::Vect(double a, double b, double c) {
-	x = a;
-	y = b;
-	z = c;
+	double normalize = sqrt(a * a + b * b + c * c);
+	x = a / normalize;
+	y = b / normalize;
+	z = c / normalize;
 }
 
 double Vect::getx() {
