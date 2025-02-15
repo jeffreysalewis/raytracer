@@ -8,6 +8,12 @@ Punto::Punto(double a, double b, double c) {
 	z = c;
 }
 
+Punto::Punto() {
+	x = 0;
+	y = 0;
+	z = 0;
+}
+
 double Punto::getx() {
 	return x;
 }

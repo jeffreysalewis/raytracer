@@ -9,6 +9,7 @@ private:
 	double x, y, z;
 public:
 	Punto(double a, double b, double c);
+	Punto();
 	double getx();
 	double gety();
 	double getz();

@@ -8,6 +8,7 @@ private:
 	double x, y, z;
 public:
 	Vect(double a, double b, double c);
+	Vect();
 	double getx();
 	double gety();
 	double getz();

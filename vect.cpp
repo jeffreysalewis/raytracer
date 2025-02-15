@@ -4,10 +4,15 @@
 using namespace std;
 
 Vect::Vect(double a, double b, double c) {
-	
 	x = a;
 	y = b;
 	z = c;
+}
+
+Vect::Vect() {
+	x = 0;
+	y = 0;
+	z = 0;
 }
 
 double Vect::getx() {

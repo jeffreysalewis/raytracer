@@ -7,10 +7,10 @@ Rayo::Rayo(const Punto& o, const Vect& dir) {
 	direction = dir;
 }
 
-double Vect::getx() {
-	return x;
+Punto Rayo::getorigin() {
+	return origin;
 }
 
-double Vect::gety() {
-	return y;
+Vect Rayo::getdirection() {
+	return direction;
 }
