@@ -33,6 +33,8 @@ int main() {
     double* sp = s;
     Sphere sph(sp, 0.4, 0.7, 0.2, 0.1, sp, sp, 16.0);
     cout << sph.getradius() << endl;
+    Vect v(0, 0, 1);
+    cout << v.getz() << endl;
     cout << "\nthis is a ray tracer!\n" << endl;
     return 0;
 }

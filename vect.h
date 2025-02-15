@@ -13,6 +13,6 @@ public:
 	double getz();
 	Vect getvect();
 	double dot(Vect other);
-	double cross(Vect other);
+	Vect cross(Vect other);
 };
 #endif
