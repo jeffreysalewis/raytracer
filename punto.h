@@ -1,5 +1,5 @@
 #pragma once
-#pragma once
+#include "vect.h"
 #ifndef PUNTO_H
 #define PUNTO_H
 
@@ -13,5 +13,6 @@ public:
 	double getx();
 	double gety();
 	double getz();
+	Vect minus(Punto p);
 };
 #endif

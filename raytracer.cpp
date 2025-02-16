@@ -8,8 +8,8 @@
 #include <fstream>
 using namespace std;
 
-const int width = 1920;
-const int height = 1080;
+const int width = 1280;
+const int height = 720;
 int img[height][width][3];
 Punto camlookat(0, 0, 0);
 Punto camlookfrom(0, 0, 1);
@@ -49,8 +49,14 @@ int main() {
 }
 
 void trace() {
+    double stepx = 1.77778/width;
+    double stepy = 1/height;
+    double initx = -0.88889;
+    double inity = -0.5;
     for (int i = 0; i < height/2; i++) {
         for (int j = 0; j < width/3; j++) {
+            //Vect ray = Vect();
+            //ray.normalize();
             if (sph.intersect(Rayo())) {
                 img[i][j][2] = 255;
             }

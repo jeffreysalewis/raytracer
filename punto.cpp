@@ -25,3 +25,7 @@ double Punto::gety() {
 double Punto::getz() {
 	return z;
 }
+
+Vect Punto::minus(Punto p) {
+	return Vect(x-p.getx(), y-p.gety(), z-p.getz());
+}
