@@ -54,11 +54,16 @@ void trace() {
     double initx = -0.88889;
     double inity = -0.5;
     for (int i = 0; i < height/2; i++) {
-        for (int j = 0; j < width/3; j++) {
-            //Vect ray = Vect();
-            //ray.normalize();
-            if (sph.intersect(Rayo())) {
-                img[i][j][2] = 255;
+        for (int j = 0; j < width; j++) {
+            Vect ray = Punto(initx + stepx*j, inity + stepy*i, 0).minus(camlookfrom);
+            ray.normalize();
+            if (sph.intersect(ray)) {
+                if ((initx + stepx * j) > 0) {
+                    img[i][j][0] = (int)((initx + stepx * j) * 255);
+                }
+                else {
+                    img[i][j][0] = (int)((initx + stepx * j) * -255);
+                }
             }
         }
     }
