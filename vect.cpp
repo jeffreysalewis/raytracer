@@ -31,8 +31,12 @@ Vect Vect::getvect() {
 	return *this;
 }
 
+double Vect::getlen() {
+	return sqrt(x * x + y * y + z * z);
+}
+
 void Vect::normalize() {
-	double len = sqrt(x * x + y * y + z * z);
+	double len = this->getlen();
 	x = x / len;
 	y = y / len;
 	z = z / len;

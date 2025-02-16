@@ -27,5 +27,6 @@ public:
 	Vect getos();
 	double getkgls();
 	bool intersect(Rayo r);
+	bool intersect2(Rayo r);
 };
 #endif

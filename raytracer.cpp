@@ -51,21 +51,30 @@ int main() {
 void trace() {
     double stepx = 1.77778/width;
     double stepy = 1/height;
-    double initx = -0.88889;
-    double inity = -0.5;
-    for (int i = 0; i < height/2; i++) {
+    double initx = -0.88889 + stepx/2;
+    double inity = 0.5 - stepy/2;
+    double algo = 0;
+    for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            Vect ray = Punto(initx + stepx*j, inity + stepy*i, 0).minus(camlookfrom);
-            ray.normalize();
-            if (sph.intersect(ray)) {
-                if ((initx + stepx * j) > 0) {
+            Vect di = Punto(initx + stepx*j, inity - stepy*i, 0).minus(camlookfrom);
+            di.normalize();
+            Punto ppp = Punto(initx + stepx * j, inity - stepy * i, 1);
+            Rayo ray = Rayo(ppp, di);
+            //algo = ray.getlen();
+            //algo = ray.getz();
+            //cout << algo << "\n" << endl;
+            if (sph.intersect2(ray)) {
+                img[i][j][0] = 255;
+                /*if ((initx + stepx * j) > 0) {
                     img[i][j][0] = (int)((initx + stepx * j) * 255);
                 }
                 else {
                     img[i][j][0] = (int)((initx + stepx * j) * -255);
-                }
+                }*/
             }
         }
+        //cout << algo << "\n" << endl;
+        
     }
     return;
 }

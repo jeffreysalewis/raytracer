@@ -13,6 +13,7 @@ public:
 	double gety();
 	double getz();
 	Vect getvect();
+	double getlen();
 	void normalize();
 	double dot(Vect other);
 	Vect cross(Vect other);
