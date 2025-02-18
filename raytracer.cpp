@@ -41,6 +41,8 @@ int main() {
         Render << "\n";
     }
     Render.close();
+    Vect bwvar = Punto(1, 1, 0).minus(Punto(0, 1, 0));
+    cout << bwvar.getx() << bwvar.gety() << bwvar.getz() << endl;
     cout << sph.getradius() << endl;
     Vect v(0, 0, 1);
     cout << v.getz() << endl;
@@ -50,30 +52,30 @@ int main() {
 
 void trace() {
     double stepx = 1.77778/width;
-    double stepy = 1/height;
+    double stepy = 1.0/height;
     double initx = -0.88889 + stepx/2;
     double inity = 0.5 - stepy/2;
-    double algo = 0;
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             Vect di = Punto(initx + stepx*j, inity - stepy*i, 0).minus(camlookfrom);
             di.normalize();
-            Punto ppp = Punto(initx + stepx * j, inity - stepy * i, 1);
-            Rayo ray = Rayo(ppp, di);
+            //Punto ppp = Punto(0, 0, 1);
+            Rayo ray = Rayo(camlookfrom, di);
+            //cout << ray.getdirection().getx() << ray.getdirection().gety() << endl;
             //algo = ray.getlen();
             //algo = ray.getz();
             //cout << algo << "\n" << endl;
-            if (sph.intersect2(ray)) {
+            if (inity - stepy * i > 0) {
+                img[i][j][2] = (int)((inity - stepy * i) * 255);
+            }
+            else {
+                img[i][j][2] = (int)((inity - stepy * i) * -255);
+            }
+            if (sph.intersect(ray)) {
                 img[i][j][0] = 255;
-                /*if ((initx + stepx * j) > 0) {
-                    img[i][j][0] = (int)((initx + stepx * j) * 255);
-                }
-                else {
-                    img[i][j][0] = (int)((initx + stepx * j) * -255);
-                }*/
+                
             }
         }
-        //cout << algo << "\n" << endl;
         
     }
     return;

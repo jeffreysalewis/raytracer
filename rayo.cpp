@@ -14,7 +14,7 @@ Rayo::Rayo(const Vect& dir) {
 
 Rayo::Rayo() {
 	origin = Punto(0, 0, 1);
-	direction = Vect(0, 0, 0);
+	direction = Vect(0, 0, -1);
 }
 
 Punto Rayo::getorigin() {

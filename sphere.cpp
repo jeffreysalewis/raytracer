@@ -84,9 +84,9 @@ bool Sphere::intersect2(Rayo r) {
 	double xd = r.getdirection().getx();
 	double yd = r.getdirection().gety();
 	double zd = r.getdirection().getz();
-	xd = 0;
+	/*xd = 0;
 	yd = 0;
-	xd = -1;
+	xd = -1;*/
 	double xc = center.getx();
 	double yc = center.gety();
 	double zc = center.getz();
