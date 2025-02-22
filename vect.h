@@ -19,5 +19,6 @@ public:
 	Vect cross(Vect other);
 	Vect multiply(double scalar);
 	Vect multiply(Vect other);
+	Vect add(Vect other);
 };
 #endif

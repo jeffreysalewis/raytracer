@@ -15,6 +15,8 @@ private:
 	Vect od;
 	Vect os;
 	double kgls;
+	Vect luzdir = Vect(0, 1, 0);
+	Vect luzcolor = Vect(1, 1, 1);
 public:
 	Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss);
 	Sphere();

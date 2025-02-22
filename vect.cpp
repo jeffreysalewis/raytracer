@@ -66,3 +66,10 @@ Vect Vect::multiply(Vect other) {
 	z *= other.getz();
 	return *this;
 }
+
+Vect Vect::add(Vect other) {
+	x += other.getx();
+	y += other.gety();
+	z += other.getz();
+	return *this;
+}
