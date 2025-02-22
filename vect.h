@@ -17,5 +17,7 @@ public:
 	void normalize();
 	double dot(Vect other);
 	Vect cross(Vect other);
+	Vect multiply(double scalar);
+	Vect multiply(Vect other);
 };
 #endif

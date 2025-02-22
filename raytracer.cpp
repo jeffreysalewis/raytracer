@@ -41,11 +41,9 @@ int main() {
         Render << "\n";
     }
     Render.close();
-    Vect bwvar = Punto(1, 1, 0).minus(Punto(0, 1, 0));
-    cout << bwvar.getx() << bwvar.gety() << bwvar.getz() << endl;
+    Vect multvecttest = Punto(1, 1, 0).minus(Punto(0, 1, 0));
+    cout << multvecttest.multiply(2.5).getx() << endl;
     cout << sph.getradius() << endl;
-    Vect v(0, 0, 1);
-    cout << v.getz() << endl;
     cout << "\nthis is a ray tracer!\n" << endl;
     return 0;
 }

@@ -125,5 +125,6 @@ Rayo Sphere::intersectray(Rayo r) {
 	Vect hitnormal = Vect((hitpoint.getx() - center.getx())/radius, (hitpoint.gety() - center.gety()) / radius, (hitpoint.getz() - center.getz()) / radius);
 	Rayo fal = Rayo(hitpoint, hitnormal);
 	fal.sethit(true);
+	//Vect diffuse = 
 	return fal;
 }
