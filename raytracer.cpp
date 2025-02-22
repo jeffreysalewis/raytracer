@@ -59,21 +59,16 @@ void trace() {
         for (int j = 0; j < width; j++) {
             Vect di = Punto(initx + stepx*j, inity - stepy*i, 0).minus(camlookfrom);
             di.normalize();
-            //Punto ppp = Punto(0, 0, 1);
             Rayo ray = Rayo(camlookfrom, di);
-            //cout << ray.getdirection().getx() << ray.getdirection().gety() << endl;
-            //algo = ray.getlen();
-            //algo = ray.getz();
-            //cout << algo << "\n" << endl;
-            if (inity - stepy * i > 0) {
+            /*if (inity - stepy * i > 0) {
                 img[i][j][2] = (int)((inity - stepy * i) * 255);
             }
             else {
                 img[i][j][2] = (int)((inity - stepy * i) * -255);
-            }
+            }*/
             if (sph.intersect(ray)) {
                 img[i][j][0] = 255;
-                
+                img[i][j][2] = 255;
             }
         }
         

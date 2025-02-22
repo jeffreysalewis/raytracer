@@ -98,3 +98,30 @@ bool Sphere::intersect2(Rayo r) {
 	}
 	return true;
 }
+
+Rayo Sphere::intersectray(Rayo r) {
+	Vect oc = center.minus(r.getorigin());
+	double tca = r.getdirection().dot(oc);
+	double oclen = oc.getlen();
+	bool inside = oclen < radius;
+	if (inside) {
+		Rayo fal = Rayo();
+		fal.sethit(true);
+		return fal;
+	}
+	if (!inside && tca < 0) {
+		Rayo fal = Rayo();
+		fal.sethit(false);
+		return fal;
+	}
+	double thc2 = (radius * radius) - (oclen * oclen) + (tca * tca);
+	if (thc2 < 0) {
+		Rayo fal = Rayo();
+		fal.sethit(false);
+		return fal;
+	}
+	double t = tca - sqrt(thc2);
+	Rayo fal = Rayo();
+	fal.sethit(true);
+	return fal;
+}

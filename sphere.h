@@ -28,5 +28,6 @@ public:
 	double getkgls();
 	bool intersect(Rayo r);
 	bool intersect2(Rayo r);
+	Rayo intersectray(Rayo r);
 };
 #endif
