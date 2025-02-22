@@ -126,8 +126,10 @@ Rayo Sphere::intersectray(Rayo r) {
 	Rayo fal = Rayo(hitpoint, hitnormal);
 	fal.sethit(true);
 	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(luzdir));
-	//Vect rspec = 
-	Vect spec = os.multiply(ks).multiply(luzcolor);
+	Vect rspec = hitnormal.sub(luzdir).multiply((2*luzdir.dot(hitnormal)));
+	Vect vspec = r.getdirection().multiply(-1);
+	Vect spec = os.multiply(ks).multiply(luzcolor).multiply(pow(vspec.dot(rspec), kgls));
 	Vect totluz = diffuse.add(spec);
+	fal.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
 	return fal;
 }

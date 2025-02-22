@@ -54,29 +54,29 @@ Vect Vect::cross(Vect other) {
 }
 
 Vect Vect::multiply(double scalar) {
-	x *= scalar;
-	y *= scalar;
-	z *= scalar;
-	return *this;
+	double newx = x * scalar;
+	double newy = y * scalar;
+	double newz = z * scalar;
+	return Vect(newx, newy, newz);
 }
 
 Vect Vect::multiply(Vect other) {
-	x *= other.getx();
-	y *= other.gety();
-	z *= other.getz();
-	return *this;
+	double newx = x * other.getx();
+	double newy = y * other.gety();
+	double newz = z * other.getz();
+	return Vect(newx, newy, newz);
 }
 
 Vect Vect::add(Vect other) {
-	x += other.getx();
-	y += other.gety();
-	z += other.getz();
-	return *this;
+	double newx = x + other.getx();
+	double newy = y + other.gety();
+	double newz = z + other.getz();
+	return Vect(newx, newy, newz);
 }
 
 Vect Vect::sub(Vect other) {
-	x -= other.getx();
-	y -= other.gety();
-	z -= other.getz();
-	return *this;
+	double newx = x - other.getx();
+	double newy = y - other.gety();
+	double newz = z - other.getz();
+	return Vect(newx, newy, newz);
 }

@@ -67,7 +67,10 @@ void trace() {
             Rayo newray = sph.intersectray(ray);
             if (newray.gethit()) {
                 //img[i][j][0] = 255;
-                img[i][j][2] = 255;
+                //newray.getcolor().normalize();
+                img[i][j][0] = (int)max(0.0, min(255.0, newray.getcolor().getx() * 255));
+                img[i][j][1] = (int)max(0.0, min(255.0, newray.getcolor().gety() * 255));
+                img[i][j][2] = (int)max(0.0, min(255.0, newray.getcolor().getz() * 255));
             }
         }
         
