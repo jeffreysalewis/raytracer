@@ -20,5 +20,6 @@ public:
 	Vect multiply(double scalar);
 	Vect multiply(Vect other);
 	Vect add(Vect other);
+	Vect sub(Vect other);
 };
 #endif

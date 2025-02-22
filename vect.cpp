@@ -73,3 +73,10 @@ Vect Vect::add(Vect other) {
 	z += other.getz();
 	return *this;
 }
+
+Vect Vect::sub(Vect other) {
+	x -= other.getx();
+	y -= other.gety();
+	z -= other.getz();
+	return *this;
+}
