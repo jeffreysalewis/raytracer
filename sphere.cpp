@@ -121,7 +121,9 @@ Rayo Sphere::intersectray(Rayo r) {
 		return fal;
 	}
 	double t = tca - sqrt(thc2);
-	Rayo fal = Rayo();
+	Punto hitpoint = Punto(r.getorigin().getx() + r.getdirection().getx()*t, r.getorigin().gety() + r.getdirection().gety() * t, r.getorigin().getz() + r.getdirection().getz() * t);
+	Vect hitnormal = Vect((hitpoint.getx() - center.getx())/radius, (hitpoint.gety() - center.gety()) / radius, (hitpoint.getz() - center.getz()) / radius);
+	Rayo fal = Rayo(hitpoint, hitnormal);
 	fal.sethit(true);
 	return fal;
 }

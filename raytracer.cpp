@@ -66,8 +66,9 @@ void trace() {
             else {
                 img[i][j][2] = (int)((inity - stepy * i) * -255);
             }*/
-            if (sph.intersect(ray)) {
-                img[i][j][0] = 255;
+            Rayo newray = sph.intersectray(ray);
+            if (newray.gethit()) {
+                //img[i][j][0] = 255;
                 img[i][j][2] = 255;
             }
         }
