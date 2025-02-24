@@ -25,6 +25,8 @@ Sphere blanco = Sphere(Punto(0.45, 0.0, - 0.15), 0.15, 0.8, 0.1, 0.3, Vect(1.0, 
 Sphere rojo = Sphere(Punto(0.0, 0.0, -0.1), 0.2, 0.6, 0.3, 0.1, Vect(1.0, 0.0, 0.0), Vect(1.0, 1.0, 1.0), 32.0);
 Sphere verde = Sphere(Punto(-0.6, 0.0, 0.0), .3, 0.7, 0.2, 0.1, Vect(0.0, 1.0, 0.0), Vect(0.5, 1.0, 0.5), 64.0);
 Sphere azul = Sphere(Punto(0.0, - 10000.5, 0.0), 10000.0, 0.9, 0.0, 0.1, Vect(0.0, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
+Sphere escena1[1] = {sph};
+Sphere escena2[4] = {azul, blanco, rojo, verde};
 
 int main() {
     int backcolor[3] = {51, 51, 51};
@@ -36,7 +38,7 @@ int main() {
         }
     }
     trace();
-    ofstream Render("render.ppm");
+    ofstream Render("render2.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -70,13 +72,17 @@ void trace() {
             else {
                 img[i][j][2] = (int)((inity - stepy * i) * -255);
             }*/
-            Rayo newray = sph.intersectray(ray);
-            if (newray.gethit()) {
-                //img[i][j][0] = 255;
-                //newray.getcolor().normalize();
-                img[i][j][0] = (int)max(0.0, min(255.0, newray.getcolor().getx() * 255));
-                img[i][j][1] = (int)max(0.0, min(255.0, newray.getcolor().gety() * 255));
-                img[i][j][2] = (int)max(0.0, min(255.0, newray.getcolor().getz() * 255));
+
+            //change escena1 to escena2 for the second scene
+            for (Sphere pelota:escena2) {
+                Rayo newray = pelota.intersectray(ray);
+                if (newray.gethit()) {
+                    //img[i][j][0] = 255;
+                    //newray.getcolor().normalize();
+                    img[i][j][0] = (int)max(0.0, min(255.0, newray.getcolor().getx() * 255));
+                    img[i][j][1] = (int)max(0.0, min(255.0, newray.getcolor().gety() * 255));
+                    img[i][j][2] = (int)max(0.0, min(255.0, newray.getcolor().getz() * 255));
+                }
             }
         }
         
