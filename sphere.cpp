@@ -1,5 +1,7 @@
 #include "sphere.h"
 #include <cmath>
+#include <utility>
+using namespace std;
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss) {
 	center = c;
@@ -107,6 +109,7 @@ Rayo Sphere::intersectray(Rayo r) {
 	if (inside) {
 		Rayo fal = Rayo();
 		fal.sethit(true);
+		fal.setcolor(0, 1.0, 0);
 		return fal;
 	}
 	if (!inside && tca < 0) {
@@ -121,15 +124,24 @@ Rayo Sphere::intersectray(Rayo r) {
 		return fal;
 	}
 	double t = tca - sqrt(thc2);
+	Vect luzdir3 = Vect(1.0, 0.0, 0.0);
+	Vect luzdir2 = Vect(1.0 / sqrt(3.0), 1.0 / sqrt(3.0), 1.0 / sqrt(3.0));
+	Vect ambluz2 = Vect(0.1, 0.1, 0.1);
+	Vect luzcolor = Vect(1.0, 1.0, 1.0);
 	Punto hitpoint = Punto(r.getorigin().getx() + r.getdirection().getx()*t, r.getorigin().gety() + r.getdirection().gety() * t, r.getorigin().getz() + r.getdirection().getz() * t);
 	Vect hitnormal = Vect((hitpoint.getx() - center.getx())/radius, (hitpoint.gety() - center.gety()) / radius, (hitpoint.getz() - center.getz()) / radius);
+	hitnormal.normalize();
 	Rayo fal = Rayo(hitpoint, hitnormal);
 	fal.sethit(true);
-	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(luzdir));
-	Vect rspec = hitnormal.sub(luzdir).multiply((2*luzdir.dot(hitnormal)));
-	Vect vspec = r.getdirection().multiply(-1);
-	Vect spec = os.multiply(ks).multiply(luzcolor).multiply(pow(vspec.dot(rspec), kgls));
-	Vect totluz = diffuse.add(spec);
+	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(luzdir3));
+	Vect rspec = hitnormal.multiply((2.0*luzdir3.dot(hitnormal))).sub(luzdir3);
+	rspec.normalize();
+	Vect vspec = r.getdirection().multiply(-1.0);
+	vspec.normalize();
+	Vect spec = os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
+	Vect ambient = od.multiply(ambluz2.multiply(ka));
+	Vect totluz = diffuse.add(spec).add(ambient);
+	//totluz = spec.add(ambient);
 	fal.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
 	return fal;
 }

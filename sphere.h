@@ -2,6 +2,7 @@
 #include "punto.h"
 #include "vect.h"
 #include "rayo.h"
+#include <cmath>
 
 #ifndef SPHERE_H
 #define SPHERE_H
@@ -16,7 +17,10 @@ private:
 	Vect os;
 	double kgls;
 	Vect luzdir = Vect(0, 1, 0);
-	Vect luzcolor = Vect(1, 1, 1);
+	//Vect luzdir2 = Vect(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
+	//Vect luzdir2 = Vect(1, 1, 1);
+	//Vect luzcolor = Vect(1.0, 1.0, 1.0);
+	//Vect ambluz2 = Vect(0.1, 0.1, 0.1);
 public:
 	Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss);
 	Sphere();
