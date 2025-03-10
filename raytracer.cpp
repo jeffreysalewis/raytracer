@@ -45,7 +45,7 @@ int main() {
         }
     }
     trace();
-    ofstream Render("render3.ppm");
+    ofstream Render("render3shadow.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -81,15 +81,20 @@ void trace() {
             }*/
 
             //change escena1 to escena2 for the second scene
+            Rayo newrays[5];
+            int b = 0;
             for (Sphere pelota:escena3) {
-                Rayo newray = pelota.intersectray(ray);
-                if (newray.gethit()) {
+                
+                newrays[b] = pelota.intersectray(ray);
+                //Rayo newray = pelota.intersectray(ray);
+                if (newrays[b].gethit()) {
                     //img[i][j][0] = 255;
                     //newray.getcolor().normalize();
-                    img[i][j][0] = (int)max(0.0, min(255.0, newray.getcolor().getx() * 255));
-                    img[i][j][1] = (int)max(0.0, min(255.0, newray.getcolor().gety() * 255));
-                    img[i][j][2] = (int)max(0.0, min(255.0, newray.getcolor().getz() * 255));
+                    img[i][j][0] = (int)max(0.0, min(255.0, newrays[b].getcolor().getx() * 255));
+                    img[i][j][1] = (int)max(0.0, min(255.0, newrays[b].getcolor().gety() * 255));
+                    img[i][j][2] = (int)max(0.0, min(255.0, newrays[b].getcolor().getz() * 255));
                 }
+                b++;
             }
         }
         

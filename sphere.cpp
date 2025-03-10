@@ -1,7 +1,32 @@
 #include "sphere.h"
+#include "raytracer.h"
 #include <cmath>
 #include <utility>
 using namespace std;
+
+//Punto camlookat(0, 0, 0);
+//Punto camlookfrom(0, 0, 1);
+//Punto camlookup(0, 1, 0);
+//const int fov = 90;
+//Vect luzdir(0, 1, 0);
+//Vect luzcolor(1, 1, 1);
+//Vect ambluz(0, 0, 0);
+//Vect luzdir2(1, 1, 1);
+//Vect ambluz2(0.1, 0.1, 0.1);
+//Sphere sph = Sphere();
+//Sphere blanco = Sphere(Punto(0.45, 0.0, -0.15), 0.15, 0.8, 0.1, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0);
+//Sphere rojo = Sphere(Punto(0.0, 0.0, -0.1), 0.2, 0.6, 0.3, 0.1, Vect(1.0, 0.0, 0.0), Vect(1.0, 1.0, 1.0), 32.0);
+//Sphere verde = Sphere(Punto(-0.6, 0.0, 0.0), 0.3, 0.7, 0.2, 0.1, Vect(0.0, 1.0, 0.0), Vect(0.5, 1.0, 0.5), 64.0);
+//Sphere azul = Sphere(Punto(0.0, -10000.5, 0.0), 10000.0, 0.9, 0.0, 0.1, Vect(0.0, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
+//Sphere escena1[1] = { sph };
+//Sphere escena2[4] = { azul, blanco, rojo, verde };
+//
+Sphere bball1 = Sphere(Punto(0.45, 0.0, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0);
+Sphere bball2 = Sphere(Punto(0.1, 0.0, -0.15), 0.1, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
+Sphere bball3 = Sphere(Punto(-0.1, 0.0, -0.15), 0.05, 0.8, 0.2, 0.3, Vect(0.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
+Sphere bball4 = Sphere(Punto(-0.5, 0.0, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(0.0, 0.5, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
+Sphere bball5 = Sphere(Punto(0.0, 0.5, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(0.5, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
+Sphere bescena3[5] = { bball1, bball2, bball3, bball4, bball5 };
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss) {
 	center = c;
@@ -143,5 +168,6 @@ Rayo Sphere::intersectray(Rayo r) {
 	Vect totluz = diffuse.add(spec).add(ambient);
 	//totluz = spec.add(ambient);
 	fal.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
+	fal.setshadow(ambient.getx(), ambient.gety(), ambient.getz());
 	return fal;
 }

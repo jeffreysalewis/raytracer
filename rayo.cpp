@@ -40,6 +40,14 @@ void Rayo::setcolor(double r, double g, double b) {
 	color = Vect(r, g, b);
 }
 
+void Rayo::setshadow(double r, double g, double b) {
+	shadow = Vect(r, g, b);
+}
+
 Vect Rayo::getcolor() {
 	return color;
+}
+
+Vect Rayo::getshadow() {
+	return shadow;
 }
