@@ -26,7 +26,7 @@ Sphere rojo = Sphere(Punto(0.0, 0.0, -0.1), 0.2, 0.6, 0.3, 0.1, Vect(1.0, 0.0, 0
 Sphere verde = Sphere(Punto(-0.6, 0.0, 0.0), 0.3, 0.7, 0.2, 0.1, Vect(0.0, 1.0, 0.0), Vect(0.5, 1.0, 0.5), 64.0);
 Sphere azul = Sphere(Punto(0.0, -10000.5, 0.0), 10000.0, 0.9, 0.0, 0.1, Vect(0.0, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
 Sphere escena1[1] = {sph};
-Sphere escena2[4] = {azul, blanco, rojo, verde};
+Sphere escena2[4] = {blanco, azul, rojo, verde};
 
 Sphere ball1 = Sphere(Punto(0.45, 0.0, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0);
 Sphere ball2 = Sphere(Punto(0.1, 0.0, -0.15), 0.1, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
@@ -45,7 +45,7 @@ int main() {
         }
     }
     trace();
-    ofstream Render("render3shadow.ppm");
+    ofstream Render("render2shadow.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -81,21 +81,38 @@ void trace() {
             }*/
 
             //change escena1 to escena2 for the second scene
-            Rayo newrays[5];
+            Rayo newrays[4];
+            Rayo zbuf;
+            Punto mindist = Punto(0, 0, -100000000000);
+            zbuf = Rayo(mindist, luzdir);
             int b = 0;
-            for (Sphere pelota:escena3) {
+            for (Sphere pelota:escena2) {
                 
-                newrays[b] = pelota.intersectray(ray);
-                //Rayo newray = pelota.intersectray(ray);
-                if (newrays[b].gethit()) {
+                //newrays[b] = pelota.intersectray(ray);
+                Rayo newray = pelota.intersectray(ray);
+                if (newray.gethit()) {
+                    if (newray.getorigin().getz() > zbuf.getorigin().getz()) {
+                        zbuf = newray;
+                    }
                     //img[i][j][0] = 255;
                     //newray.getcolor().normalize();
-                    img[i][j][0] = (int)max(0.0, min(255.0, newrays[b].getcolor().getx() * 255));
+                    /*img[i][j][0] = (int)max(0.0, min(255.0, newrays[b].getcolor().getx() * 255));
                     img[i][j][1] = (int)max(0.0, min(255.0, newrays[b].getcolor().gety() * 255));
-                    img[i][j][2] = (int)max(0.0, min(255.0, newrays[b].getcolor().getz() * 255));
+                    img[i][j][2] = (int)max(0.0, min(255.0, newrays[b].getcolor().getz() * 255));*/
                 }
                 b++;
             }
+            if (zbuf.gethit()) {
+                img[i][j][0] = (int)max(0.0, min(255.0, zbuf.getcolor().getx() * 255));
+                img[i][j][1] = (int)max(0.0, min(255.0, zbuf.getcolor().gety() * 255));
+                img[i][j][2] = (int)max(0.0, min(255.0, zbuf.getcolor().getz() * 255));
+            }
+            /*Rayo zbuf = Rayo();
+            for (int k = 0; k < 5; k++) {
+                if (newrays[k].gethit()) {
+
+                }
+            }*/
         }
         
     }

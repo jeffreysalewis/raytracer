@@ -21,12 +21,12 @@ using namespace std;
 //Sphere escena1[1] = { sph };
 //Sphere escena2[4] = { azul, blanco, rojo, verde };
 //
-Sphere bball1 = Sphere(Punto(0.45, 0.0, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0);
-Sphere bball2 = Sphere(Punto(0.1, 0.0, -0.15), 0.1, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
-Sphere bball3 = Sphere(Punto(-0.1, 0.0, -0.15), 0.05, 0.8, 0.2, 0.3, Vect(0.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
-Sphere bball4 = Sphere(Punto(-0.5, 0.0, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(0.0, 0.5, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
-Sphere bball5 = Sphere(Punto(0.0, 0.5, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(0.5, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
-Sphere bescena3[5] = { bball1, bball2, bball3, bball4, bball5 };
+//Sphere bball1 = Sphere(Punto(0.45, 0.0, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0);
+//Sphere bball2 = Sphere(Punto(0.1, 0.0, -0.15), 0.1, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
+//Sphere bball3 = Sphere(Punto(-0.1, 0.0, -0.15), 0.05, 0.8, 0.2, 0.3, Vect(0.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
+//Sphere bball4 = Sphere(Punto(-0.5, 0.0, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(0.0, 0.5, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
+//Sphere bball5 = Sphere(Punto(0.0, 0.5, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(0.5, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
+//Sphere bescena3[5] = { bball1, bball2, bball3, bball4, bball5 };
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss) {
 	center = c;
@@ -158,8 +158,8 @@ Rayo Sphere::intersectray(Rayo r) {
 	hitnormal.normalize();
 	Rayo fal = Rayo(hitpoint, hitnormal);
 	fal.sethit(true);
-	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(luzdir3));
-	Vect rspec = hitnormal.multiply((2.0*luzdir3.dot(hitnormal))).sub(luzdir3);
+	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(luzdir2));
+	Vect rspec = hitnormal.multiply((2.0*luzdir2.dot(hitnormal))).sub(luzdir2);
 	rspec.normalize();
 	Vect vspec = r.getdirection().multiply(-1.0);
 	vspec.normalize();
