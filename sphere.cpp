@@ -158,8 +158,8 @@ Rayo Sphere::intersectray(Rayo r) {
 	hitnormal.normalize();
 	Rayo fal = Rayo(hitpoint, hitnormal);
 	fal.sethit(true);
-	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(luzdir2));
-	Vect rspec = hitnormal.multiply((2.0*luzdir2.dot(hitnormal))).sub(luzdir2);
+	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(luzdir3));
+	Vect rspec = hitnormal.multiply((2.0*luzdir3.dot(hitnormal))).sub(luzdir3);
 	rspec.normalize();
 	Vect vspec = r.getdirection().multiply(-1.0);
 	vspec.normalize();
