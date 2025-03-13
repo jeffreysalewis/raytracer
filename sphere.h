@@ -29,14 +29,14 @@ public:
 	Sphere();
 	Punto getcenter();
 	double getradius();
-	double getkd();
-	double getks();
-	double getka();
-	Vect getod();
-	Vect getos();
-	double getkgls();
-	bool intersect(Rayo r);
-	bool intersect2(Rayo r);
-	Rayo intersectray(Rayo r);
+	double getkd() override;
+	double getks() override;
+	double getka() override;
+	Vect getod() override;
+	Vect getos() override;
+	double getkgls() override;
+	bool intersect(Rayo r) override;
+	bool intersect2(Rayo r) override;
+	Rayo intersectray(Rayo r) override;
 };
 #endif
