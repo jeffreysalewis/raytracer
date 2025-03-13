@@ -39,6 +39,18 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vec
 	kgls = kgloss;
 }
 
+Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss, double ref) {
+	center = c;
+	radius = r;
+	kd = dk;
+	ks = sk;
+	ka = ak;
+	od = odd;
+	os = so;
+	kgls = kgloss;
+	refl = ref;
+}
+
 Sphere::Sphere() {
 	center = Punto(0, 0, 0);
 	radius = 0.4;
@@ -158,8 +170,8 @@ Rayo Sphere::intersectray(Rayo r) {
 	hitnormal.normalize();
 	Rayo fal = Rayo(hitpoint, hitnormal);
 	fal.sethit(true);
-	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(luzdir3));
-	Vect rspec = hitnormal.multiply((2.0*luzdir3.dot(hitnormal))).sub(luzdir3);
+	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(luzdir2));
+	Vect rspec = hitnormal.multiply((2.0*luzdir2.dot(hitnormal))).sub(luzdir2);
 	rspec.normalize();
 	Vect vspec = r.getdirection().multiply(-1.0);
 	vspec.normalize();

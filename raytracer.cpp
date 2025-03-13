@@ -3,6 +3,8 @@
 #include "vect.h"
 #include "punto.h"
 #include "rayo.h"
+#include "obj.h"
+#include "triangle.h"
 
 #include <iostream>
 #include <fstream>
@@ -22,19 +24,34 @@ Vect luzdir2(1, 1, 1);
 Vect ambluz2(0.1, 0.1, 0.1);
 Vect luzdir3 = Vect(1.0, 0.0, 0.0);
 Sphere sph = Sphere();
+
 Sphere blanco = Sphere(Punto(0.45, 0.0, - 0.15), 0.15, 0.8, 0.1, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0);
 Sphere rojo = Sphere(Punto(0.0, 0.0, -0.1), 0.2, 0.6, 0.3, 0.1, Vect(1.0, 0.0, 0.0), Vect(1.0, 1.0, 1.0), 32.0);
 Sphere verde = Sphere(Punto(-0.6, 0.0, 0.0), 0.3, 0.7, 0.2, 0.1, Vect(0.0, 1.0, 0.0), Vect(0.5, 1.0, 0.5), 64.0);
 Sphere azul = Sphere(Punto(0.0, -10000.5, 0.0), 10000.0, 0.9, 0.0, 0.1, Vect(0.0, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
-Sphere escena1[1] = {sph};
-Sphere escena2[4] = {blanco, azul, rojo, verde};
+Obj escena1[1] = {sph};
+Obj escena2[4] = {blanco, azul, rojo, verde};
+//Obj test[3] = { blanco, azul, rojo };
 
 Sphere ball1 = Sphere(Punto(-0.1, 0.0, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0);
 Sphere ball2 = Sphere(Punto(0.1, 0.0, -0.15), 0.1, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
 Sphere ball3 = Sphere(Punto(0.45, 0.0, -0.15), 0.05, 0.8, 0.2, 0.3, Vect(0.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
 Sphere ball4 = Sphere(Punto(-0.5, 0.0, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(0.0, 0.5, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
 Sphere ball5 = Sphere(Punto(0.0, 0.5, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(0.5, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 8.0);
-Sphere escena3[5] = { ball1, ball2, ball3, ball4, ball5 };
+Obj escena3[5] = { ball1, ball2, ball3, ball4, ball5 };
+
+Sphere refsph = Sphere(Punto(0.0, 0.3, -1.0), 0.25, 0.0, 0.1, 0.1, Vect(0.75, 0.75, 0.75), Vect(1.0, 1.0, 1.0), 10.0, 0.9);
+Triangle bluetri = Triangle(Punto(0.0, -0.7, -0.5), Punto(1.0, 0.4, -1.0), Punto(0.0, -0.7, -1.5), 0.9, 1.0, 0.1, Vect(0.0, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
+Triangle yellowtri = Triangle(Punto(0.0, -0.7, -0.5), Punto(0.0, -0.7, -1.5), Punto(-1.0, 0.4, -1.0), 0.9, 1.0, 0.1, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
+Obj escena4[3] = { refsph, bluetri, yellowtri };
+
+Sphere whitesph = Sphere(Punto(0.5, 0.0, -0.15), 0.05, 0.8, 0.1, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
+Sphere redsph = Sphere(Punto(0.3, 0.0, -0.1), 0.08, 0.8, 0.8, 0.1, Vect(1.0, 0.0, 0.0), Vect(0.5, 1.0, 0.5), 32.0, 0.0);
+Sphere greensph = Sphere(Punto(-0.6, 0.0, 0.0), 0.3, 0.7, 0.5, 0.1, Vect(0.0, 1.0, 0.0), Vect(0.5, 1.0, 0.5), 64.0, 0.0);
+Sphere refsph2 = Sphere(Punto(0.1, -0.55, 0.25), 0.3, 0.0, 0.1, 0.1, Vect(0.75, 0.75, 0.75), Vect(1.0, 1.0, 1.0), 10.0, 0.9);
+Triangle azultri = Triangle(Punto(0.3, -0.3, -0.4), Punto(0.0, 0.3, -0.1), Punto(-0.3, -0.3, 0.2), 0.9, 0.9, 0.1, Vect(0.0, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 32.0, 0.0);
+Triangle amarillotri = Triangle(Punto(-0.2, 0.1, 0.1), Punto(-0.2, -0.5, 0.2), Punto(-0.2, 0.1, -0.3), 0.9, 0.5, 0.1, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
+Obj escena5[6] = { whitesph, redsph, greensph, refsph2, azultri, amarillotri };
 
 int numobj = 5;
 
@@ -90,7 +107,7 @@ void trace() {
             zbuf = Rayo(mindist, luzdir);
             int b = 0;
             int bbuf = 0;
-            for (Sphere pelota:escena3) {
+            for (Obj pelota:escena3) {
                 //newrays[b] = pelota.intersectray(ray);
                 Rayo newray = pelota.intersectray(ray);
                 if (newray.gethit()) {
