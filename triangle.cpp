@@ -159,6 +159,7 @@ Rayo Triangle::intersectray(Rayo r) {
 		Vect totluz = diffuse.add(spec).add(ambient);
 		san.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
 		san.setshadow(ambient.getx(), ambient.gety(), ambient.getz());
+		san.setreflect(refl);
 		return san;
 	}
 	Rayo san = Rayo();

@@ -12,6 +12,7 @@ private:
 	bool hit;
 	Vect color;
 	Vect shadow;
+	double reflect;
 public:
 	Rayo(const Punto &o, const Vect &dir);
 	Rayo(const Vect& dir);
@@ -24,5 +25,7 @@ public:
 	void setshadow(double r, double g, double b);
 	Vect getcolor();
 	Vect getshadow();
+	void setreflect(double r);
+	double getreflect();
 };
 #endif

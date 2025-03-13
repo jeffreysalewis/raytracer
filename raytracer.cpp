@@ -20,6 +20,7 @@ Punto camlookup(0, 1, 0);
 const int fov = 90;
 Vect luzdir(0, 1, 0);
 Vect luzcolor(1, 1, 1);
+Vect backcolorv(0.2, 0.2, 0.2);
 Vect ambluz(0, 0, 0);
 Vect luzdir2(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 Vect ambluz2(0.1, 0.1, 0.1);
@@ -134,6 +135,23 @@ void trace() {
                     if (k != bbuf) {
                         if (escena4[k]->intersect(shadowthehedgehog)) {
                             maria = false;
+                        }
+                        if (zbuf.getreflect() > 0) {
+                            Rayo reflray = escena4[k]->intersectray(zbuf);
+                            if (reflray.gethit()) {
+                                double ramt = zbuf.getreflect();
+                                /*Vect
+                                for (int k2 = 0; k < numobj; k++) {
+                                    if()
+                                }*/
+                                zbuf.setcolor(zbuf.getcolor().getx() + ramt * reflray.getcolor().getx(), zbuf.getcolor().gety() + ramt * reflray.getcolor().gety(), zbuf.getcolor().getz() + ramt * reflray.getcolor().getz());
+                                zbuf.setshadow(zbuf.getshadow().getx() + ramt * reflray.getshadow().getx(), zbuf.getshadow().gety() + ramt * reflray.getshadow().gety(), zbuf.getshadow().getz() + ramt * reflray.getshadow().getz());
+                            }
+                            else {
+                                double ramt = zbuf.getreflect();
+                                zbuf.setcolor(zbuf.getcolor().getx() + ramt * backcolorv.getx(), zbuf.getcolor().gety() + ramt * backcolorv.gety(), zbuf.getcolor().getz() + ramt * backcolorv.getz());
+                                zbuf.setshadow(zbuf.getshadow().getx() + ramt * backcolorv.getx(), zbuf.getshadow().gety() + ramt * backcolorv.gety(), zbuf.getshadow().getz() + ramt * backcolorv.getz());
+                            }
                         }
                     }
                 }
