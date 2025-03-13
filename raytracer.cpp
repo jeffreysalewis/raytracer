@@ -53,7 +53,7 @@ Triangle azultri = Triangle(Punto(0.3, -0.3, -0.4), Punto(0.0, 0.3, -0.1), Punto
 Triangle amarillotri = Triangle(Punto(-0.2, 0.1, 0.1), Punto(-0.2, -0.5, 0.2), Punto(-0.2, 0.1, -0.3), 0.9, 0.5, 0.1, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
 Obj* escena5[6] = { &whitesph, &redsph, &greensph, &refsph2, &azultri, &amarillotri };
 
-int numobj = 5;
+int numobj = 3;
 
 int main() {
     int backcolor[3] = {51, 51, 51};
@@ -65,7 +65,7 @@ int main() {
         }
     }
     trace();
-    ofstream Render("render3shadow.ppm");
+    ofstream Render("render4shadow.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -107,7 +107,7 @@ void trace() {
             zbuf = Rayo(mindist, luzdir);
             int b = 0;
             int bbuf = 0;
-            for (auto* pelota:escena3) {
+            for (auto* pelota:escena4) {
                 //newrays[b] = pelota.intersectray(ray);
                 Rayo newray = pelota->intersectray(ray);
                 if (newray.gethit()) {

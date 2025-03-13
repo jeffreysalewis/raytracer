@@ -15,6 +15,7 @@ private:
 	Punto vert2;
 	Punto vert3;
 	Vect normal;
+	double d;
 	double kd, ks, ka;
 	Vect od;
 	Vect os;
