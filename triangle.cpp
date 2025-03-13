@@ -129,18 +129,36 @@ Rayo Triangle::intersectray(Rayo r) {
 		return san;
 	}
 	Vect inter = o.add((r.getdirection().multiply(t)));
-	Punto inters = Punto(inter.getx(), inter.gety(), inter.getz());
+	Punto hitpoint = Punto(inter.getx(), inter.gety(), inter.getz());
 	Vect lado1 = vert2.minus(vert1);
 	Vect lado2 = vert3.minus(vert2);
 	Vect lado3 = vert1.minus(vert3);
-	Vect c1 = inters.minus(vert1);
-	Vect c2 = inters.minus(vert2);
-	Vect c3 = inters.minus(vert3);
+	Vect c1 = hitpoint.minus(vert1);
+	Vect c2 = hitpoint.minus(vert2);
+	Vect c3 = hitpoint.minus(vert3);
 	if (normal.dot(lado1.cross(c1)) > 0 && normal.dot(lado2.cross(c2)) > 0 && normal.dot(lado3.cross(c3)) > 0) {
-		Rayo san = Rayo();
+		Vect luzdir4 = Vect(0.0, 1.0, 0.0);
+		Vect luzdir3 = Vect(1.0, 0.0, 0.0);
+		Vect luzdir2 = Vect(1.0 / sqrt(3.0), 1.0 / sqrt(3.0), 1.0 / sqrt(3.0));
+		Vect ambluz2 = Vect(0.1, 0.1, 0.1);
+		Vect ambluz = Vect(0, 0, 0);
+		Vect luzcolor = Vect(1.0, 1.0, 1.0);
+
+		Vect theluzdir = luzdir4;
+		Vect theambluz = ambluz;
+
+		Rayo san = Rayo(hitpoint, normal);
 		san.sethit(true);
-		san.setcolor(od.getx(), od.gety(), od.getz());
-		san.setshadow(0, 0, 0);
+		Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(normal.dot(theluzdir));
+		Vect rspec = normal.multiply((2.0 * theluzdir.dot(normal))).sub(theluzdir);
+		rspec.normalize();
+		Vect vspec = r.getdirection().multiply(-1.0);
+		vspec.normalize();
+		Vect spec = os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
+		Vect ambient = od.multiply(theambluz.multiply(ka));
+		Vect totluz = diffuse.add(spec).add(ambient);
+		san.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
+		san.setshadow(ambient.getx(), ambient.gety(), ambient.getz());
 		return san;
 	}
 	Rayo san = Rayo();

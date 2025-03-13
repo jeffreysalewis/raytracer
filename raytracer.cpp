@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <cmath>
 using namespace std;
 
 const int width = 1280;
@@ -20,9 +21,10 @@ const int fov = 90;
 Vect luzdir(0, 1, 0);
 Vect luzcolor(1, 1, 1);
 Vect ambluz(0, 0, 0);
-Vect luzdir2(1, 1, 1);
+Vect luzdir2(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 Vect ambluz2(0.1, 0.1, 0.1);
 Vect luzdir3 = Vect(1.0, 0.0, 0.0);
+Vect luzdir4 = Vect(0.0, 1.0, 0.0);
 Sphere sph = Sphere();
 
 Sphere blanco = Sphere(Punto(0.45, 0.0, - 0.15), 0.15, 0.8, 0.1, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0);
@@ -53,7 +55,9 @@ Triangle azultri = Triangle(Punto(0.3, -0.3, -0.4), Punto(0.0, 0.3, -0.1), Punto
 Triangle amarillotri = Triangle(Punto(-0.2, 0.1, 0.1), Punto(-0.2, -0.5, 0.2), Punto(-0.2, 0.1, -0.3), 0.9, 0.5, 0.1, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
 Obj* escena5[6] = { &whitesph, &redsph, &greensph, &refsph2, &azultri, &amarillotri };
 
+//auto laescena = escena4;
 int numobj = 3;
+Vect theluzdir = luzdir4;
 
 int main() {
     int backcolor[3] = {51, 51, 51};
@@ -104,7 +108,7 @@ void trace() {
             //Rayo newrays[4];
             Rayo zbuf;
             Punto mindist = Punto(0, 0, -100000000);
-            zbuf = Rayo(mindist, luzdir);
+            zbuf = Rayo(mindist, theluzdir);
             int b = 0;
             int bbuf = 0;
             for (auto* pelota:escena4) {
@@ -125,10 +129,10 @@ void trace() {
             }
             bool maria = true;
             if (zbuf.gethit()) {
-                Rayo shadowthehedgehog(zbuf.getorigin(), luzdir3);
+                Rayo shadowthehedgehog(zbuf.getorigin(), theluzdir);
                 for (int k = 0; k < numobj; k++) {
                     if (k != bbuf) {
-                        if (escena3[k]->intersect(shadowthehedgehog)) {
+                        if (escena4[k]->intersect(shadowthehedgehog)) {
                             maria = false;
                         }
                     }
