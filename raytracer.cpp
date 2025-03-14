@@ -57,8 +57,14 @@ Triangle azultri = Triangle(Punto(0.3, -0.3, -0.4), Punto(0.0, 0.3, -0.1), Punto
 Triangle amarillotri = Triangle(Punto(-0.2, 0.1, 0.1), Punto(-0.2, -0.5, 0.2), Punto(-0.2, 0.1, -0.3), 0.9, 0.5, 0.1, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
 Obj* escena5[6] = { &whitesph, &redsph, &greensph, &refsph2, &azultri, &amarillotri };
 
+Sphere bsph3 = Sphere(Punto(-0.2, 0.15, -1.5), 0.15, 0.8, 0.2, 0.3, Vect(0.8, 0.1, 0.3), Vect(1.0, 1.0, 1.0), 8.0);
+Sphere bsph4 = Sphere(Punto(-0.5, 0.25, -1.0), 0.1, 0.8, 0.1, 0.1, Vect(0.3, 0.1, 0.8), Vect(1.0, 1.0, 1.0), 10.0);
+Triangle reftri1 = Triangle(Punto(0.0, -0.7, -0.1), Punto(1.0, 0.4, -1.0), Punto(0.0, -0.7, -1.5), 0.9, 1.0, 0.1, Vect(0.0, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0, 0.9);
+Triangle tri2 = Triangle(Punto(0.0, -0.7, -0.6), Punto(0.0, -0.7, -3), Punto(-1.0, 0.4, -1.0), 0.9, 1.0, 0.1, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
+Obj* escena6[5] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4 };
+
 //auto laescena = escena4;
-int numobj = 3;
+int numobj = 5;
 Vect theluzdir = luzdir4;
 
 int main() {
@@ -71,7 +77,7 @@ int main() {
         }
     }
     trace();
-    ofstream Render("render4shadow.ppm");
+    ofstream Render("render6shadow.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -110,7 +116,7 @@ void trace() {
             zbuf = Rayo(mindist, theluzdir);
             int b = 0;
             int bbuf = 0;
-            for (auto* pelota:escena4) {
+            for (auto* pelota:escena6) {
                 //newrays[b] = pelota.intersectray(ray);
                 Rayo newray = pelota->intersectray(ray);
                 if (newray.gethit()) {
@@ -132,21 +138,21 @@ void trace() {
                 bool emptyreflection = true;
                 for (int k = 0; k < numobj; k++) {
                     if (k != bbuf) {
-                        if (escena4[k]->intersect(shadowthehedgehog)) {
+                        if (escena6[k]->intersect(shadowthehedgehog)) {
                             maria = false;
                         }
                         if (zbuf.getreflect() > 0) {
                             Vect refdir = (di).add( (zbuf.getdirection().multiply(di.dot(zbuf.getdirection()))).multiply(-2) );
                             refdir.normalize();
                             Rayo rray = Rayo(zbuf.getorigin(), refdir);
-                            Rayo reflray = escena4[k]->intersectray(rray);
+                            Rayo reflray = escena6[k]->intersectray(rray);
                             if (reflray.gethit()) {
                                 double ramt = zbuf.getreflect();
                                 //double iramt = 1.0 - ramt;
                                 Rayo ultimatelifeform = Rayo(reflray.getorigin(), theluzdir);
                                 for (int k2 = 0; k2 < numobj; k2++) {
                                     if (k2 != k) {
-                                        if (escena4[k2]->intersect(ultimatelifeform)) {
+                                        if (escena6[k2]->intersect(ultimatelifeform)) {
                                             reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
                                         }
                                     }

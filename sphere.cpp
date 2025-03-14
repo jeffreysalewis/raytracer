@@ -148,7 +148,7 @@ Rayo Sphere::intersectray(Rayo r) {
 	Vect luzcolor = Vect(1.0, 1.0, 1.0);
 
 	Vect theluzdir = luzdir4;
-	Vect theambluz = ambluz;
+	Vect theambluz = ambluz2;
 
 	Punto hitpoint = Punto(r.getorigin().getx() + r.getdirection().getx()*t, r.getorigin().gety() + r.getdirection().gety() * t, r.getorigin().getz() + r.getdirection().getz() * t);
 	Vect hitnormal = Vect((hitpoint.getx() - center.getx())/radius, (hitpoint.gety() - center.gety()) / radius, (hitpoint.getz() - center.getz()) / radius);
