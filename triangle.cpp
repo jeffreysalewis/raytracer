@@ -134,8 +134,8 @@ Rayo Triangle::intersectray(Rayo r) {
 		Vect ambluz = Vect(0, 0, 0);
 		Vect luzcolor = Vect(1.0, 1.0, 1.0);
 
-		Vect theluzdir = luzdir5;
-		Vect theambluz = ambluz2;
+		Vect theluzdir = luzdir4;
+		Vect theambluz = ambluz;
 
 		Rayo san = Rayo(hitpoint, normal);
 		san.sethit(true);

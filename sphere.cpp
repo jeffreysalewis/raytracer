@@ -169,8 +169,8 @@ Rayo Sphere::intersectray(Rayo r) {
 	Vect ambluz = Vect(0, 0, 0);
 	Vect luzcolor = Vect(1.0, 1.0, 1.0);
 
-	Vect theluzdir = luzdir5;
-	Vect theambluz = ambluz2;
+	Vect theluzdir = luzdir4;
+	Vect theambluz = ambluz;
 
 	Punto hitpoint = Punto(r.getorigin().getx() + r.getdirection().getx()*t, r.getorigin().gety() + r.getdirection().gety() * t, r.getorigin().getz() + r.getdirection().getz() * t);
 	Vect hitnormal = Vect((hitpoint.getx() - center.getx())/radius, (hitpoint.gety() - center.gety()) / radius, (hitpoint.getz() - center.getz()) / radius);
@@ -188,7 +188,6 @@ Rayo Sphere::intersectray(Rayo r) {
 	Vect spec = os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
 	Vect ambient = od.multiply(theambluz.multiply(ka));
 	Vect totluz = diffuse.add(spec).add(ambient);
-	//totluz = spec.add(ambient);
 	fal.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
 	fal.setshadow(ambient.getx(), ambient.gety(), ambient.getz());
 	fal.setreflect(refl);

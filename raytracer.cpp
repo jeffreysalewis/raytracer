@@ -58,8 +58,8 @@ Triangle amarillotri = Triangle(Punto(-0.2, 0.1, 0.1), Punto(-0.2, -0.5, 0.2), P
 Obj* escena5[6] = { &whitesph, &redsph, &greensph, &refsph2, &azultri, &amarillotri };
 
 //auto laescena = escena4;
-int numobj = 6;
-Vect theluzdir = luzdir5;
+int numobj = 3;
+Vect theluzdir = luzdir4;
 
 int main() {
     int backcolor[3] = {51, 51, 51};
@@ -71,7 +71,7 @@ int main() {
         }
     }
     trace();
-    ofstream Render("render5shadow.ppm");
+    ofstream Render("render4shadow.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -110,7 +110,7 @@ void trace() {
             zbuf = Rayo(mindist, theluzdir);
             int b = 0;
             int bbuf = 0;
-            for (auto* pelota:escena5) {
+            for (auto* pelota:escena4) {
                 //newrays[b] = pelota.intersectray(ray);
                 Rayo newray = pelota->intersectray(ray);
                 if (newray.gethit()) {
@@ -132,13 +132,14 @@ void trace() {
                 bool emptyreflection = true;
                 for (int k = 0; k < numobj; k++) {
                     if (k != bbuf) {
-                        if (escena5[k]->intersect(shadowthehedgehog)) {
+                        if (escena4[k]->intersect(shadowthehedgehog)) {
                             maria = false;
                         }
                         if (zbuf.getreflect() > 0) {
-                            Vect refdir = (ray.getdirection()).add( (zbuf.getdirection().multiply(ray.getdirection().dot(zbuf.getdirection()))).multiply(-2) );
+                            Vect refdir = (di).add( (zbuf.getdirection().multiply(di.dot(zbuf.getdirection()))).multiply(-2) );
                             refdir.normalize();
-                            Rayo reflray = escena5[k]->intersectray(refdir);
+                            Rayo rray = Rayo(zbuf.getorigin(), refdir);
+                            Rayo reflray = escena4[k]->intersectray(rray);
                             if (reflray.gethit()) {
                                 double ramt = zbuf.getreflect();
                                 //zbuf.setcolor(1, 0, 0);
