@@ -142,14 +142,15 @@ void trace() {
                             Rayo reflray = escena4[k]->intersectray(rray);
                             if (reflray.gethit()) {
                                 double ramt = zbuf.getreflect();
-                                //zbuf.setcolor(1, 0, 0);
                                 //double iramt = 1.0 - ramt;
-                                /*Vect ultimatelifeform = (reflray.getorigin(), theluzdir);
-                                for (int k2 = 0; k < numobj; k++) {
-                                    if (false) {
-
+                                Rayo ultimatelifeform = Rayo(reflray.getorigin(), theluzdir);
+                                for (int k2 = 0; k2 < numobj; k2++) {
+                                    if (k2 != k) {
+                                        if (escena4[k2]->intersect(ultimatelifeform)) {
+                                            reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
+                                        }
                                     }
-                                }*/
+                                }
                                 emptyreflection = false;
                                 zbuf.setcolor(zbuf.getcolor().getx() + ramt * reflray.getcolor().getx(), zbuf.getcolor().gety() + ramt * reflray.getcolor().gety(), zbuf.getcolor().getz() + ramt * reflray.getcolor().getz());
                                 zbuf.setshadow(zbuf.getshadow().getx() + ramt * reflray.getshadow().getx(), zbuf.getshadow().gety() + ramt * reflray.getshadow().gety(), zbuf.getshadow().getz() + ramt * reflray.getshadow().getz());
