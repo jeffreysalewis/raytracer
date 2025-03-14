@@ -163,13 +163,14 @@ Rayo Sphere::intersectray(Rayo r) {
 	double t = tca - sqrt(thc2);
 	Vect luzdir4 = Vect(0.0, 1.0, 0.0);
 	Vect luzdir3 = Vect(1.0, 0.0, 0.0);
+	Vect luzdir5 = luzdir3;
 	Vect luzdir2 = Vect(1.0 / sqrt(3.0), 1.0 / sqrt(3.0), 1.0 / sqrt(3.0));
 	Vect ambluz2 = Vect(0.1, 0.1, 0.1);
 	Vect ambluz = Vect(0, 0, 0);
 	Vect luzcolor = Vect(1.0, 1.0, 1.0);
 
-	Vect theluzdir = luzdir4;
-	Vect theambluz = ambluz;
+	Vect theluzdir = luzdir5;
+	Vect theambluz = ambluz2;
 
 	Punto hitpoint = Punto(r.getorigin().getx() + r.getdirection().getx()*t, r.getorigin().gety() + r.getdirection().gety() * t, r.getorigin().getz() + r.getdirection().getz() * t);
 	Vect hitnormal = Vect((hitpoint.getx() - center.getx())/radius, (hitpoint.gety() - center.gety()) / radius, (hitpoint.getz() - center.getz()) / radius);
@@ -177,6 +178,9 @@ Rayo Sphere::intersectray(Rayo r) {
 	Rayo fal = Rayo(hitpoint, hitnormal);
 	fal.sethit(true);
 	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(theluzdir));
+	/*if (refl > 0) {
+		diffuse = diffuse.multiply(1.0 - refl);
+	}*/
 	Vect rspec = hitnormal.multiply((2.0*theluzdir.dot(hitnormal))).sub(theluzdir);
 	rspec.normalize();
 	Vect vspec = r.getdirection().multiply(-1.0);

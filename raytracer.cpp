@@ -26,6 +26,7 @@ Vect luzdir2(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 Vect ambluz2(0.1, 0.1, 0.1);
 Vect luzdir3 = Vect(1.0, 0.0, 0.0);
 Vect luzdir4 = Vect(0.0, 1.0, 0.0);
+Vect luzdir5 = luzdir3;
 Sphere sph = Sphere();
 
 Sphere blanco = Sphere(Punto(0.45, 0.0, - 0.15), 0.15, 0.8, 0.1, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0);
@@ -57,8 +58,8 @@ Triangle amarillotri = Triangle(Punto(-0.2, 0.1, 0.1), Punto(-0.2, -0.5, 0.2), P
 Obj* escena5[6] = { &whitesph, &redsph, &greensph, &refsph2, &azultri, &amarillotri };
 
 //auto laescena = escena4;
-int numobj = 3;
-Vect theluzdir = luzdir4;
+int numobj = 6;
+Vect theluzdir = luzdir5;
 
 int main() {
     int backcolor[3] = {51, 51, 51};
@@ -70,7 +71,7 @@ int main() {
         }
     }
     trace();
-    ofstream Render("render4shadow.ppm");
+    ofstream Render("render5shadow.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -81,9 +82,6 @@ int main() {
         Render << "\n";
     }
     Render.close();
-    Vect multvecttest = Punto(1, 1, 0).minus(Punto(0, 1, 0));
-    cout << multvecttest.multiply(2.5).getx() << endl;
-    cout << sph.getradius() << endl;
     cout << "\nthis is a ray tracer!\n" << endl;
     return 0;
 }
@@ -112,7 +110,7 @@ void trace() {
             zbuf = Rayo(mindist, theluzdir);
             int b = 0;
             int bbuf = 0;
-            for (auto* pelota:escena4) {
+            for (auto* pelota:escena5) {
                 //newrays[b] = pelota.intersectray(ray);
                 Rayo newray = pelota->intersectray(ray);
                 if (newray.gethit()) {
@@ -133,22 +131,27 @@ void trace() {
                 Rayo shadowthehedgehog(zbuf.getorigin(), theluzdir);
                 for (int k = 0; k < numobj; k++) {
                     if (k != bbuf) {
-                        if (escena4[k]->intersect(shadowthehedgehog)) {
+                        if (escena5[k]->intersect(shadowthehedgehog)) {
                             maria = false;
                         }
                         if (zbuf.getreflect() > 0) {
-                            Rayo reflray = escena4[k]->intersectray(zbuf);
+                            Vect refdir = (ray.getdirection()).add( (zbuf.getdirection().multiply(ray.getdirection().dot(zbuf.getdirection()))).multiply(-2) );
+                            refdir.normalize();
+                            Rayo reflray = escena5[k]->intersectray(refdir);
                             if (reflray.gethit()) {
                                 double ramt = zbuf.getreflect();
-                                /*Vect
+                                //double iramt = 1.0 - ramt;
+                                /*Vect ultimatelifeform = (reflray.getorigin(), theluzdir);
                                 for (int k2 = 0; k < numobj; k++) {
-                                    if()
+                                    if (false) {
+
+                                    }
                                 }*/
                                 zbuf.setcolor(zbuf.getcolor().getx() + ramt * reflray.getcolor().getx(), zbuf.getcolor().gety() + ramt * reflray.getcolor().gety(), zbuf.getcolor().getz() + ramt * reflray.getcolor().getz());
                                 zbuf.setshadow(zbuf.getshadow().getx() + ramt * reflray.getshadow().getx(), zbuf.getshadow().gety() + ramt * reflray.getshadow().gety(), zbuf.getshadow().getz() + ramt * reflray.getshadow().getz());
-                            }
-                            else {
+                            } else {
                                 double ramt = zbuf.getreflect();
+                                //double iramt = 1.0 - ramt;
                                 zbuf.setcolor(zbuf.getcolor().getx() + ramt * backcolorv.getx(), zbuf.getcolor().gety() + ramt * backcolorv.gety(), zbuf.getcolor().getz() + ramt * backcolorv.getz());
                                 zbuf.setshadow(zbuf.getshadow().getx() + ramt * backcolorv.getx(), zbuf.getshadow().gety() + ramt * backcolorv.gety(), zbuf.getshadow().getz() + ramt * backcolorv.getz());
                             }

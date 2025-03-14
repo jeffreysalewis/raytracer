@@ -74,7 +74,7 @@ double Triangle::getkgls() {
 
 bool Triangle::intersect(Rayo r) {
 	double tbottom = normal.dot(r.getdirection());
-	if (tbottom >= 0) {
+	if (tbottom == 0) {
 		return false;
 	}
 	Vect o = Vect(r.getorigin().getx(), r.getorigin().gety(), r.getorigin().getz());
@@ -90,23 +90,12 @@ bool Triangle::intersect(Rayo r) {
 	Vect c1 = inters.minus(vert1);
 	Vect c2 = inters.minus(vert2);
 	Vect c3 = inters.minus(vert3);
+	Vect inorm = normal.multiply(-1);
 	if (normal.dot(lado1.cross(c1)) > 0 && normal.dot(lado2.cross(c2)) > 0 && normal.dot(lado3.cross(c3)) > 0) {
 		return true;
+	} else if (inorm.dot(lado1.cross(c1)) > 0 && inorm.dot(lado2.cross(c2)) > 0 && inorm.dot(lado3.cross(c3)) > 0) {
+		return true;
 	}
-	/*int tempind = 0;
-	int tempval = 0;
-	if (abs(normal.getx()) > tempval) {
-		tempind = 0;
-		tempval = abs(normal.getx());
-	}
-	if (abs(normal.gety()) > tempval) {
-		tempind = 1;
-		tempval = abs(normal.gety());
-	}
-	if (abs(normal.getz()) > tempval) {
-		tempind = 2;
-		tempval = abs(normal.getz());
-	}*/
 	return false;
 }
 
@@ -139,13 +128,14 @@ Rayo Triangle::intersectray(Rayo r) {
 	if (normal.dot(lado1.cross(c1)) > 0 && normal.dot(lado2.cross(c2)) > 0 && normal.dot(lado3.cross(c3)) > 0) {
 		Vect luzdir4 = Vect(0.0, 1.0, 0.0);
 		Vect luzdir3 = Vect(1.0, 0.0, 0.0);
+		Vect luzdir5 = luzdir3;
 		Vect luzdir2 = Vect(1.0 / sqrt(3.0), 1.0 / sqrt(3.0), 1.0 / sqrt(3.0));
 		Vect ambluz2 = Vect(0.1, 0.1, 0.1);
 		Vect ambluz = Vect(0, 0, 0);
 		Vect luzcolor = Vect(1.0, 1.0, 1.0);
 
-		Vect theluzdir = luzdir4;
-		Vect theambluz = ambluz;
+		Vect theluzdir = luzdir5;
+		Vect theambluz = ambluz2;
 
 		Rayo san = Rayo(hitpoint, normal);
 		san.sethit(true);
