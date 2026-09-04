@@ -22,19 +22,19 @@ Vect luzdir(0, 1, 0);
 Vect luzcolor(1, 1, 1);
 Vect backcolorv(0.2, 0.2, 0.2);
 Vect ambluz(0, 0, 0);
-Vect luzdir2(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
+Vect luzdir2(1 / sqrt(3), 1 / sqrt(3), 1 / sqrt(3));
 Vect ambluz2(0.1, 0.1, 0.1);
 Vect luzdir3 = Vect(1.0, 0.0, 0.0);
 Vect luzdir4 = Vect(0.0, 1.0, 0.0);
 Vect luzdir5 = luzdir3;
 Sphere sph = Sphere();
 
-Sphere blanco = Sphere(Punto(0.45, 0.0, - 0.15), 0.15, 0.8, 0.1, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0);
+Sphere blanco = Sphere(Punto(0.45, 0.0, -0.15), 0.15, 0.8, 0.1, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0);
 Sphere rojo = Sphere(Punto(0.0, 0.0, -0.1), 0.2, 0.6, 0.3, 0.1, Vect(1.0, 0.0, 0.0), Vect(1.0, 1.0, 1.0), 32.0);
 Sphere verde = Sphere(Punto(-0.6, 0.0, 0.0), 0.3, 0.7, 0.2, 0.1, Vect(0.0, 1.0, 0.0), Vect(0.5, 1.0, 0.5), 64.0);
 Sphere azul = Sphere(Punto(0.0, -10000.5, 0.0), 10000.0, 0.9, 0.0, 0.1, Vect(0.0, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
-Obj* escena1[1] = {&sph};
-Obj* escena2[4] = {&blanco, &azul, &rojo, &verde};
+Obj* escena1[1] = { &sph };
+Obj* escena2[4] = { &blanco, &azul, &rojo, &verde };
 //Obj test[3] = { blanco, azul, rojo };
 
 Sphere ball1 = Sphere(Punto(-0.1, 0.0, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0);
@@ -68,7 +68,7 @@ int numobj = 5;
 Vect theluzdir = luzdir4;
 
 int main() {
-    int backcolor[3] = {51, 51, 51};
+    int backcolor[3] = { 51, 51, 51 };
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             img[i][j][0] = backcolor[0];
@@ -88,18 +88,18 @@ int main() {
         Render << "\n";
     }
     Render.close();
-    cout << "\nthis is a ray tracer!\n" << endl;
+    cout << "\nthis is a ray tracer that i made!\n" << endl;
     return 0;
 }
 
 void trace() {
-    double stepx = 1.77778/width;
-    double stepy = 1.0/height;
-    double initx = -0.88889 + stepx/2;
-    double inity = 0.5 - stepy/2;
+    double stepx = 1.77778 / width;
+    double stepy = 1.0 / height;
+    double initx = -0.88889 + stepx / 2;
+    double inity = 0.5 - stepy / 2;
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            Vect di = Punto(initx + stepx*j, inity - stepy*i, 0).minus(camlookfrom);
+            Vect di = Punto(initx + stepx * j, inity - stepy * i, 0).minus(camlookfrom);
             di.normalize();
             Rayo ray = Rayo(camlookfrom, di);
             /*if (inity - stepy * i > 0) {
@@ -116,7 +116,7 @@ void trace() {
             zbuf = Rayo(mindist, theluzdir);
             int b = 0;
             int bbuf = 0;
-            for (auto* pelota:escena6) {
+            for (auto* pelota : escena6) {
                 //newrays[b] = pelota.intersectray(ray);
                 Rayo newray = pelota->intersectray(ray);
                 if (newray.gethit()) {
@@ -142,7 +142,7 @@ void trace() {
                             maria = false;
                         }
                         if (zbuf.getreflect() > 0) {
-                            Vect refdir = (di).add( (zbuf.getdirection().multiply(di.dot(zbuf.getdirection()))).multiply(-2) );
+                            Vect refdir = (di).add((zbuf.getdirection().multiply(di.dot(zbuf.getdirection()))).multiply(-2));
                             refdir.normalize();
                             Rayo rray = Rayo(zbuf.getorigin(), refdir);
                             Rayo reflray = escena6[k]->intersectray(rray);
@@ -187,7 +187,7 @@ void trace() {
                 }
             }*/
         }
-        
+
     }
     return;
 }
