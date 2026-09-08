@@ -64,10 +64,11 @@ Triangle tri2 = Triangle(Punto(0.0, -0.7, -0.6), Punto(0.0, -0.7, -3), Punto(-1.
 Obj* escena6[5] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4 };
 
 //auto laescena = escena4;
-int numobj = 5;
-Vect theluzdir = luzdir4;
+int numobj = 6;
+Vect theluzdir = luzdir5;
 
 int main() {
+    //fills img w background color
     int backcolor[3] = { 51, 51, 51 };
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
@@ -77,7 +78,7 @@ int main() {
         }
     }
     trace();
-    ofstream Render("render6shadow.ppm");
+    ofstream Render("render5shadow2.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -93,12 +94,15 @@ int main() {
 }
 
 void trace() {
+    //amt to step per ray
     double stepx = 1.77778 / width;
     double stepy = 1.0 / height;
+    //starting ray
     double initx = -0.88889 + stepx / 2;
     double inity = 0.5 - stepy / 2;
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
+            //create ray
             Vect di = Punto(initx + stepx * j, inity - stepy * i, 0).minus(camlookfrom);
             di.normalize();
             Rayo ray = Rayo(camlookfrom, di);
@@ -116,11 +120,14 @@ void trace() {
             zbuf = Rayo(mindist, theluzdir);
             int b = 0;
             int bbuf = 0;
+            //cycle through all objects to see if ray hit them
             for (auto* pelota : escena6) {
                 //newrays[b] = pelota.intersectray(ray);
                 Rayo newray = pelota->intersectray(ray);
                 if (newray.gethit()) {
+                    //if newray's hitpoint is closer than current zbufs point
                     if (newray.getorigin().getz() > zbuf.getorigin().getz()) {
+                        //set zbuf to the new ray
                         zbuf = newray;
                         bbuf = b;
                     }
@@ -138,9 +145,11 @@ void trace() {
                 bool emptyreflection = true;
                 for (int k = 0; k < numobj; k++) {
                     if (k != bbuf) {
+                        //if point is in shadow
                         if (escena6[k]->intersect(shadowthehedgehog)) {
                             maria = false;
                         }
+                        //if surface is reflective
                         if (zbuf.getreflect() > 0) {
                             Vect refdir = (di).add((zbuf.getdirection().multiply(di.dot(zbuf.getdirection()))).multiply(-2));
                             refdir.normalize();
