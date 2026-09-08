@@ -77,7 +77,8 @@ int main() {
             img[i][j][2] = backcolor[2];
         }
     }
-    trace();
+    //trace();
+    tracemany();
     ofstream Render("render5shadow2.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
@@ -201,19 +202,21 @@ void trace() {
     return;
 }
 
-void tracemany(int rayppixel) {
+void tracemany() {
+    const int rayppixel = 1;
+    int colorspixel[rayppixel][3]; //temp buffer for all colors per pixel
     //amt to step per ray
     double stepx = 1.77778 / width;
     double stepy = 1.0 / height;
     //starting ray
     double initx = -0.88889 + stepx / 2;
     double inity = 0.5 - stepy / 2;
-    for (int i = 0; i < height * rayppixel; i++) {
+    for (int i = 0; i < height; i++) {
         for (int j = 0; j < width * rayppixel; j++) {
             //create ray
             double randx = ((rand() / RAND_MAX) * stepx) - (stepx / 2.0); //nudge ray a small random amt
             double randy = ((rand() / RAND_MAX) * stepy) - (stepy / 2.0);
-            Vect di = Punto(initx + stepx * j, inity - stepy * i, 0).minus(camlookfrom);
+            Vect di = Punto(initx + stepx * j + randx, inity - stepy * i + randy, 0).minus(camlookfrom);
             di.normalize();
             Rayo ray = Rayo(camlookfrom, di);
             //change escena1 to escena2 for the second scene
@@ -274,15 +277,21 @@ void tracemany(int rayppixel) {
                     zbuf.setcolor(zbuf.getcolor().getx() + ramt * backcolorv.getx(), zbuf.getcolor().gety() + ramt * backcolorv.gety(), zbuf.getcolor().getz() + ramt * backcolorv.getz());
                     zbuf.setshadow(zbuf.getshadow().getx() + ramt * backcolorv.getx(), zbuf.getshadow().gety() + ramt * backcolorv.gety(), zbuf.getshadow().getz() + ramt * backcolorv.getz());
                 }
-                if (maria) {
+                //every pixel avg the rays
+                if (j % rayppixel == rayppixel - 1) {
                     img[i][j][0] = (int)max(0.0, min(255.0, zbuf.getcolor().getx() * 255));
                     img[i][j][1] = (int)max(0.0, min(255.0, zbuf.getcolor().gety() * 255));
                     img[i][j][2] = (int)max(0.0, min(255.0, zbuf.getcolor().getz() * 255));
                 }
                 else {
-                    img[i][j][0] = (int)max(0.0, min(255.0, zbuf.getshadow().getx() * 255));
-                    img[i][j][1] = (int)max(0.0, min(255.0, zbuf.getshadow().gety() * 255));
-                    img[i][j][2] = (int)max(0.0, min(255.0, zbuf.getshadow().getz() * 255));
+                    //add the new color to the pixel for now, avg later
+                    //colorspixel[j%rayppixel][0] = (int)max(0.0, min(255.0, zbuf.getcolor().getx() * 255));
+                    //colorspixel[j%rayppixel][1] = (int)max(0.0, min(255.0, zbuf.getcolor().gety() * 255));
+                    //colorspixel[j%rayppixel][2] = (int)max(0.0, min(255.0, zbuf.getcolor().getz() * 255));
+                    //or
+                    img[i][j][0] += (int)max(0.0, min(255.0, zbuf.getcolor().getx() * 255));
+                    img[i][j][1] += (int)max(0.0, min(255.0, zbuf.getcolor().gety() * 255));
+                    img[i][j][2] += (int)max(0.0, min(255.0, zbuf.getcolor().getz() * 255));
                 }
             }
         }
