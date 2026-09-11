@@ -35,11 +35,12 @@ double Vect::getlen() {
 	return sqrt(x * x + y * y + z * z);
 }
 
-void Vect::normalize() {
+Vect Vect::normalize() {
 	double len = this->getlen();
 	x = x / len;
 	y = y / len;
 	z = z / len;
+	return *this;
 }
 
 double Vect::dot(Vect other) {

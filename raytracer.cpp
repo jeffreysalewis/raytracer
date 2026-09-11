@@ -27,6 +27,7 @@ Vect ambluz2(0.1, 0.1, 0.1);
 Vect luzdir3 = Vect(1.0, 0.0, 0.0);
 Vect luzdir4 = Vect(0.0, 1.0, 0.0);
 Vect luzdir5 = luzdir3;
+Punto luzpt = Punto(0.0, 2.0, 0.0);
 Sphere sph = Sphere();
 
 Sphere blanco = Sphere(Punto(0.45, 0.0, -0.15), 0.15, 0.8, 0.1, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0);
@@ -66,6 +67,7 @@ Obj* escena6[5] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4 };
 //auto laescena = escena4;
 int numobj = 5;
 Vect theluzdir = luzdir4;
+Punto theluzpt = luzpt;
 int backcolor[3] = { 51, 51, 51 };
 int back[3] = { 0,0,0 };
 
@@ -79,8 +81,8 @@ int main() {
         }
     }
     //trace();
-    tracemany();
-    ofstream Render("render6shadow2multiray3.ppm");
+    tracemany(false);
+    ofstream Render("render6shadow2multiray4.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -208,9 +210,8 @@ void trace() {
     return;
 }
 
-void tracemany() {
-    const int rayppixel = 15;
-    int colorspixel[rayppixel][3]; //temp buffer for all colors per pixel
+void tracemany(bool isluzdir) {
+    const int rayppixel = 3;
     //amt to step per ray
     double stepx = 1.77778 / width;
     double stepy = 1.0 / height;
@@ -246,7 +247,13 @@ void tracemany() {
             }
             bool maria = true;
             if (zbuf.gethit()) {
-                Rayo shadowthehedgehog(zbuf.getorigin(), theluzdir);
+                Rayo shadowthehedgehog;
+                if (isluzdir) {
+                    shadowthehedgehog = Rayo(zbuf.getorigin(), theluzdir);
+                }
+                else {
+                    shadowthehedgehog = Rayo(zbuf.getorigin(), theluzpt.minus(zbuf.getorigin()).normalize());
+                }
                 bool emptyreflection = true;
                 for (int k = 0; k < numobj; k++) {
                     if (k != bbuf) {
@@ -263,7 +270,13 @@ void tracemany() {
                             if (reflray.gethit()) {
                                 double ramt = zbuf.getreflect();
                                 //double iramt = 1.0 - ramt;
-                                Rayo ultimatelifeform = Rayo(reflray.getorigin(), theluzdir);
+                                Rayo ultimatelifeform;
+                                if (isluzdir) {
+                                    ultimatelifeform = Rayo(reflray.getorigin(), theluzdir);
+                                }
+                                else {
+                                    ultimatelifeform = Rayo(reflray.getorigin(), theluzpt.minus(reflray.getorigin()).normalize());
+                                }
                                 for (int k2 = 0; k2 < numobj; k2++) {
                                     if (k2 != k) {
                                         if (escena6[k2]->intersect(ultimatelifeform)) {
@@ -285,14 +298,16 @@ void tracemany() {
                 }
                 //every ray add the color
                 if (maria) {
+                    //regular color
                     img[i][j/rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getcolor().getx() * 255));
                     img[i][j/rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getcolor().gety() * 255));
                     img[i][j/rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getcolor().getz() * 255));
                 }
                 else {
-                    img[i][j/rayppixel][0] = (int)max(0.0, min(255.0, zbuf.getshadow().getx() * 255));
-                    img[i][j/rayppixel][1] = (int)max(0.0, min(255.0, zbuf.getshadow().gety() * 255));
-                    img[i][j/rayppixel][2] = (int)max(0.0, min(255.0, zbuf.getshadow().getz() * 255));
+                    //shadow color
+                    img[i][j/rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getshadow().getx() * 255));
+                    img[i][j/rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getshadow().gety() * 255));
+                    img[i][j/rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getshadow().getz() * 255));
                 }
             }
             else {

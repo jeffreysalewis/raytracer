@@ -14,7 +14,7 @@ public:
 	double getz();
 	Vect getvect();
 	double getlen();
-	void normalize();
+	Vect normalize();
 	double dot(Vect other);
 	Vect cross(Vect other);
 	Vect multiply(double scalar);

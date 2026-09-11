@@ -1,4 +1,4 @@
 #pragma once
 
 void trace();
-void tracemany();
+void tracemany(bool isluzdir);
