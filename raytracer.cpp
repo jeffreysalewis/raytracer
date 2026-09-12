@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <string>
 using namespace std;
 
 const int width = 1280;
@@ -325,4 +326,13 @@ void tracemany(bool isluzdir) {
 
     }
     return;
+}
+
+void readscene(string filename) {
+    string line;
+    ifstream SceneDescription(filename);
+    while (getline(SceneDescription, line)) {
+        cout << line;
+    }
+    SceneDescription.close();
 }
