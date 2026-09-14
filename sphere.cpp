@@ -197,5 +197,6 @@ Rayo Sphere::intersectray(Rayo r) {
 	fal.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
 	fal.setshadow(ambient.getx(), ambient.gety(), ambient.getz());
 	fal.setreflect(refl);
+	fal.setrefract(1-kt);
 	return fal;
 }

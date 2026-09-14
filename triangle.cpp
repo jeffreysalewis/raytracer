@@ -184,6 +184,7 @@ Rayo Triangle::intersectray(Rayo r) {
 		san.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
 		san.setshadow(ambient.getx(), ambient.gety(), ambient.getz());
 		san.setreflect(refl);
+		san.setrefract(1 - kt);
 		return san;
 	}
 	Rayo san = Rayo();

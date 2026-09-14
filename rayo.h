@@ -13,6 +13,8 @@ private:
 	Vect color;
 	Vect shadow;
 	double reflect;
+	double refract;
+	int bounce;
 public:
 	Rayo(const Punto &o, const Vect &dir);
 	Rayo(const Vect& dir);
@@ -26,6 +28,10 @@ public:
 	Vect getcolor();
 	Vect getshadow();
 	void setreflect(double r);
+	void setrefract(double r);
+	void setbounce(int b);
 	double getreflect();
+	double getrefract();
+	int getbounce();
 };
 #endif

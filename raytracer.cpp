@@ -65,12 +65,16 @@ Triangle reftri1 = Triangle(Punto(0.0, -0.7, -0.1), Punto(1.0, 0.4, -1.0), Punto
 Triangle tri2 = Triangle(Punto(0.0, -0.7, -0.6), Punto(0.0, -0.7, -3), Punto(-1.0, 0.4, -1.0), 0.9, 1.0, 0.1, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
 Obj* escena6[5] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4 };
 
+Sphere transphere = Sphere(Punto(0.0, 0.1, 0.0), 0.2, 0.8, 0.2, 0.3, 0.0, Vect(), Vect(1.0, 1.0, 1.0), 8.0, 0.5, 1.5);
+Obj* escena7[6] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4, &transphere};
+
 //auto laescena = escena4;
 int numobj = 5;
 Vect theluzdir = luzdir4;
 Punto theluzpt = luzpt;
 int backcolor[3] = { 51, 51, 51 };
 int back[3] = { 0,0,0 };
+int maxbounce = 2;
 
 int main() {
     //fills img w background color
@@ -83,7 +87,7 @@ int main() {
     }
     //trace();
     tracemany(false);
-    ofstream Render("render6shadow2multiray4.ppm");
+    ofstream Render("render6multiray5.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -290,6 +294,11 @@ void tracemany(bool isluzdir) {
                                 zbuf.setshadow(zbuf.getshadow().getx() + ramt * reflray.getshadow().getx(), zbuf.getshadow().gety() + ramt * reflray.getshadow().gety(), zbuf.getshadow().getz() + ramt * reflray.getshadow().getz());
                             }
                         }
+                        if (zbuf.getrefract() > 0) {
+                            Vect refrdir;
+                            Rayo rfrray = Rayo(zbuf.getorigin(), refrdir);
+                            Rayo refrray;
+                        }
                     }
                 }
                 if (emptyreflection) {
@@ -326,6 +335,22 @@ void tracemany(bool isluzdir) {
 
     }
     return;
+}
+
+Rayo reflect(Rayo r) {
+    if (r.getbounce() > maxbounce) {
+        return Rayo();
+    }
+    r.setbounce(r.getbounce() + 1);
+    return Rayo();
+}
+
+Rayo refract(Rayo r) {
+    if (r.getbounce() > maxbounce) {
+        return Rayo();
+    }
+    r.setbounce(r.getbounce() + 1);
+    return Rayo();
 }
 
 void readscene(string filename) {

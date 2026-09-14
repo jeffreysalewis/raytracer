@@ -7,6 +7,8 @@ Rayo::Rayo(const Punto& o, const Vect& dir) {
 	direction = dir;
 	hit = false;
 	reflect = 0;
+	refract = 0;
+	bounce = 0;
 }
 
 Rayo::Rayo(const Vect& dir) {
@@ -14,6 +16,8 @@ Rayo::Rayo(const Vect& dir) {
 	direction = dir;
 	hit = false;
 	reflect = 0;
+	refract = 0;
+	bounce = 0;
 }
 
 Rayo::Rayo() {
@@ -21,6 +25,8 @@ Rayo::Rayo() {
 	direction = Vect(0, 0, -1);
 	hit = false;
 	reflect = 0;
+	refract = 0;
+	bounce = 0;
 }
 
 Punto Rayo::getorigin() {
@@ -59,6 +65,22 @@ void Rayo::setreflect(double r) {
 	reflect = r;
 }
 
+void Rayo::setrefract(double r) {
+	refract = r;
+}
+
+void Rayo::setbounce(int b) {
+	bounce = b;
+}
+
 double Rayo::getreflect() {
 	return reflect;
+}
+
+double Rayo::getrefract() {
+	return refract;
+}
+
+int Rayo::getbounce() {
+	return bounce;
 }
