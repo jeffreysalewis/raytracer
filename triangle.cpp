@@ -22,6 +22,24 @@ Triangle::Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak
 	ior = 1.5;
 }
 
+Triangle::Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr) {
+	vert1 = v1;
+	vert2 = v2;
+	vert3 = v3;
+	normal = (v2.minus(v1).cross(v3.minus(v1)));
+	normal.normalize();
+	d = -1 * (normal.dot(Vect(v1.getx(), v1.gety(), v1.getz())));
+	kd = dk;
+	ks = sk;
+	ka = ak;
+	kt = tk;
+	od = odd;
+	os = so;
+	kgls = kgloss;
+	refl = ref;
+	ior = refr;
+}
+
 Triangle::Triangle() {
 	vert1 = Punto(0, 0, 0);
 	vert2 = Punto(-1, -1, -1);

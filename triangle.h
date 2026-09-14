@@ -29,6 +29,7 @@ private:
 	//Vect ambluz2 = Vect(0.1, 0.1, 0.1);
 public:
 	Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak, Vect odd, Vect so, double kgloss, double ref);
+	Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr);
 	Triangle();
 	Punto getvert1();
 	Punto getvert2();
