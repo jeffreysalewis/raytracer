@@ -14,22 +14,30 @@ Triangle::Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak
 	kd = dk;
 	ks = sk;
 	ka = ak;
+	kt = 1.0;
 	od = odd;
 	os = so;
 	kgls = kgloss;
 	refl = ref;
+	ior = 1.5;
 }
 
 Triangle::Triangle() {
 	vert1 = Punto(0, 0, 0);
 	vert2 = Punto(-1, -1, -1);
 	vert3 = Punto(-1, 1, -1);
+	normal = (vert2.minus(vert1).cross(vert3.minus(vert1)));
+	normal.normalize();
+	d = -1 * (normal.dot(Vect(vert1.getx(), vert1.gety(), vert1.getz())));
 	kd = 0.7;
 	ks = 0.2;
 	ka = 0.1;
+	kt = 1.0;
 	od = Vect(1, 0, 1);
 	os = Vect(-1, -1, -1);
 	kgls = 16;
+	refl = 0.0;
+	ior = 1.5;
 }
 
 Punto Triangle::getvert1() {
@@ -60,6 +68,10 @@ double Triangle::getka() {
 	return ka;
 }
 
+double Triangle::getkt() {
+	return kt;
+}
+
 Vect Triangle::getod() {
 	return od;
 }
@@ -70,6 +82,10 @@ Vect Triangle::getos() {
 
 double Triangle::getkgls() {
 	return kgls;
+}
+
+double Triangle::getior() {
+	return ior;
 }
 
 bool Triangle::intersect(Rayo r) {

@@ -16,11 +16,12 @@ private:
 	Punto vert3;
 	Vect normal;
 	double d;
-	double kd, ks, ka;
+	double kd, ks, ka, kt;
 	Vect od;
 	Vect os;
 	double kgls;
 	double refl;
+	double ior;
 	Vect luzdir = Vect(0, 1, 0);
 	//Vect luzdir2 = Vect(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 	//Vect luzdir2 = Vect(1, 1, 1);
@@ -36,9 +37,11 @@ public:
 	double getkd() override;
 	double getks() override;
 	double getka() override;
+	double getkt() override;
 	Vect getod() override;
 	Vect getos() override;
 	double getkgls() override;
+	double getior() override;
 	bool intersect(Rayo r) override;
 	bool intersect2(Rayo r) override;
 	Rayo intersectray(Rayo r) override;

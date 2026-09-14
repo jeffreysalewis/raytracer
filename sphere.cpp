@@ -12,9 +12,11 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vec
 	kd = dk;
 	ks = sk;
 	ka = ak;
+	kt = 1.0;
 	od = odd;
 	os = so;
 	kgls = kgloss;
+	ior = 1.5;
 }
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss, double ref) {
@@ -23,10 +25,26 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vec
 	kd = dk;
 	ks = sk;
 	ka = ak;
+	kt = 1.0;
 	od = odd;
 	os = so;
 	kgls = kgloss;
 	refl = ref;
+	ior = 1.5;
+}
+
+Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr) {
+	center = c;
+	radius = r;
+	kd = dk;
+	ks = sk;
+	ka = ak;
+	kt = tk;
+	od = odd;
+	os = so;
+	kgls = kgloss;
+	refl = ref;
+	ior = refr;
 }
 
 Sphere::Sphere() {
@@ -35,9 +53,11 @@ Sphere::Sphere() {
 	kd = 0.7;
 	ks = 0.2;
 	ka = 0.1;
+	kt = 1.0;
 	od = Vect(1, 0, 1);
 	os = Vect(1, 1, 1);
 	kgls = 16;
+	ior = 1.5;
 }
 
 Punto Sphere::getcenter() {
@@ -60,6 +80,10 @@ double Sphere::getka() {
 	return ka;
 }
 
+double Sphere::getkt() {
+	return kt;
+}
+
 Vect Sphere::getod() {
 	return od;
 }
@@ -70,6 +94,10 @@ Vect Sphere::getos() {
 
 double Sphere::getkgls() {
 	return kgls;
+}
+
+double Sphere::getior() {
+	return ior;
 }
 
 bool Sphere::intersect(Rayo r) {

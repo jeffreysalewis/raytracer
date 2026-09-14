@@ -14,10 +14,11 @@ private:
 	Punto vert2;
 	Punto vert3;
 	Vect normal;
-	double kd, ks, ka;
+	double kd, ks, ka, kt;
 	Vect od;
 	Vect os;
 	double kgls;
+	double ior;
 	Vect luzdir = Vect(0, 1, 0);
 	//Vect luzdir2 = Vect(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 	//Vect luzdir2 = Vect(1, 1, 1);
@@ -28,9 +29,11 @@ public:
 	virtual double getkd();
 	virtual double getks();
 	virtual double getka();
+	virtual double getkt();
 	virtual Vect getod();
 	virtual Vect getos();
 	virtual double getkgls();
+	virtual double getior();
 	virtual bool intersect(Rayo r);
 	virtual bool intersect2(Rayo r);
 	virtual Rayo intersectray(Rayo r);

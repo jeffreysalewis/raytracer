@@ -28,6 +28,10 @@ double Obj::getka() {
 	return ka;
 }
 
+double Obj::getkt() {
+	return kt;
+}
+
 Vect Obj::getod() {
 	return od;
 }
@@ -38,6 +42,10 @@ Vect Obj::getos() {
 
 double Obj::getkgls() {
 	return kgls;
+}
+
+double Obj::getior() {
+	return ior;
 }
 
 bool Obj::intersect(Rayo r) {

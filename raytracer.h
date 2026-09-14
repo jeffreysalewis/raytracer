@@ -1,5 +1,6 @@
 #pragma once
+#include <string>
 
 void trace();
 void tracemany(bool isluzdir);
-void readscene(string filename);
+void readscene(std::string filename);
