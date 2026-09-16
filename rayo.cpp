@@ -29,6 +29,14 @@ Rayo::Rayo() {
 	bounce = 0;
 }
 
+void Rayo::setorigin(Punto o) {
+	origin = o;
+}
+
+void Rayo::setdirection(Vect dir) {
+	direction = dir;
+}
+
 Punto Rayo::getorigin() {
 	return origin;
 }

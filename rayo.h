@@ -19,6 +19,8 @@ public:
 	Rayo(const Punto &o, const Vect &dir);
 	Rayo(const Vect& dir);
 	Rayo();
+	void setorigin(Punto o);
+	void setdirection(Vect dir);
 	Punto getorigin();
 	Vect getdirection();
 	void sethit(bool b);

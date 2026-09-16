@@ -150,10 +150,13 @@ Rayo Sphere::intersectray(Rayo r) {
 	double oclen = oc.getlen();
 	bool inside = oclen < radius;
 	if (inside) {
-		Rayo fal = Rayo();
-		fal.sethit(true);
-		fal.setcolor(0, 1.0, 0);
-		return fal;
+		//if not transluscent
+		if (kt > 0.999) {
+			Rayo fal = Rayo();
+			fal.sethit(true);
+			fal.setcolor(0, 1.0, 0);
+			return fal;
+		}
 	}
 	if (!inside && tca < 0) {
 		Rayo fal = Rayo();
@@ -182,6 +185,10 @@ Rayo Sphere::intersectray(Rayo r) {
 	Vect hitnormal = Vect((hitpoint.getx() - center.getx())/radius, (hitpoint.gety() - center.gety()) / radius, (hitpoint.getz() - center.getz()) / radius);
 	hitnormal.normalize();
 	Rayo fal = Rayo(hitpoint, hitnormal);
+	//if (kt < 0.999 && !inside) {
+	//	//if 
+	//	//hitpoint.
+	//}
 	fal.sethit(true);
 	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(theluzdir));
 	/*if (refl > 0) {
@@ -196,6 +203,26 @@ Rayo Sphere::intersectray(Rayo r) {
 	Vect totluz = diffuse.add(spec).add(ambient);
 	fal.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
 	fal.setshadow(ambient.getx(), ambient.gety(), ambient.getz());
+
+	fal.setbounce(r.getbounce() + 1);
+	//if transparent and under the bounce limit
+	if (kt < 0.999) {
+		//recursively call intersect ray again
+		if (fal.getbounce() == 1) {
+			//entering sphere
+			//move ray origin towards center
+			Punto avg = Punto(fal.getorigin().getx() * 0.9999 + center.getx() * 0.0001, fal.getorigin().gety() * 0.9999 + center.gety() * 0.0001, fal.getorigin().getz() * 0.9999 + center.getz() * 0.0001);
+			fal.setorigin(avg);
+			Vect trans = Vect();
+			fal.setdirection(trans);
+			fal = intersectray(fal);
+		}
+		else if (fal.getbounce() == 2) {
+			//exiting sphere
+			//move ray origin way from center (may not need to do this? if i account for it in tracemany)
+			fal = intersectray(fal);
+		}
+	}
 	fal.setreflect(refl);
 	fal.setrefract(1-kt);
 	return fal;
