@@ -345,10 +345,11 @@ Rayo reflect(Rayo r) {
     return Rayo();
 }
 
-Rayo refract(Rayo r) {
+Rayo refract(Vect i, Rayo r) {
     if (r.getbounce() > maxbounce) {
         return Rayo();
     }
+    //double cosi = max(-1.0, min(r.getdirection().dot(r.get), 1.0));
     r.setbounce(r.getbounce() + 1);
     return Rayo();
 }
