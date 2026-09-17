@@ -213,13 +213,20 @@ Rayo Sphere::intersectray(Rayo r) {
 			//move ray origin towards center
 			Punto avg = Punto(fal.getorigin().getx() * 0.9999 + center.getx() * 0.0001, fal.getorigin().gety() * 0.9999 + center.gety() * 0.0001, fal.getorigin().getz() * 0.9999 + center.getz() * 0.0001);
 			fal.setorigin(avg);
-			Vect trans = Vect();
+			double costheta = fal.getdirection().dot(hitnormal);
+			Vect trans = fal.getdirection().multiply(ior).add(hitnormal.multiply((ior*costheta)+sqrt(1+ior*ior*(costheta*costheta-1)))); //refraction equation
 			fal.setdirection(trans);
 			fal = intersectray(fal);
 		}
 		else if (fal.getbounce() == 2) {
 			//exiting sphere
 			//move ray origin way from center (may not need to do this? if i account for it in tracemany)
+			Punto avg = Punto(fal.getorigin().getx() * 0.9999 - center.getx() * 0.0001, fal.getorigin().gety() * 0.9999 - center.gety() * 0.0001, fal.getorigin().getz() * 0.9999 - center.getz() * 0.0001);
+			fal.setorigin(avg);
+			double costheta = fal.getdirection().dot(hitnormal);
+			Vect trans = fal.getdirection().multiply(1/ior).add(hitnormal.multiply(((1/ior) * costheta) + sqrt(1 + 1/(ior * ior) * (costheta * costheta - 1)))); //refraction equation
+			fal.setdirection(trans);
+			fal = intersectray(fal);
 			fal = intersectray(fal);
 		}
 	}
