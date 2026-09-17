@@ -151,10 +151,10 @@ Rayo Sphere::intersectray(Rayo r) {
 	bool inside = oclen < radius;
 	if (inside) {
 		//if not transluscent
-		if (kt > 0.999) {
+		if (kt > 0.9999) {
 			Rayo fal = Rayo();
 			fal.sethit(true);
-			fal.setcolor(0, 1.0, 0);
+			fal.setcolor(1.0, 0, 0);
 			return fal;
 		}
 	}
@@ -213,21 +213,24 @@ Rayo Sphere::intersectray(Rayo r) {
 			//move ray origin towards center
 			Punto avg = Punto(fal.getorigin().getx() * 0.9999 + center.getx() * 0.0001, fal.getorigin().gety() * 0.9999 + center.gety() * 0.0001, fal.getorigin().getz() * 0.9999 + center.getz() * 0.0001);
 			fal.setorigin(avg);
-			double costheta = fal.getdirection().dot(hitnormal);
-			Vect trans = fal.getdirection().multiply(ior).add(hitnormal.multiply((ior*costheta)+sqrt(1+ior*ior*(costheta*costheta-1)))); //refraction equation
+			double costheta = (r.getdirection().normalize()).dot(hitnormal.normalize());
+			//double costheta = hitnormal.dot(r.getdirection());
+			Vect trans = (r.getdirection().multiply(ior)).add(hitnormal.multiply((ior*costheta)-sqrt(1+ior*ior*(costheta*costheta-1)))); //refraction equation
 			fal.setdirection(trans);
-			fal = intersectray(fal);
+			//fal = intersectray(fal);
+			return intersectray(fal);
 		}
 		else if (fal.getbounce() == 2) {
 			//exiting sphere
 			//move ray origin way from center (may not need to do this? if i account for it in tracemany)
-			Punto avg = Punto(fal.getorigin().getx() * 0.9999 - center.getx() * 0.0001, fal.getorigin().gety() * 0.9999 - center.gety() * 0.0001, fal.getorigin().getz() * 0.9999 - center.getz() * 0.0001);
+			Punto avg = Punto(fal.getorigin().getx() * 1.0001 - center.getx() * 0.0001, fal.getorigin().gety() * 1.0001 - center.gety() * 0.0001, fal.getorigin().getz() * 1.0001 - center.getz() * 0.0001);
 			fal.setorigin(avg);
-			double costheta = fal.getdirection().dot(hitnormal);
-			Vect trans = fal.getdirection().multiply(1/ior).add(hitnormal.multiply(((1/ior) * costheta) + sqrt(1 + 1/(ior * ior) * (costheta * costheta - 1)))); //refraction equation
+			//double costheta = r.getdirection().dot(hitnormal);
+			double costheta = (r.getdirection().normalize()).dot(hitnormal.normalize());
+			Vect trans = r.getdirection().multiply(1/ior).add(hitnormal.multiply(((1/ior) * costheta) - sqrt(1 + 1/(ior * ior) * (costheta * costheta - 1)))); //refraction equation
+			//Vect trans = fal.getdirection().multiply(ior).add(hitnormal.multiply((ior * costheta) + sqrt(1 + ior * ior * (costheta * costheta - 1)))); //refraction equation
 			fal.setdirection(trans);
-			fal = intersectray(fal);
-			fal = intersectray(fal);
+			//fal = intersectray(fal);
 		}
 	}
 	fal.setreflect(refl);

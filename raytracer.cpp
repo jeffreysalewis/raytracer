@@ -65,11 +65,11 @@ Triangle reftri1 = Triangle(Punto(0.0, -0.7, -0.1), Punto(1.0, 0.4, -1.0), Punto
 Triangle tri2 = Triangle(Punto(0.0, -0.7, -0.6), Punto(0.0, -0.7, -3), Punto(-1.0, 0.4, -1.0), 0.9, 1.0, 0.1, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
 Obj* escena6[5] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4 };
 
-Sphere transphere = Sphere(Punto(0.0, 0.1, 0.0), 0.2, 0.8, 0.2, 0.3, 0.0, Vect(), Vect(1.0, 1.0, 1.0), 8.0, 0.5, 1.5);
+Sphere transphere = Sphere(Punto(0.0, 0.1, 0), 0.1, 0.8, 0.2, 0.3, 0.0, Vect(), Vect(1.0, 1.0, 1.0), 8.0, 0.0, 1.5);
 Obj* escena7[6] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4, &transphere};
 
-//auto laescena = escena4;
-int numobj = 5;
+auto laescena = escena7;
+int numobj = 6;
 Vect theluzdir = luzdir4;
 Punto theluzpt = luzpt;
 int backcolor[3] = { 51, 51, 51 };
@@ -87,7 +87,7 @@ int main() {
     }
     //trace();
     tracemany(false);
-    ofstream Render("render6multiray5.ppm");
+    ofstream Render("render7multirays3.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -130,7 +130,7 @@ void trace() {
             int b = 0;
             int bbuf = 0;
             //cycle through all objects to see if ray hit them
-            for (auto* pelota : escena6) {
+            for (auto* pelota : escena7) {
                 //newrays[b] = pelota.intersectray(ray);
                 Rayo newray = pelota->intersectray(ray);
                 if (newray.gethit()) {
@@ -155,7 +155,7 @@ void trace() {
                 for (int k = 0; k < numobj; k++) {
                     if (k != bbuf) {
                         //if point is in shadow
-                        if (escena6[k]->intersect(shadowthehedgehog)) {
+                        if (escena7[k]->intersect(shadowthehedgehog)) {
                             maria = false;
                         }
                         //if surface is reflective
@@ -163,14 +163,14 @@ void trace() {
                             Vect refdir = (di).add((zbuf.getdirection().multiply(di.dot(zbuf.getdirection()))).multiply(-2));
                             refdir.normalize();
                             Rayo rray = Rayo(zbuf.getorigin(), refdir);
-                            Rayo reflray = escena6[k]->intersectray(rray);
+                            Rayo reflray = escena7[k]->intersectray(rray);
                             if (reflray.gethit()) {
                                 double ramt = zbuf.getreflect();
                                 //double iramt = 1.0 - ramt;
                                 Rayo ultimatelifeform = Rayo(reflray.getorigin(), theluzdir);
                                 for (int k2 = 0; k2 < numobj; k2++) {
                                     if (k2 != k) {
-                                        if (escena6[k2]->intersect(ultimatelifeform)) {
+                                        if (escena7[k2]->intersect(ultimatelifeform)) {
                                             reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
                                         }
                                     }
@@ -216,7 +216,7 @@ void trace() {
 }
 
 void tracemany(bool isluzdir) {
-    const int rayppixel = 3;
+    const int rayppixel = 2;
     //amt to step per ray
     double stepx = 1.77778 / width;
     double stepy = 1.0 / height;
@@ -238,7 +238,8 @@ void tracemany(bool isluzdir) {
             int b = 0;
             int bbuf = 0;
             //cycle through all objects to see if ray hit them
-            for (auto* pelota : escena6) {
+            for (auto* pelota : escena7) {
+                ray.setbounce(0);
                 Rayo newray = pelota->intersectray(ray);
                 if (newray.gethit()) {
                     //if newray's hitpoint is closer than current zbufs point
@@ -260,10 +261,11 @@ void tracemany(bool isluzdir) {
                     shadowthehedgehog = Rayo(zbuf.getorigin(), theluzpt.minus(zbuf.getorigin()).normalize());
                 }
                 bool emptyreflection = true;
+                bool emptyrefraction = true;
                 for (int k = 0; k < numobj; k++) {
                     if (k != bbuf) {
                         //if point is in shadow
-                        if (escena6[k]->intersect(shadowthehedgehog)) {
+                        if (escena7[k]->intersect(shadowthehedgehog)) {
                             maria = false;
                         }
                         //if surface is reflective
@@ -271,7 +273,7 @@ void tracemany(bool isluzdir) {
                             Vect refdir = (di).add((zbuf.getdirection().multiply(di.dot(zbuf.getdirection()))).multiply(-2));
                             refdir.normalize();
                             Rayo rray = Rayo(zbuf.getorigin(), refdir);
-                            Rayo reflray = escena6[k]->intersectray(rray);
+                            Rayo reflray = escena7[k]->intersectray(rray);
                             if (reflray.gethit()) {
                                 double ramt = zbuf.getreflect();
                                 //double iramt = 1.0 - ramt;
@@ -284,7 +286,7 @@ void tracemany(bool isluzdir) {
                                 }
                                 for (int k2 = 0; k2 < numobj; k2++) {
                                     if (k2 != k) {
-                                        if (escena6[k2]->intersect(ultimatelifeform)) {
+                                        if (escena7[k2]->intersect(ultimatelifeform)) {
                                             reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
                                         }
                                     }
@@ -294,15 +296,44 @@ void tracemany(bool isluzdir) {
                                 zbuf.setshadow(zbuf.getshadow().getx() + ramt * reflray.getshadow().getx(), zbuf.getshadow().gety() + ramt * reflray.getshadow().gety(), zbuf.getshadow().getz() + ramt * reflray.getshadow().getz());
                             }
                         }
+                        //if object is refractive
                         if (zbuf.getrefract() > 0) {
-                            Vect refrdir;
-                            Rayo rfrray = Rayo(zbuf.getorigin(), refrdir);
-                            Rayo refrray;
+                            /*Vect refdir = (di).add((zbuf.getdirection().multiply(di.dot(zbuf.getdirection()))).multiply(-2));
+                            refdir.normalize();
+                            Rayo rray = Rayo(zbuf.getorigin(), refdir);*/
+                            zbuf.setbounce(0);
+                            Rayo refrray = escena7[k]->intersectray(zbuf);
+                            if (refrray.gethit()) {
+                                double ramt = zbuf.getrefract();
+                                //double iramt = 1.0 - ramt;
+                                Rayo ultimatelifeform;
+                                if (isluzdir) {
+                                    ultimatelifeform = Rayo(refrray.getorigin(), theluzdir);
+                                }
+                                else {
+                                    ultimatelifeform = Rayo(refrray.getorigin(), theluzpt.minus(refrray.getorigin()).normalize());
+                                }
+                                for (int k2 = 0; k2 < numobj; k2++) {
+                                    if (k2 != k) {
+                                        if (escena7[k2]->intersect(ultimatelifeform)) {
+                                            refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
+                                        }
+                                    }
+                                }
+                                emptyrefraction = false;
+                                zbuf.setcolor(zbuf.getcolor().getx() + ramt * refrray.getcolor().getx(), zbuf.getcolor().gety() + ramt * refrray.getcolor().gety(), zbuf.getcolor().getz() + ramt * refrray.getcolor().getz());
+                                zbuf.setshadow(zbuf.getshadow().getx() + ramt * refrray.getshadow().getx(), zbuf.getshadow().gety() + ramt * refrray.getshadow().gety(), zbuf.getshadow().getz() + ramt * refrray.getshadow().getz());
+                            }
                         }
                     }
                 }
                 if (emptyreflection) {
                     double ramt = zbuf.getreflect();
+                    zbuf.setcolor(zbuf.getcolor().getx() + ramt * backcolorv.getx(), zbuf.getcolor().gety() + ramt * backcolorv.gety(), zbuf.getcolor().getz() + ramt * backcolorv.getz());
+                    zbuf.setshadow(zbuf.getshadow().getx() + ramt * backcolorv.getx(), zbuf.getshadow().gety() + ramt * backcolorv.gety(), zbuf.getshadow().getz() + ramt * backcolorv.getz());
+                }
+                if (emptyrefraction) {
+                    double ramt = zbuf.getrefract();
                     zbuf.setcolor(zbuf.getcolor().getx() + ramt * backcolorv.getx(), zbuf.getcolor().gety() + ramt * backcolorv.gety(), zbuf.getcolor().getz() + ramt * backcolorv.getz());
                     zbuf.setshadow(zbuf.getshadow().getx() + ramt * backcolorv.getx(), zbuf.getshadow().gety() + ramt * backcolorv.gety(), zbuf.getshadow().getz() + ramt * backcolorv.getz());
                 }
