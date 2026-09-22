@@ -17,6 +17,10 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vec
 	os = so;
 	kgls = kgloss;
 	ior = 1.5;
+	luzdir = Vect(0, 0, -1000000000);
+	luzpt = Punto(0, 0, -1000000000);
+	wasluzdirset = false;
+	wasluzptset = false;
 }
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss, double ref) {
@@ -31,6 +35,10 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vec
 	kgls = kgloss;
 	refl = ref;
 	ior = 1.5;
+	luzdir = Vect(0, 0, -1000000000);
+	luzpt = Punto(0, 0, -1000000000);
+	wasluzdirset = false;
+	wasluzptset = false;
 }
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr) {
@@ -45,6 +53,10 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Ve
 	kgls = kgloss;
 	refl = ref;
 	ior = refr;
+	luzdir = Vect(0, 0, -1000000000);
+	luzpt = Punto(0, 0, -1000000000);
+	wasluzdirset = false;
+	wasluzptset = false;
 }
 
 Sphere::Sphere() {
@@ -58,6 +70,10 @@ Sphere::Sphere() {
 	os = Vect(1, 1, 1);
 	kgls = 16;
 	ior = 1.5;
+	luzdir = Vect(0,0,-1000000000);
+	luzpt = Punto(0,0,-1000000000);
+	wasluzdirset = false;
+	wasluzptset = false;
 }
 
 Punto Sphere::getcenter() {
@@ -98,6 +114,19 @@ double Sphere::getkgls() {
 
 double Sphere::getior() {
 	return ior;
+}
+
+void Sphere::setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor) {
+	if (ldirs.getz() > -100000) {
+		luzdir = ldirs;
+		wasluzdirset = true;
+		luzdircolor = ldirscolor;
+	}
+	if (lpts.getz() > -100000) {
+		luzpt = lpts;
+		wasluzptset = true;
+		luzptcolor = lptscolor;
+	}
 }
 
 bool Sphere::intersect(Rayo r) {
@@ -187,15 +216,36 @@ Rayo Sphere::intersectray(Rayo r) {
 	hitnormal.normalize();
 	Rayo fal = Rayo(hitpoint, hitnormal);
 	fal.sethit(true);
-	Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(theluzdir));
-	/*if (refl > 0) {
-		diffuse = diffuse.multiply(1.0 - refl);
-	}*/
-	Vect rspec = hitnormal.multiply((2.0*theluzdir.dot(hitnormal))).sub(theluzdir);
-	rspec.normalize();
-	Vect vspec = r.getdirection().multiply(-1.0);
-	vspec.normalize();
-	Vect spec = os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
+	Vect diffuse, rspec, vspec, spec;
+	if (!wasluzdirset && !wasluzptset) {
+		diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(theluzdir));
+		rspec = hitnormal.multiply((2.0 * theluzdir.dot(hitnormal))).sub(theluzdir);
+		rspec.normalize();
+		vspec = r.getdirection().multiply(-1.0);
+		vspec.normalize();
+		spec = os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
+	}
+	else {
+		if (wasluzdirset) {
+			theluzdir = luzdir;
+			diffuse = od.multiply(kd).multiply(luzdircolor).multiply(hitnormal.dot(theluzdir));
+			rspec = hitnormal.multiply((2.0 * theluzdir.dot(hitnormal))).sub(theluzdir);
+			rspec.normalize();
+			vspec = r.getdirection().multiply(-1.0);
+			vspec.normalize();
+			spec = os.multiply(ks).multiply(luzdircolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
+		}
+		if (wasluzptset) {
+			theluzdir = luzpt.minus(hitpoint);
+			theluzdir.normalize();
+			diffuse = diffuse.add(od.multiply(kd).multiply(luzptcolor).multiply(hitnormal.dot(theluzdir)));
+			rspec = hitnormal.multiply((2.0 * theluzdir.dot(hitnormal))).sub(theluzdir);
+			rspec.normalize();
+			vspec = r.getdirection().multiply(-1.0);
+			vspec.normalize();
+			spec = spec.add(os.multiply(ks).multiply(luzptcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls)));
+		}
+	}
 	Vect ambient = od.multiply(theambluz.multiply(ka));
 	Vect totluz = diffuse.add(spec).add(ambient);
 	fal.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
@@ -237,7 +287,6 @@ Rayo Sphere::intersectray(Rayo r) {
 			}
 			//Vect trans = (r.getdirection().multiply(iorx)).add(hitnormal.multiply((iorx*costheta)-sqrt(1+(iorx*iorx)*((costheta*costheta)-1)))); //refraction equation
 			fal.setdirection(trans);
-			//fal = intersectray(fal);
 			return intersectray(fal);
 		}
 		else if (fal.getbounce() == 2) {
@@ -273,7 +322,6 @@ Rayo Sphere::intersectray(Rayo r) {
 			//Vect trans = (r.getdirection().multiply(1.0/iorx)).add(hitnormal.multiply(((1.0/iorx) * costheta) - sqrt(1.0 + 1.0/(iorx * iorx) * ((costheta * costheta) - 1.0)))); //refraction equation
 			//Vect trans = r.getdirection().multiply(ior).add(hitnormal.multiply((ior * costheta) + sqrt(1 + ior * ior * (costheta * costheta - 1)))); //refraction equation
 			fal.setdirection(trans);
-			//fal = intersectray(fal);
 		}
 	}
 	fal.setreflect(refl);
