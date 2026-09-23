@@ -20,6 +20,10 @@ Triangle::Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak
 	kgls = kgloss;
 	refl = ref;
 	ior = 1.5;
+	luzdir = Vect(0, 0, -1000000000);
+	luzpt = Punto(0, 0, -1000000000);
+	wasluzdirset = false;
+	wasluzptset = false;
 }
 
 Triangle::Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr) {
@@ -38,6 +42,10 @@ Triangle::Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak
 	kgls = kgloss;
 	refl = ref;
 	ior = refr;
+	luzdir = Vect(0, 0, -1000000000);
+	luzpt = Punto(0, 0, -1000000000);
+	wasluzdirset = false;
+	wasluzptset = false;
 }
 
 Triangle::Triangle() {
@@ -56,6 +64,10 @@ Triangle::Triangle() {
 	kgls = 16;
 	refl = 0.0;
 	ior = 1.5;
+	luzdir = Vect(0, 0, -1000000000);
+	luzpt = Punto(0, 0, -1000000000);
+	wasluzdirset = false;
+	wasluzptset = false;
 }
 
 Punto Triangle::getvert1() {
@@ -173,12 +185,36 @@ Rayo Triangle::intersectray(Rayo r) {
 
 		Rayo san = Rayo(hitpoint, normal);
 		san.sethit(true);
-		Vect diffuse = od.multiply(kd).multiply(luzcolor).multiply(normal.dot(theluzdir));
-		Vect rspec = normal.multiply((2.0 * theluzdir.dot(normal))).sub(theluzdir);
-		rspec.normalize();
-		Vect vspec = r.getdirection().multiply(-1.0);
-		vspec.normalize();
-		Vect spec = os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
+		Vect diffuse, rspec, vspec, spec;
+		if (!wasluzdirset && !wasluzptset) {
+			diffuse = od.multiply(kd).multiply(luzcolor).multiply(normal.dot(theluzdir));
+			rspec = normal.multiply((2.0 * theluzdir.dot(normal))).sub(theluzdir);
+			rspec.normalize();
+			vspec = r.getdirection().multiply(-1.0);
+			vspec.normalize();
+			spec = os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
+		}
+		else {
+			if (wasluzdirset) {
+				theluzdir = luzdir;
+				diffuse = od.multiply(kd).multiply(luzcolor).multiply(normal.dot(theluzdir));
+				rspec = normal.multiply((2.0 * theluzdir.dot(normal))).sub(theluzdir);
+				rspec.normalize();
+				vspec = r.getdirection().multiply(-1.0);
+				vspec.normalize();
+				spec = os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
+			}
+			if (wasluzptset) {
+				theluzdir = luzpt.minus(hitpoint);
+				theluzdir.normalize();
+				diffuse = diffuse.add(od.multiply(kd).multiply(luzcolor).multiply(normal.dot(theluzdir)));
+				rspec = normal.multiply((2.0 * theluzdir.dot(normal))).sub(theluzdir);
+				rspec.normalize();
+				vspec = r.getdirection().multiply(-1.0);
+				vspec.normalize();
+				spec = spec.add(os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls)));
+			}
+		}
 		Vect ambient = od.multiply(theambluz.multiply(ka));
 		Vect totluz = diffuse.add(spec).add(ambient);
 		san.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
@@ -190,4 +226,17 @@ Rayo Triangle::intersectray(Rayo r) {
 	Rayo san = Rayo();
 	san.sethit(false);
 	return san;
+}
+
+void Triangle::setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor) {
+	if (ldirs.getz() > -100000) {
+		luzdir = ldirs;
+		wasluzdirset = true;
+		luzdircolor = ldirscolor;
+	}
+	if (lpts.getz() > -100000) {
+		luzpt = lpts;
+		wasluzptset = true;
+		luzptcolor = lptscolor;
+	}
 }

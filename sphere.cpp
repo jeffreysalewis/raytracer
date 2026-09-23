@@ -21,6 +21,7 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vec
 	luzpt = Punto(0, 0, -1000000000);
 	wasluzdirset = false;
 	wasluzptset = false;
+	issphere = true;
 }
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss, double ref) {
@@ -39,6 +40,7 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vec
 	luzpt = Punto(0, 0, -1000000000);
 	wasluzdirset = false;
 	wasluzptset = false;
+	issphere = true;
 }
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr) {
@@ -57,6 +59,7 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Ve
 	luzpt = Punto(0, 0, -1000000000);
 	wasluzdirset = false;
 	wasluzptset = false;
+	issphere = true;
 }
 
 Sphere::Sphere() {
@@ -74,6 +77,7 @@ Sphere::Sphere() {
 	luzpt = Punto(0,0,-1000000000);
 	wasluzdirset = false;
 	wasluzptset = false;
+	issphere = true;
 }
 
 Punto Sphere::getcenter() {

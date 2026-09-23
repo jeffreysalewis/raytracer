@@ -59,3 +59,7 @@ bool Obj::intersect2(Rayo r) {
 Rayo Obj::intersectray(Rayo r) {
 	return Rayo();
 }
+
+void Obj::setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor) {
+	return;
+}

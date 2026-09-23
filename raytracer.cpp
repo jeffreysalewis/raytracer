@@ -28,7 +28,7 @@ Vect ambluz2(0.1, 0.1, 0.1);
 Vect luzdir3 = Vect(1.0, 0.0, 0.0);
 Vect luzdir4 = Vect(0.0, 1.0, 0.0);
 Vect luzdir5 = luzdir3;
-Punto luzpt = Punto(0.0, 2.0, 0.0);
+Punto luzpt = Punto(0.5, 0.0, 0.0);
 Sphere sph = Sphere();
 
 Sphere blanco = Sphere(Punto(0.45, 0.0, -0.15), 0.15, 0.8, 0.1, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0);
@@ -87,8 +87,9 @@ int main() {
         }
     }
     //trace();
-    tracemany(true);
-    ofstream Render("render7multirays8.ppm");
+    //tracemany(true);
+    tracemanyluz(2);
+    ofstream Render("render7multiluz2.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -373,6 +374,199 @@ void tracemany(bool isluzdir) {
                 img[i][j/rayppixel][0] = img[i][j/rayppixel][0] / rayppixel;
                 img[i][j/rayppixel][1] = img[i][j/rayppixel][1] / rayppixel;
                 img[i][j/rayppixel][2] = img[i][j/rayppixel][2] / rayppixel;
+            }
+        }
+
+    }
+    return;
+}
+
+void tracemanyluz(int luz) {
+    const int rayppixel = 2;
+    //amt to step per ray
+    double stepx = 1.77778 / width;
+    double stepy = 1.0 / height;
+    //starting ray
+    double initx = -0.88889 + stepx / 2;
+    double inity = 0.5 - stepy / 2;
+    for (auto* pelota : escena7) {
+        pelota->setluces(theluzdir, Vect(1, 1, 1), theluzpt, Vect(1, 1, 1));
+        /*if (pelota->issphere) {
+            pelota->setluces(theluzdir, Vect(1,1,1), theluzpt, Vect(1,1,1));
+        }*/
+    }
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width * rayppixel; j++) {
+            //create ray
+            double randx = ((rand() / RAND_MAX) * stepx) - (stepx / 2.0); //nudge ray a small random amt
+            double randy = ((rand() / RAND_MAX) * stepy) - (stepy / 2.0);
+            Vect di = Punto(initx + stepx * (j / rayppixel) + randx, inity - stepy * i + randy, 0).minus(camlookfrom);
+            di.normalize();
+            Rayo ray = Rayo(camlookfrom, di);
+            //change escena1 to escena2 for the second scene
+            Rayo zbuf;
+            Punto mindist = Punto(0, 0, -100000000);
+            zbuf = Rayo(mindist, theluzdir);
+            int b = 0;
+            int bbuf = 0;
+            //cycle through all objects to see if ray hit them
+            for (auto* pelota : escena7) {
+                ray.setbounce(0);
+                Rayo newray = pelota->intersectray(ray);
+                if (newray.gethit()) {
+                    //if newray's hitpoint is closer than current zbufs point
+                    if (newray.getorigin().getz() > zbuf.getorigin().getz()) {
+                        //set zbuf to the new ray
+                        zbuf = newray;
+                        bbuf = b;
+                    }
+                }
+                b++;
+            }
+            bool maria = true;
+            bool tails = true;
+            if (zbuf.gethit()) {
+                Rayo shadowthehedgehog, sonicthehedgehog;
+                Rayo zbufrefr = Rayo();
+                zbufrefr.setorigin(mindist);
+                if (luz == 0) {
+                    shadowthehedgehog = Rayo(zbuf.getorigin(), theluzdir);
+                }
+                else if (luz == 1) {
+                    shadowthehedgehog = Rayo(zbuf.getorigin(), theluzpt.minus(zbuf.getorigin()).normalize());
+                }
+                else if (luz == 2) {
+                    shadowthehedgehog = Rayo(zbuf.getorigin(), theluzdir);
+                    sonicthehedgehog = Rayo(zbuf.getorigin(), theluzpt.minus(zbuf.getorigin()).normalize());
+                }
+                bool emptyreflection = true;
+                bool emptyrefraction = true;
+                for (int k = 0; k < numobj; k++) {
+                    if (k != bbuf) {
+                        //if point is in shadow
+                        if (escena7[k]->intersect(shadowthehedgehog)) {
+                            maria = false;
+                        }
+                        if (escena7[k]->intersect(sonicthehedgehog)) {
+                            tails = false;
+                        }
+                        //if surface is reflective
+                        if (zbuf.getreflect() > 0) {
+                            Vect refdir = (di).add((zbuf.getdirection().multiply(di.dot(zbuf.getdirection()))).multiply(-2));
+                            refdir.normalize();
+                            Rayo rray = Rayo(zbuf.getorigin(), refdir);
+                            Rayo reflray = escena7[k]->intersectray(rray);
+                            if (reflray.gethit()) {
+                                double ramt = zbuf.getreflect();
+                                Rayo ultimatelifeform, chilidog;
+                                if (luz == 0) {
+                                    ultimatelifeform = Rayo(reflray.getorigin(), theluzdir);
+                                }
+                                else if (luz == 1) {
+                                    ultimatelifeform = Rayo(reflray.getorigin(), theluzpt.minus(reflray.getorigin()).normalize());
+                                }
+                                else if (luz == 2) {
+                                    ultimatelifeform = Rayo(reflray.getorigin(), theluzdir);
+                                    chilidog = Rayo(reflray.getorigin(), theluzpt.minus(reflray.getorigin()).normalize());
+                                }
+                                for (int k2 = 0; k2 < numobj; k2++) {
+                                    if (k2 != k) {
+                                        if (escena7[k2]->intersect(ultimatelifeform)) {
+                                            reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
+                                        }
+                                    }
+                                }
+                                emptyreflection = false;
+                                zbuf.setcolor(zbuf.getcolor().getx() + ramt * reflray.getcolor().getx(), zbuf.getcolor().gety() + ramt * reflray.getcolor().gety(), zbuf.getcolor().getz() + ramt * reflray.getcolor().getz());
+                                zbuf.setshadow(zbuf.getshadow().getx() + ramt * reflray.getshadow().getx(), zbuf.getshadow().gety() + ramt * reflray.getshadow().gety(), zbuf.getshadow().getz() + ramt * reflray.getshadow().getz());
+                            }
+                        }
+                        //if object is refractive
+                        if (zbuf.getrefract() > 0) {
+                            zbuf.setbounce(0);
+                            Rayo refrray = escena7[k]->intersectray(zbuf);
+                            if (refrray.gethit()) {
+                                //if this refraction intersection is closer than the previous one in loop
+                                if (zbuf.getorigin().minus(refrray.getorigin()).getlen() < zbuf.getorigin().minus(zbufrefr.getorigin()).getlen()) {
+                                    double ramt = zbuf.getrefract();
+                                    Rayo ultimatelifeform, chilidog;
+                                    if (luz == 0) {
+                                        ultimatelifeform = Rayo(refrray.getorigin(), theluzdir);
+                                    }
+                                    else if (luz == 1) {
+                                        ultimatelifeform = Rayo(refrray.getorigin(), theluzpt.minus(refrray.getorigin()).normalize());
+                                    }
+                                    else if (luz == 2) {
+                                        ultimatelifeform = Rayo(refrray.getorigin(), theluzdir);
+                                        chilidog = Rayo(refrray.getorigin(), theluzpt.minus(refrray.getorigin()).normalize());
+                                    }
+                                    for (int k2 = 0; k2 < numobj; k2++) {
+                                        if (k2 != k) {
+                                            if (escena7[k2]->intersect(ultimatelifeform)) {
+                                                refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
+                                            }
+                                        }
+                                    }
+                                    emptyrefraction = false;
+                                    zbufrefr = refrray;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!emptyrefraction) {
+                    double ramt = zbuf.getrefract();
+                    zbuf.setcolor(zbuf.getcolor().getx() * (1 - ramt) + ramt * zbufrefr.getcolor().getx(), zbuf.getcolor().gety() * (1 - ramt) + ramt * zbufrefr.getcolor().gety(), zbuf.getcolor().getz() * (1 - ramt) + ramt * zbufrefr.getcolor().getz());
+                    zbuf.setshadow(zbuf.getshadow().getx() * (1 - ramt) + ramt * zbufrefr.getshadow().getx(), zbuf.getshadow().gety() * (1 - ramt) + ramt * zbufrefr.getshadow().gety(), zbuf.getshadow().getz() * (1 - ramt) + ramt * zbufrefr.getshadow().getz());
+                }
+                if (emptyrefraction && zbuf.getrefract() > 0) {
+                    double ramt = zbuf.getrefract(); \
+                        zbuf.setcolor(zbuf.getcolor().getx() * (1 - ramt) + ramt * backcolorv.getx(), zbuf.getcolor().gety() * (1 - ramt) + ramt * backcolorv.gety(), zbuf.getcolor().getz() * (1 - ramt) + ramt * backcolorv.getz());
+                    zbuf.setshadow(zbuf.getshadow().getx() * (1 - ramt) + ramt * backcolorv.getx(), zbuf.getshadow().gety() * (1 - ramt) + ramt * backcolorv.gety(), zbuf.getshadow().getz() * (1 - ramt) + ramt * backcolorv.getz());
+                }
+                //every ray add the color
+                if (luz != 2) {
+                    if (maria) {
+                        //regular color
+                        img[i][j / rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getcolor().getx() * 255));
+                        img[i][j / rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getcolor().gety() * 255));
+                        img[i][j / rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getcolor().getz() * 255));
+                    }
+                    else {
+                        //shadow color
+                        img[i][j / rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getshadow().getx() * 255));
+                        img[i][j / rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getshadow().gety() * 255));
+                        img[i][j / rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getshadow().getz() * 255));
+                    }
+                }
+                else {
+                    if (maria && tails) {
+                        img[i][j / rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getcolor().getx() * 255));
+                        img[i][j / rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getcolor().gety() * 255));
+                        img[i][j / rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getcolor().getz() * 255));
+                    }
+                    else if (maria || tails) {
+                        img[i][j / rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getcolor().getx() * 255))/2;
+                        img[i][j / rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getcolor().gety() * 255))/2;
+                        img[i][j / rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getcolor().getz() * 255))/2;
+                    }
+                    else {
+                        img[i][j / rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getshadow().getx() * 255));
+                        img[i][j / rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getshadow().gety() * 255));
+                        img[i][j / rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getshadow().getz() * 255));
+                    }
+                }
+            }
+            else {
+                img[i][j / rayppixel][0] += backcolor[0];
+                img[i][j / rayppixel][1] += backcolor[1];
+                img[i][j / rayppixel][2] += backcolor[2];
+            }
+            //every pixel avg the colors within it
+            if (j % rayppixel == rayppixel - 1) {
+                img[i][j / rayppixel][0] = img[i][j / rayppixel][0] / rayppixel;
+                img[i][j / rayppixel][1] = img[i][j / rayppixel][1] / rayppixel;
+                img[i][j / rayppixel][2] = img[i][j / rayppixel][2] / rayppixel;
             }
         }
 

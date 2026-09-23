@@ -26,6 +26,7 @@ private:
 	//Vect ambluz2 = Vect(0.1, 0.1, 0.1);
 public:
 	Obj();
+	bool issphere = false;
 	virtual double getkd();
 	virtual double getks();
 	virtual double getka();
@@ -37,5 +38,6 @@ public:
 	virtual bool intersect(Rayo r);
 	virtual bool intersect2(Rayo r);
 	virtual Rayo intersectray(Rayo r);
+	virtual void setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor);
 };
 #endif

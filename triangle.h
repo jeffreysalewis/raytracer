@@ -22,7 +22,12 @@ private:
 	double kgls;
 	double refl;
 	double ior;
-	Vect luzdir = Vect(0, 1, 0);
+	Vect luzdir;
+	Punto luzpt;
+	Vect luzdircolor;
+	Vect luzptcolor;
+	bool wasluzdirset = false;
+	bool wasluzptset = false;
 	//Vect luzdir2 = Vect(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 	//Vect luzdir2 = Vect(1, 1, 1);
 	//Vect luzcolor = Vect(1.0, 1.0, 1.0);
@@ -46,5 +51,6 @@ public:
 	bool intersect(Rayo r) override;
 	bool intersect2(Rayo r) override;
 	Rayo intersectray(Rayo r) override;
+	void setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor) override;
 };
 #endif

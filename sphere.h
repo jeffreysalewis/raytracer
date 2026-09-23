@@ -44,7 +44,7 @@ public:
 	Vect getos() override;
 	double getkgls() override;
 	double getior() override;
-	void setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor);
+	void setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor) override;
 	bool intersect(Rayo r) override;
 	bool intersect2(Rayo r) override;
 	Rayo intersectray(Rayo r) override;
