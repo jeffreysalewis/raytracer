@@ -89,7 +89,7 @@ int main() {
     //trace();
     //tracemany(true);
     tracemanyluz(2);
-    ofstream Render("render7multiluz2.ppm");
+    ofstream Render("render7multiluz3.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -469,12 +469,22 @@ void tracemanyluz(int luz) {
                                     ultimatelifeform = Rayo(reflray.getorigin(), theluzdir);
                                     chilidog = Rayo(reflray.getorigin(), theluzpt.minus(reflray.getorigin()).normalize());
                                 }
+                                Vect tempcolor = reflray.getcolor();
+                                int numshadows = 0;
                                 for (int k2 = 0; k2 < numobj; k2++) {
                                     if (k2 != k) {
                                         if (escena7[k2]->intersect(ultimatelifeform)) {
                                             reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
+                                            numshadows++;
+                                        }
+                                        if (escena7[k2]->intersect(chilidog)) {
+                                            reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
+                                            numshadows++;
                                         }
                                     }
+                                }
+                                if (numshadows == 1) {
+                                    reflray.setcolor(tempcolor.getx() * 0.5 + reflray.getcolor().getx(), tempcolor.gety() * 0.5 + reflray.getcolor().gety(), tempcolor.getz() * 0.5 + reflray.getcolor().getz());
                                 }
                                 emptyreflection = false;
                                 zbuf.setcolor(zbuf.getcolor().getx() + ramt * reflray.getcolor().getx(), zbuf.getcolor().gety() + ramt * reflray.getcolor().gety(), zbuf.getcolor().getz() + ramt * reflray.getcolor().getz());
@@ -500,12 +510,22 @@ void tracemanyluz(int luz) {
                                         ultimatelifeform = Rayo(refrray.getorigin(), theluzdir);
                                         chilidog = Rayo(refrray.getorigin(), theluzpt.minus(refrray.getorigin()).normalize());
                                     }
+                                    Vect tempcolor = refrray.getcolor();
+                                    int numshadows = 0;
                                     for (int k2 = 0; k2 < numobj; k2++) {
                                         if (k2 != k) {
                                             if (escena7[k2]->intersect(ultimatelifeform)) {
                                                 refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
+                                                numshadows++;
+                                            }
+                                            if (escena7[k2]->intersect(chilidog)) {
+                                                refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
+                                                numshadows++;
                                             }
                                         }
+                                    }
+                                    if (numshadows == 1) {
+                                        refrray.setcolor(tempcolor.getx()*0.5 + refrray.getcolor().getx(), tempcolor.gety() * 0.5 + refrray.getcolor().gety(), tempcolor.getz() * 0.5 + refrray.getcolor().getz());
                                     }
                                     emptyrefraction = false;
                                     zbufrefr = refrray;

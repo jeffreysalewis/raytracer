@@ -237,6 +237,7 @@ Rayo Sphere::intersectray(Rayo r) {
 			rspec.normalize();
 			vspec = r.getdirection().multiply(-1.0);
 			vspec.normalize();
+			
 			spec = os.multiply(ks).multiply(luzdircolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
 		}
 		if (wasluzptset) {
