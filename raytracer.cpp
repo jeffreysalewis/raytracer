@@ -28,7 +28,7 @@ Vect ambluz2(0.1, 0.1, 0.1);
 Vect luzdir3 = Vect(1.0, 0.0, 0.0);
 Vect luzdir4 = Vect(0.0, 1.0, 0.0);
 Vect luzdir5 = luzdir3;
-Punto luzpt = Punto(0.5, 0.0, 0.0);
+Punto luzpt = Punto(0.5, 1.0, 0.0);
 Sphere sph = Sphere();
 
 Sphere blanco = Sphere(Punto(0.45, 0.0, -0.15), 0.15, 0.8, 0.1, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0);
@@ -37,7 +37,6 @@ Sphere verde = Sphere(Punto(-0.6, 0.0, 0.0), 0.3, 0.7, 0.2, 0.1, Vect(0.0, 1.0, 
 Sphere azul = Sphere(Punto(0.0, -10000.5, 0.0), 10000.0, 0.9, 0.0, 0.1, Vect(0.0, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
 Obj* escena1[1] = { &sph };
 Obj* escena2[4] = { &blanco, &azul, &rojo, &verde };
-//Obj test[3] = { blanco, azul, rojo };
 
 Sphere ball1 = Sphere(Punto(-0.1, 0.0, -0.15), 0.15, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0);
 Sphere ball2 = Sphere(Punto(0.1, 0.0, -0.15), 0.1, 0.8, 0.2, 0.3, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 16.0);
@@ -463,11 +462,11 @@ void tracemanyluz(int luz) {
                                     ultimatelifeform = Rayo(reflray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
                                 }
                                 else if (luz == 1) {
-                                    ultimatelifeform = Rayo(reflray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
+                                    ultimatelifeform = Rayo(reflray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(reflray.getorigin()).normalize())).normalize());
                                 }
                                 else if (luz == 2) {
                                     ultimatelifeform = Rayo(reflray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
-                                    chilidog = Rayo(reflray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
+                                    chilidog = Rayo(reflray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(reflray.getorigin()).normalize())).normalize());
                                 }
                                 Vect tempcolor = reflray.getcolor();
                                 int numshadows = 0;
@@ -508,11 +507,11 @@ void tracemanyluz(int luz) {
                                         ultimatelifeform = Rayo(refrray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
                                     }
                                     else if (luz == 1) {
-                                        ultimatelifeform = Rayo(refrray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
+                                        ultimatelifeform = Rayo(refrray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(refrray.getorigin()).normalize())).normalize());
                                     }
                                     else if (luz == 2) {
                                         ultimatelifeform = Rayo(refrray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
-                                        chilidog = Rayo(refrray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
+                                        chilidog = Rayo(refrray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(refrray.getorigin()).normalize())).normalize());
                                     }
                                     Vect tempcolor = refrray.getcolor();
                                     int numshadows = 0;
