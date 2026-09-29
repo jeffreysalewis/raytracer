@@ -48,6 +48,29 @@ Triangle::Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak
 	wasluzptset = false;
 }
 
+Triangle::Triangle(Punto v1, Punto v2, Punto v3, Vect color, bool isarealluz) {
+	vert1 = v1;
+	vert2 = v2;
+	vert3 = v3;
+	normal = (vert2.minus(vert1).cross(vert3.minus(vert1)));
+	normal.normalize();
+	d = -1 * (normal.dot(Vect(vert1.getx(), vert1.gety(), vert1.getz())));
+	kd = 0.7;
+	ks = 0.2;
+	ka = 0.1;
+	kt = 1.0;
+	od = color;
+	os = Vect(-1, -1, -1);
+	kgls = 16;
+	refl = 0.0;
+	ior = 1.5;
+	luzdir = Vect(0, 0, -1000000000);
+	luzpt = Punto(0, 0, -1000000000);
+	wasluzdirset = false;
+	wasluzptset = false;
+	isluz = isarealluz;
+}
+
 Triangle::Triangle() {
 	vert1 = Punto(0, 0, 0);
 	vert2 = Punto(-1, -1, -1);
@@ -248,4 +271,33 @@ void Triangle::setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor)
 		wasluzptset = true;
 		luzptcolor = lptscolor;
 	}
+}
+
+Punto Triangle::getpoint() {
+	double rand1 = rand() / (double)RAND_MAX;
+	double rand2 = (1.0-rand1) * (rand()/(double)RAND_MAX);
+	double rand3 = 1.0 - rand1 - rand2;
+	int randind = rand() % 6;
+	if (randind % 3 == 1) {
+		double temp = rand1;
+		rand1 = rand2;
+		rand2 = rand3;
+		rand3 = temp;
+	}
+	else if (randind % 3 == 2) {
+		double temp = rand1;
+		rand1 = rand3;
+		rand3 = rand2;
+		rand2 = temp;
+	}
+	if (randind % 2 == 1) {
+		double temp = rand1;
+		rand1 = rand2;
+		rand2 = temp;
+	}
+	double sumx = vert1.getx() * rand1 + vert2.getx() * rand2 + vert3.getx() * rand3;
+	double sumy = vert1.gety() * rand1 + vert2.gety() * rand2 + vert3.gety() * rand3;
+	double sumz = vert1.getz() * rand1 + vert2.getz() * rand2 + vert3.getz() * rand3;
+	Punto randpt = Punto(sumx, sumy, sumz);
+	return randpt;
 }

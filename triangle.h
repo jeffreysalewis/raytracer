@@ -28,6 +28,7 @@ private:
 	Vect luzptcolor;
 	bool wasluzdirset = false;
 	bool wasluzptset = false;
+	bool isluz = false;
 	//Vect luzdir2 = Vect(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 	//Vect luzdir2 = Vect(1, 1, 1);
 	//Vect luzcolor = Vect(1.0, 1.0, 1.0);
@@ -35,6 +36,7 @@ private:
 public:
 	Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak, Vect odd, Vect so, double kgloss, double ref);
 	Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr);
+	Triangle(Punto v1, Punto v2, Punto v3, Vect color, bool isarealuz);
 	Triangle();
 	Punto getvert1();
 	Punto getvert2();
@@ -52,5 +54,6 @@ public:
 	bool intersect2(Rayo r) override;
 	Rayo intersectray(Rayo r) override;
 	void setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor) override;
+	Punto getpoint();
 };
 #endif

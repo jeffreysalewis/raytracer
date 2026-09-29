@@ -58,7 +58,7 @@ Triangle azultri = Triangle(Punto(0.3, -0.3, -0.4), Punto(0.0, 0.3, -0.1), Punto
 Triangle amarillotri = Triangle(Punto(-0.2, 0.1, 0.1), Punto(-0.2, -0.5, 0.2), Punto(-0.2, 0.1, -0.3), 0.9, 0.5, 0.1, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
 Obj* escena5[6] = { &whitesph, &redsph, &greensph, &refsph2, &azultri, &amarillotri };
 
-Sphere bsph3 = Sphere(Punto(-0.2, 0.15, -1.5), 0.15, 0.8, 0.2, 0.3, Vect(0.8, 0.1, 0.3), Vect(1.0, 1.0, 1.0), 8.0);
+Sphere bsph3 = Sphere(Punto(-0.2, 0.15, -1.5), 0.15, 0.8, 0.2, 0.3, Vect(0.8, 0.1, 0.3), Vect(1.0, 0.3, 0.5), 8.0);
 Sphere bsph4 = Sphere(Punto(-0.5, 0.25, -1.0), 0.1, 0.8, 0.1, 0.1, Vect(0.3, 0.1, 0.8), Vect(1.0, 1.0, 1.0), 10.0);
 Triangle reftri1 = Triangle(Punto(0.0, -0.7, -0.1), Punto(1.0, 0.4, -1.0), Punto(0.0, -0.7, -1.5), 0.9, 1.0, 0.1, Vect(0.0, 0.0, 1.0), Vect(1.0, 1.0, 1.0), 4.0, 0.9);
 Triangle tri2 = Triangle(Punto(0.0, -0.7, -0.6), Punto(0.0, -0.7, -3), Punto(-1.0, 0.4, -1.0), 0.9, 1.0, 0.1, Vect(1.0, 1.0, 0.0), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
@@ -87,7 +87,7 @@ int main() {
     //trace();
     //tracemany(true);
     tracemanyluz(2);
-    ofstream Render("render7multiluz6.ppm");
+    ofstream Render("render7multiluz7.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
