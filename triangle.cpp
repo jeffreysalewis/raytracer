@@ -191,6 +191,9 @@ Rayo Triangle::intersectray(Rayo r) {
 			rspec = normal.multiply((2.0 * theluzdir.dot(normal))).sub(theluzdir);
 			rspec.normalize();
 			vspec = r.getdirection().multiply(-1.0);
+			Vect rnd = Vect(true);
+			vspec.normalize();
+			vspec.add(rnd.multiply(0.5));
 			vspec.normalize();
 			spec = os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
 		}
@@ -201,6 +204,9 @@ Rayo Triangle::intersectray(Rayo r) {
 				rspec = normal.multiply((2.0 * theluzdir.dot(normal))).sub(theluzdir);
 				rspec.normalize();
 				vspec = r.getdirection().multiply(-1.0);
+				Vect rnd = Vect(true);
+				vspec.normalize();
+				vspec.add(rnd.multiply(0.5));
 				vspec.normalize();
 				spec = os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
 			}
@@ -211,6 +217,9 @@ Rayo Triangle::intersectray(Rayo r) {
 				rspec = normal.multiply((2.0 * theluzdir.dot(normal))).sub(theluzdir);
 				rspec.normalize();
 				vspec = r.getdirection().multiply(-1.0);
+				Vect rnd = Vect(true);
+				vspec.normalize();
+				vspec.add(rnd.multiply(0.5));
 				vspec.normalize();
 				spec = spec.add(os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls)));
 			}

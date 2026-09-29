@@ -67,7 +67,6 @@ Obj* escena6[5] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4 };
 
 Sphere transphere = Sphere(Punto(-0.3, 0.0, -0.1), 0.1, 0.5, 0.4, 0.1, 0.1, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 8.0, 0.0, 1.5);
 Obj* escena7[6] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4, &transphere};
-//Obj* escena7[3] = { &bsph4, &tri2, &transphere };
 
 auto laescena = escena7;
 int numobj = 6;
@@ -89,7 +88,7 @@ int main() {
     //trace();
     //tracemany(true);
     tracemanyluz(2);
-    ofstream Render("render7multiluz4.ppm");
+    ofstream Render("render7multiluz5.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -382,7 +381,7 @@ void tracemany(bool isluzdir) {
 }
 
 void tracemanyluz(int luz) {
-    const int rayppixel = 2;
+    const int rayppixel = 10;
     //amt to step per ray
     double stepx = 1.77778 / width;
     double stepy = 1.0 / height;
@@ -430,14 +429,14 @@ void tracemanyluz(int luz) {
                 Rayo zbufrefr = Rayo();
                 zbufrefr.setorigin(mindist);
                 if (luz == 0) {
-                    shadowthehedgehog = Rayo(zbuf.getorigin(), theluzdir);
+                    shadowthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
                 }
                 else if (luz == 1) {
-                    shadowthehedgehog = Rayo(zbuf.getorigin(), theluzpt.minus(zbuf.getorigin()).normalize());
+                    shadowthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
                 }
                 else if (luz == 2) {
-                    shadowthehedgehog = Rayo(zbuf.getorigin(), theluzdir);
-                    sonicthehedgehog = Rayo(zbuf.getorigin(), theluzpt.minus(zbuf.getorigin()).normalize());
+                    shadowthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
+                    sonicthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
                 }
                 bool emptyreflection = true;
                 bool emptyrefraction = true;
@@ -454,32 +453,37 @@ void tracemanyluz(int luz) {
                         if (zbuf.getreflect() > 0) {
                             Vect refdir = (di).add((zbuf.getdirection().multiply(di.dot(zbuf.getdirection()))).multiply(-2));
                             refdir.normalize();
+                            refdir.add(Vect(true).multiply(0.5)).normalize();
                             Rayo rray = Rayo(zbuf.getorigin(), refdir);
                             Rayo reflray = escena7[k]->intersectray(rray);
                             if (reflray.gethit()) {
                                 double ramt = zbuf.getreflect();
                                 Rayo ultimatelifeform, chilidog;
                                 if (luz == 0) {
-                                    ultimatelifeform = Rayo(reflray.getorigin(), theluzdir);
+                                    ultimatelifeform = Rayo(reflray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
                                 }
                                 else if (luz == 1) {
-                                    ultimatelifeform = Rayo(reflray.getorigin(), theluzpt.minus(reflray.getorigin()).normalize());
+                                    ultimatelifeform = Rayo(reflray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
                                 }
                                 else if (luz == 2) {
-                                    ultimatelifeform = Rayo(reflray.getorigin(), theluzdir);
-                                    chilidog = Rayo(reflray.getorigin(), theluzpt.minus(reflray.getorigin()).normalize());
+                                    ultimatelifeform = Rayo(reflray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
+                                    chilidog = Rayo(reflray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
                                 }
                                 Vect tempcolor = reflray.getcolor();
                                 int numshadows = 0;
                                 for (int k2 = 0; k2 < numobj; k2++) {
                                     if (k2 != k) {
-                                        if (escena7[k2]->intersect(ultimatelifeform)) {
-                                            reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
-                                            numshadows++;
+                                        if (luz % 2 == 0) {
+                                            if (escena7[k2]->intersect(ultimatelifeform)) {
+                                                reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
+                                                numshadows++;
+                                            }
                                         }
-                                        if (escena7[k2]->intersect(chilidog)) {
-                                            reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
-                                            numshadows++;
+                                        else {
+                                            if (escena7[k2]->intersect(chilidog)) {
+                                                reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
+                                                numshadows++;
+                                            }
                                         }
                                     }
                                 }
@@ -501,26 +505,30 @@ void tracemanyluz(int luz) {
                                     double ramt = zbuf.getrefract();
                                     Rayo ultimatelifeform, chilidog;
                                     if (luz == 0) {
-                                        ultimatelifeform = Rayo(refrray.getorigin(), theluzdir);
+                                        ultimatelifeform = Rayo(refrray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
                                     }
                                     else if (luz == 1) {
-                                        ultimatelifeform = Rayo(refrray.getorigin(), theluzpt.minus(refrray.getorigin()).normalize());
+                                        ultimatelifeform = Rayo(refrray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
                                     }
                                     else if (luz == 2) {
-                                        ultimatelifeform = Rayo(refrray.getorigin(), theluzdir);
-                                        chilidog = Rayo(refrray.getorigin(), theluzpt.minus(refrray.getorigin()).normalize());
+                                        ultimatelifeform = Rayo(refrray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
+                                        chilidog = Rayo(refrray.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
                                     }
                                     Vect tempcolor = refrray.getcolor();
                                     int numshadows = 0;
                                     for (int k2 = 0; k2 < numobj; k2++) {
                                         if (k2 != k) {
-                                            if (escena7[k2]->intersect(ultimatelifeform)) {
-                                                refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
-                                                numshadows++;
+                                            if (luz % 2 == 0) {
+                                                if (escena7[k2]->intersect(ultimatelifeform)) {
+                                                    refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
+                                                    numshadows++;
+                                                }
                                             }
-                                            if (escena7[k2]->intersect(chilidog)) {
-                                                refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
-                                                numshadows++;
+                                            else {
+                                                if (escena7[k2]->intersect(chilidog)) {
+                                                    refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
+                                                    numshadows++;
+                                                }
                                             }
                                         }
                                     }

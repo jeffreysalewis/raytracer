@@ -226,6 +226,9 @@ Rayo Sphere::intersectray(Rayo r) {
 		rspec = hitnormal.multiply((2.0 * theluzdir.dot(hitnormal))).sub(theluzdir);
 		rspec.normalize();
 		vspec = r.getdirection().multiply(-1.0);
+		Vect rnd = Vect(true);
+		vspec.normalize();
+		vspec.add(rnd.multiply(0.5));
 		vspec.normalize();
 		spec = os.multiply(ks).multiply(luzcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
 	}
@@ -236,8 +239,10 @@ Rayo Sphere::intersectray(Rayo r) {
 			rspec = hitnormal.multiply((2.0 * theluzdir.dot(hitnormal))).sub(theluzdir);
 			rspec.normalize();
 			vspec = r.getdirection().multiply(-1.0);
+			Vect rnd = Vect(true);
 			vspec.normalize();
-			
+			vspec.add(rnd.multiply(0.5));
+			vspec.normalize();
 			spec = os.multiply(ks).multiply(luzdircolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls));
 		}
 		if (wasluzptset) {
@@ -247,6 +252,9 @@ Rayo Sphere::intersectray(Rayo r) {
 			rspec = hitnormal.multiply((2.0 * theluzdir.dot(hitnormal))).sub(theluzdir);
 			rspec.normalize();
 			vspec = r.getdirection().multiply(-1.0);
+			Vect rnd = Vect(true);
+			vspec.normalize();
+			vspec.add(rnd.multiply(0.5));
 			vspec.normalize();
 			spec = spec.add(os.multiply(ks).multiply(luzptcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls)));
 		}
@@ -268,13 +276,6 @@ Rayo Sphere::intersectray(Rayo r) {
 			fal.setorigin(avg);
 			double costheta = max(min(r.getdirection().dot(hitnormal), 1.0), -1.0);
 			Vect trans;
-			//if (sq >= 0) {
-			//	trans = (r.getdirection().multiply(ior)).add(hitnormal.multiply((ior * costheta) - sqrt(1 + (ior * ior) * ((costheta * costheta) - 1)))); //refraction equation
-			//}
-			//else {
-			//	trans = r.getdirection();
-			//}
-			//Vect trans = (r.getdirection().multiply(1 / ior)).add(hitnormal.multiply(((1 / ior) * costheta) - sqrt(1 + 1 / (ior * ior) * ((costheta * costheta) - 1)))); //refraction equation
 			if (costheta < 0) {
 				costheta *= -1;
 			}
@@ -290,7 +291,9 @@ Rayo Sphere::intersectray(Rayo r) {
 			else {
 				trans = (r.getdirection().multiply(iorx)).add(hitnormal.multiply((iorx * costheta) - sqrt(sq))); //refraction equation
 			}
-			//Vect trans = (r.getdirection().multiply(iorx)).add(hitnormal.multiply((iorx*costheta)-sqrt(1+(iorx*iorx)*((costheta*costheta)-1)))); //refraction equation
+			Vect rnd = Vect(true);
+			trans.add(rnd.multiply(0.5));
+			trans.normalize();
 			fal.setdirection(trans);
 			return intersectray(fal);
 		}
@@ -299,16 +302,8 @@ Rayo Sphere::intersectray(Rayo r) {
 			//move ray origin way from center (may not need to do this? if i account for it in tracemany)
 			Punto avg = Punto(fal.getorigin().getx() * 1.00001 - center.getx() * 0.00001, fal.getorigin().gety() * 1.00001 - center.gety() * 0.00001, fal.getorigin().getz() * 1.00001 - center.getz() * 0.00001);
 			fal.setorigin(avg);
-			//hitnormal = hitnormal.multiply(-1); //reverse hit normal?
 			double costheta = max(min(r.getdirection().dot(hitnormal), 1.0), -1.0);
-			//double sq = 1 + 1 / (ior * ior) * ((costheta * costheta) - 1);
 			Vect trans;
-			//if (sq >= 0) {
-			//	trans = (r.getdirection().multiply(1 / ior)).add(hitnormal.multiply(((1 / ior) * costheta) - sqrt(1 + 1 / (ior * ior) * ((costheta * costheta) - 1)))); //refraction equation
-			//}
-			//else {
-			//	trans = r.getdirection();
-			//}
 			if (costheta < 0) {
 				costheta *= -1;
 			}
@@ -324,8 +319,9 @@ Rayo Sphere::intersectray(Rayo r) {
 			else {
 				trans = (r.getdirection().multiply(iorx)).add(hitnormal.multiply((iorx * costheta) - sqrt(sq))); //refraction equation
 			}
-			//Vect trans = (r.getdirection().multiply(1.0/iorx)).add(hitnormal.multiply(((1.0/iorx) * costheta) - sqrt(1.0 + 1.0/(iorx * iorx) * ((costheta * costheta) - 1.0)))); //refraction equation
-			//Vect trans = r.getdirection().multiply(ior).add(hitnormal.multiply((ior * costheta) + sqrt(1 + ior * ior * (costheta * costheta - 1)))); //refraction equation
+			Vect rnd = Vect(true);
+			trans.add(rnd.multiply(0.5));
+			trans.normalize();
 			fal.setdirection(trans);
 		}
 	}
