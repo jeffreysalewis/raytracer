@@ -88,7 +88,7 @@ int main() {
     //trace();
     //tracemany(true);
     tracemanyluz(2);
-    ofstream Render("render7multiluz5.ppm");
+    ofstream Render("render7multiluz6.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -473,13 +473,13 @@ void tracemanyluz(int luz) {
                                 int numshadows = 0;
                                 for (int k2 = 0; k2 < numobj; k2++) {
                                     if (k2 != k) {
-                                        if (luz % 2 == 0) {
+                                        if (luz == 0 || luz == 2) {
                                             if (escena7[k2]->intersect(ultimatelifeform)) {
                                                 reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
                                                 numshadows++;
                                             }
                                         }
-                                        else {
+                                        if (luz == 1 || luz == 2) {
                                             if (escena7[k2]->intersect(chilidog)) {
                                                 reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
                                                 numshadows++;
@@ -518,13 +518,13 @@ void tracemanyluz(int luz) {
                                     int numshadows = 0;
                                     for (int k2 = 0; k2 < numobj; k2++) {
                                         if (k2 != k) {
-                                            if (luz % 2 == 0) {
+                                            if (luz == 0 || luz == 2) {
                                                 if (escena7[k2]->intersect(ultimatelifeform)) {
                                                     refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
                                                     numshadows++;
                                                 }
                                             }
-                                            else {
+                                            if (luz == 1 || luz == 2) {
                                                 if (escena7[k2]->intersect(chilidog)) {
                                                     refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
                                                     numshadows++;
