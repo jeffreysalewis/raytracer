@@ -9,6 +9,15 @@ Vect::Vect(double a, double b, double c) {
 	z = c;
 }
 
+Vect::Vect(bool isrand) {
+	//make a random vector
+	if (isrand) {
+		x = (rand()/(double)RAND_MAX) - 0.5;
+		y = (rand() / (double)RAND_MAX) - 0.5;
+		z = (rand() / (double)RAND_MAX) - 0.5;
+	}
+}
+
 Vect::Vect() {
 	x = 0;
 	y = 0;

@@ -89,7 +89,7 @@ int main() {
     //trace();
     //tracemany(true);
     tracemanyluz(2);
-    ofstream Render("render7multiluz3.ppm");
+    ofstream Render("render7multiluz4.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -398,8 +398,8 @@ void tracemanyluz(int luz) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width * rayppixel; j++) {
             //create ray
-            double randx = ((rand() / RAND_MAX) * stepx) - (stepx / 2.0); //nudge ray a small random amt
-            double randy = ((rand() / RAND_MAX) * stepy) - (stepy / 2.0);
+            double randx = ((rand() / (double)RAND_MAX) * stepx) - (stepx / 2.0); //nudge ray a small random amt
+            double randy = ((rand() /(double)RAND_MAX) * stepy) - (stepy / 2.0);
             Vect di = Punto(initx + stepx * (j / rayppixel) + randx, inity - stepy * i + randy, 0).minus(camlookfrom);
             di.normalize();
             Rayo ray = Rayo(camlookfrom, di);
