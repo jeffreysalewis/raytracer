@@ -48,6 +48,14 @@ double Obj::getior() {
 	return ior;
 }
 
+Punto Obj::getmin() {
+	return Punto();
+}
+
+Punto Obj::getmax() {
+	return Punto();
+}
+
 bool Obj::intersect(Rayo r) {
 	return false;
 }

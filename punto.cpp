@@ -26,6 +26,10 @@ double Punto::getz() {
 	return z;
 }
 
+Punto Punto::add(Punto p) {
+	return Punto(x + p.getx(), y + p.gety(), z + p.getz());
+}
+
 Vect Punto::minus(Punto p) {
 	return Vect(x-p.getx(), y-p.gety(), z-p.getz());
 }

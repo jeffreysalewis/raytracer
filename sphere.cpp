@@ -22,6 +22,8 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vec
 	wasluzdirset = false;
 	wasluzptset = false;
 	issphere = true;
+	bmin = center.add(Punto(-1*r, -1*r, -1*r));
+	bmax = center.add(Punto(r, r, r));
 }
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss, double ref) {
@@ -41,6 +43,8 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vec
 	wasluzdirset = false;
 	wasluzptset = false;
 	issphere = true;
+	bmin = center.add(Punto(-1 * r, -1 * r, -1 * r));
+	bmax = center.add(Punto(r, r, r));
 }
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr) {
@@ -60,6 +64,8 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Ve
 	wasluzdirset = false;
 	wasluzptset = false;
 	issphere = true;
+	bmin = center.add(Punto(-1 * r, -1 * r, -1 * r));
+	bmax = center.add(Punto(r, r, r));
 }
 
 Sphere::Sphere() {
@@ -78,6 +84,8 @@ Sphere::Sphere() {
 	wasluzdirset = false;
 	wasluzptset = false;
 	issphere = true;
+	bmin = center.add(Punto(-1 * radius, -1 * radius, -1 * radius));
+	bmax = center.add(Punto(radius, radius, radius));
 }
 
 Punto Sphere::getcenter() {
@@ -118,6 +126,14 @@ double Sphere::getkgls() {
 
 double Sphere::getior() {
 	return ior;
+}
+
+Punto Sphere::getmin() {
+	return bmin;
+}
+
+Punto Sphere::getmax() {
+	return bmax;
 }
 
 void Sphere::setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor) {

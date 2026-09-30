@@ -13,6 +13,7 @@ public:
 	double getx();
 	double gety();
 	double getz();
+	Punto add(Punto p);
 	Vect minus(Punto p);
 };
 #endif

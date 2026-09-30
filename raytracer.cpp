@@ -96,7 +96,7 @@ int main() {
     //trace();
     //tracemany(true);
     tracemanyluz(4);
-    ofstream Render("render8.ppm");
+    ofstream Render("render8_1.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -396,7 +396,7 @@ void tracemanyluz(int luz) {
     //starting ray
     double initx = -0.88889 + stepx / 2;
     double inity = 0.5 - stepy / 2;
-    mediansplit(20, bigboundbox);
+    mediansplit(20); // bigboundbox);
     for (auto* pelota : escena8) {
         if (luz < 3) {
             pelota->setluces(theluzdir, Vect(1, 1, 1), theluzpt, Vect(1, 1, 1));
@@ -669,11 +669,12 @@ void readscene(string filename) {
     SceneDescription.close();
 }
 
-bool mediansplit(int subdivs, vector<BoundBox> bbox) {
+bool mediansplit(int subdivs) {
+    //}, vector<BoundBox> bbox) {
     int m = 20; //max level of subdivision
     int n = 5; //max number of objects in a bounding box
     if (subdivs < m && false) {
-        return mediansplit(subdivs - 1, bbox);
+        return mediansplit(subdivs - 1); // , bbox);
     }
 
     return true;
