@@ -11,6 +11,7 @@
 #include <fstream>
 #include <cmath>
 #include <string>
+#include <vector>
 using namespace std;
 
 const int width = 1280;
@@ -71,6 +72,8 @@ Obj* escena7[6] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4, &transphere};
 Sphere yellowsph = Sphere(Punto(-0.2, 0.1, 0.3), 0.1, 0.8, 0.1, 0.1, Vect(0.9, 0.8, 0.1), Vect(1.0, 1.0, 1.0), 10.0);
 Triangle purpletri = Triangle(Punto(1.0, -0.1, 1.0), Punto(0.0, -0.1, -1.0), Punto(-1.0, -0.1, 1.0), 0.9, 0.5, 0.1, Vect(0.3, 0.1, 0.8), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
 Obj* escena8[2] = {&yellowsph, &purpletri};
+
+vector<BoundBox> bigboundbox = {BoundBox()};
 
 auto laescena = escena7;
 int numobj = 2;
@@ -393,6 +396,7 @@ void tracemanyluz(int luz) {
     //starting ray
     double initx = -0.88889 + stepx / 2;
     double inity = 0.5 - stepy / 2;
+    mediansplit(20, bigboundbox);
     for (auto* pelota : escena8) {
         if (luz < 3) {
             pelota->setluces(theluzdir, Vect(1, 1, 1), theluzpt, Vect(1, 1, 1));
@@ -663,4 +667,14 @@ void readscene(string filename) {
         cout << line;
     }
     SceneDescription.close();
+}
+
+bool mediansplit(int subdivs, vector<BoundBox> bbox) {
+    int m = 20; //max level of subdivision
+    int n = 5; //max number of objects in a bounding box
+    if (subdivs < m && false) {
+        return mediansplit(subdivs - 1, bbox);
+    }
+
+    return true;
 }

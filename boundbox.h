@@ -16,12 +16,14 @@ private:
 	Punto vert3;
 	Vect normal;
 	double d;
+	Obj* inside;
 public:
 	BoundBox();
-	Punto getvert1();
-	Punto getvert2();
-	Punto getvert3();
-	Vect getnormal();
+	BoundBox(Punto bmin, Punto bmax, Obj* adentro);
+	Punto getmin() override;
+	Punto getmax() override;
+	//Vect getnormal();
+	void shrink();
 	bool intersect(Rayo r) override;
 	bool intersect2(Rayo r) override;
 	Rayo intersectray(Rayo r) override;

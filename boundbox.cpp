@@ -13,6 +13,27 @@ BoundBox::BoundBox() {
 	d = -1 * (normal.dot(Vect(vert1.getx(), vert1.gety(), vert1.getz())));
 }
 
+BoundBox::BoundBox(Punto bmin, Punto bmax, Obj* adentro) {
+	vert1 = bmin;
+	vert2 = bmax;
+	inside = adentro;
+}
+
+Punto BoundBox::getmin() {
+	return vert1;
+}
+
+Punto BoundBox::getmax() {
+	return vert2;
+}
+
+void BoundBox::shrink() {
+	Punto tempmin;
+	Punto tempmax;
+
+	return;
+}
+
 bool BoundBox::intersect(Rayo r) {
 	double tbottom = normal.dot(r.getdirection());
 	if (tbottom == 0) {

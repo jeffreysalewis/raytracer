@@ -35,6 +35,8 @@ public:
 	virtual Vect getos();
 	virtual double getkgls();
 	virtual double getior();
+	virtual Punto getmin();
+	virtual Punto getmax();
 	virtual bool intersect(Rayo r);
 	virtual bool intersect2(Rayo r);
 	virtual Rayo intersectray(Rayo r);
