@@ -5,6 +5,7 @@
 #include "rayo.h"
 #include "obj.h"
 #include "triangle.h"
+#include "boundbox.h"
 
 #include <iostream>
 #include <fstream>
@@ -399,9 +400,6 @@ void tracemanyluz(int luz) {
         else if (luz == 3 || luz == 4) {
             pelota->setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
         }
-        /*if (pelota->issphere) {
-            pelota->setluces(theluzdir, Vect(1,1,1), theluzpt, Vect(1,1,1));
-        }*/
     }
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width * rayppixel; j++) {
