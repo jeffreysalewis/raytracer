@@ -2,11 +2,13 @@
 #include "raytracer.h"
 #include <cmath>
 #include <utility>
+#include <vector>
+using std::vector;
 using namespace std;
 
 BoundBox::BoundBox() {
-	vert1 = Punto(0, 0, 0);
-	vert2 = Punto(-1, -1, -1);
+	vert1 = Punto(-100000, -100000, -100000);
+	vert2 = Punto(100000, 100000, 100000);
 	vert3 = Punto(-1, 1, -1);
 	normal = (vert2.minus(vert1).cross(vert3.minus(vert1)));
 	normal.normalize();
@@ -19,6 +21,13 @@ BoundBox::BoundBox(Punto bmin, Punto bmax, Obj* adentro) {
 	inside = adentro;
 }
 
+BoundBox::BoundBox(Punto bmin, Punto bmax, vector<Obj> cllctn) {
+	vert1 = bmin;
+	vert2 = bmax;
+	collection = cllctn;
+	shrink();
+}
+
 Punto BoundBox::getmin() {
 	return vert1;
 }
@@ -28,10 +37,93 @@ Punto BoundBox::getmax() {
 }
 
 void BoundBox::shrink() {
-	Punto tempmin;
-	Punto tempmax;
-
+	double tempminx = 100000, tempminy = 100000, tempminz = 100000;
+	double tempmaxx = -100000, tempmaxy = -100000, tempmaxz = -100000;
+	for (int i = 0; i < collection.size(); i++) {
+		if (collection[i].getmin().getx() < tempminx) {
+			tempminx = collection[i].getmin().getx();
+		}
+		if (collection[i].getmin().gety() < tempminy) {
+			tempminy = collection[i].getmin().gety();
+		}
+		if (collection[i].getmin().getz() < tempminz) {
+			tempminz = collection[i].getmin().getz();
+		}
+		if (collection[i].getmax().getx() > tempmaxx) {
+			tempmaxx = collection[i].getmax().getx();
+		}
+		if (collection[i].getmax().gety() > tempmaxy) {
+			tempmaxy = collection[i].getmax().gety();
+		}
+		if (collection[i].getmax().getz() > tempmaxz) {
+			tempmaxz = collection[i].getmax().getz();
+		}
+	}
+	vert1 = Punto(tempminx, tempminy, tempminz);
+	vert2 = Punto(tempmaxx, tempmaxy, tempmaxz);
 	return;
+}
+
+int BoundBox::getnumcollection() {
+	return collection.size();
+}
+
+vector<BoundBox> BoundBox::split() {
+	Vect v = vert2.minus(vert1);
+	int largestaxis = 0;
+	double laxval = v.getx();
+	if (v.gety() > laxval) {
+		laxval = v.gety();
+		largestaxis = 1;
+	}
+	if (v.getz() > laxval) {
+		laxval = v.getz();
+		largestaxis = 2;
+	}
+	double newminx, newmaxx, newminy, newmaxy, newminz, newmaxz, newminx2, newmaxx2, newminy2, newmaxy2, newminz2, newmaxz2;
+	newminx = vert1.getx();
+	newmaxx = vert2.getx();
+	newminy = vert1.gety();
+	newmaxy = vert2.gety();
+	newminz = vert1.getz();
+	newmaxz = vert2.getz();
+	newminx2 = vert1.getx();
+	newmaxx2 = vert2.getx();
+	newminy2 = vert1.gety();
+	newmaxy2 = vert2.gety();
+	newminz2 = vert1.getz();
+	newmaxz2 = vert2.getz();
+	if (largestaxis == 0) {
+		newminx2 = laxval / 2 + vert1.getx();
+		newmaxx = laxval / 2 + vert1.getx();
+	}
+	else if (largestaxis == 1) {
+		newminy2 = laxval / 2 + vert1.gety();
+		newmaxy = laxval / 2 + vert1.gety();
+	}
+	else {
+		newminz2 = laxval / 2 + vert1.getz();
+		newmaxz = laxval / 2 + vert1.getz();
+	}
+	vector<Obj> a, b;
+	for (int i = 0; i < collection.size(); i++) {
+		if (collection[i].getmin().getx() < newmaxx || collection[i].getmax().getx() > newminx) {
+			if (collection[i].getmin().gety() < newmaxy || collection[i].getmax().gety() > newminy) {
+				if (collection[i].getmin().getz() < newmaxz || collection[i].getmax().getz() > newminz) {
+					a.push_back(collection[i]);
+				}
+			}
+		}
+		if (collection[i].getmin().getx() < newmaxx2 || collection[i].getmax().getx() > newminx2) {
+			if (collection[i].getmin().gety() < newmaxy2 || collection[i].getmax().gety() > newminy2) {
+				if (collection[i].getmin().getz() < newmaxz2 || collection[i].getmax().getz() > newminz2) {
+					b.push_back(collection[i]);
+				}
+			}
+		}
+	}
+	vector<BoundBox> splitboxes = { BoundBox(Punto(newminx, newminy, newminz), Punto(newmaxx, newmaxy, newmaxz), a), BoundBox(Punto(newminx2, newminy2, newminz2), Punto(newmaxx2, newmaxy2, newmaxz2), b) };
+	return splitboxes;
 }
 
 bool BoundBox::intersect(Rayo r) {

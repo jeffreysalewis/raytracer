@@ -396,7 +396,7 @@ void tracemanyluz(int luz) {
     //starting ray
     double initx = -0.88889 + stepx / 2;
     double inity = 0.5 - stepy / 2;
-    mediansplit(20); // bigboundbox);
+    mediansplit(0, 0);
     for (auto* pelota : escena8) {
         if (luz < 3) {
             pelota->setluces(theluzdir, Vect(1, 1, 1), theluzpt, Vect(1, 1, 1));
@@ -655,7 +655,6 @@ Rayo refract(Vect i, Rayo r) {
     if (r.getbounce() > maxbounce) {
         return Rayo();
     }
-    //double cosi = max(-1.0, min(r.getdirection().dot(r.get), 1.0));
     r.setbounce(r.getbounce() + 1);
     return Rayo();
 }
@@ -669,13 +668,15 @@ void readscene(string filename) {
     SceneDescription.close();
 }
 
-bool mediansplit(int subdivs) {
+bool mediansplit(int subdivs, int bboxind) {
     //}, vector<BoundBox> bbox) {
-    int m = 20; //max level of subdivision
-    int n = 5; //max number of objects in a bounding box
-    if (subdivs < m && false) {
-        return mediansplit(subdivs - 1); // , bbox);
+    int m = 3; //max level of subdivision
+    int n = 1; //max number of objects in a bounding box
+    if (subdivs < m && bigboundbox[bboxind].getnumcollection() > n) {
+        vector<BoundBox> newboxes = bigboundbox[bboxind].split();
+        bigboundbox.push_back(newboxes[0]);
+        bigboundbox.push_back(newboxes[1]);
+        return mediansplit(subdivs + 1, bboxind + 1) && mediansplit(subdivs + 1, bboxind + 2);
     }
-
     return true;
 }
