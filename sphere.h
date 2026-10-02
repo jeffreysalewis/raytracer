@@ -26,6 +26,7 @@ private:
 	bool wasluzdirset = false;
 	bool wasluzptset = false;
 	Punto bmin, bmax;
+	int whichone;
 	//Vect luzdir2 = Vect(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 	//Vect luzdir2 = Vect(1, 1, 1);
 	//Vect luzcolor = Vect(1.0, 1.0, 1.0);
@@ -47,6 +48,8 @@ public:
 	double getior() override;
 	Punto getmin() override;
 	Punto getmax() override;
+	void setwhichone(int w) override;
+	int getwhichone() override;
 	void setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor) override;
 	bool intersect(Rayo r) override;
 	bool intersect2(Rayo r) override;

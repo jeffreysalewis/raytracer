@@ -73,10 +73,11 @@ Sphere yellowsph = Sphere(Punto(-0.2, 0.1, 0.3), 0.1, 0.8, 0.1, 0.1, Vect(0.9, 0
 Triangle purpletri = Triangle(Punto(1.0, -0.1, 1.0), Punto(0.0, -0.1, -1.0), Punto(-1.0, -0.1, 1.0), 0.9, 0.5, 0.1, Vect(0.3, 0.1, 0.8), Vect(1.0, 1.0, 1.0), 4.0, 0.0);
 Obj* escena8[2] = {&yellowsph, &purpletri};
 
-vector<BoundBox> bigboundbox = {BoundBox()};
+vector<BoundBox> bigboundbox;
+vector<int> ignorebox = {};
 
 auto laescena = escena7;
-int numobj = 2;
+int numobj = 6;
 Vect theluzdir = luzdir4;
 Punto theluzpt = luzpt;
 Triangle thearealuz = Triangle(Punto(0.0, 1.0, 0.9), Punto(-0.5, 1.0, -0.4), Punto(0.0, 1.0, -0.3), Vect(1.0, 1.0, 1.0), true);
@@ -95,8 +96,8 @@ int main() {
     }
     //trace();
     //tracemany(true);
-    tracemanyluz(4);
-    ofstream Render("render8_1.ppm");
+    tracemanyluz(2);
+    ofstream Render("render7_2.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -396,15 +397,18 @@ void tracemanyluz(int luz) {
     //starting ray
     double initx = -0.88889 + stepx / 2;
     double inity = 0.5 - stepy / 2;
-    mediansplit(0, 0);
-    for (auto* pelota : escena8) {
+    int identity = 0;
+    for (auto* pelota : escena7) {
         if (luz < 3) {
             pelota->setluces(theluzdir, Vect(1, 1, 1), theluzpt, Vect(1, 1, 1));
         }
         else if (luz == 3 || luz == 4) {
             pelota->setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
         }
+        pelota->setwhichone(identity);
+        identity++;
     }
+    mediansplit(0, 0);
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width * rayppixel; j++) {
             //create ray
@@ -413,6 +417,7 @@ void tracemanyluz(int luz) {
             Vect di = Punto(initx + stepx * (j / rayppixel) + randx, inity - stepy * i + randy, 0).minus(camlookfrom);
             di.normalize();
             Rayo ray = Rayo(camlookfrom, di);
+            Rayo pureray = Rayo(camlookfrom, di);
             //change escena1 to escena2 for the second scene
             Rayo zbuf;
             Punto mindist = Punto(0, 0, -100000000);
@@ -420,21 +425,54 @@ void tracemanyluz(int luz) {
             int b = 0;
             int bbuf = 0;
             //cycle through all objects to see if ray hit them
-            for (auto* pelota : escena8) {
-                ray.setbounce(0);
-                if (luz == 3 || luz == 4) {
-                    pelota->setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
-                }
-                Rayo newray = pelota->intersectray(ray);
-                if (newray.gethit()) {
-                    //if newray's hitpoint is closer than current zbufs point
-                    if (newray.getorigin().getz() > zbuf.getorigin().getz()) {
-                        //set zbuf to the new ray
-                        zbuf = newray;
-                        bbuf = b;
+            //for (auto* pelota : escena7) {
+            //    ray.setbounce(0);
+            //    if (luz == 3 || luz == 4) {
+            //        pelota->setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
+            //    }
+            //    Rayo newray = pelota->intersectray(ray);
+            //    if (newray.gethit()) {
+            //        //if newray's hitpoint is closer than current zbufs point
+            //        if (newray.getorigin().getz() > zbuf.getorigin().getz()) {
+            //            //set zbuf to the new ray
+            //            zbuf = newray;
+            //            bbuf = b;
+            //        }
+            //    }
+            //    b++;
+            //}
+            //put boundingbox check here
+            for (int i = 0; i < bigboundbox.size(); i++) {
+                bool shouldignore = false;
+                for (int k = 0; k < ignorebox.size(); k++) {
+                    if (ignorebox[k] = i) {
+                        shouldignore = true;
                     }
                 }
-                b++;
+                if (!shouldignore) {
+                    if (bigboundbox[i].intersect(ray)) {
+                        for (int j = 0; j < bigboundbox[i].getcollection().size(); j++) {
+                            /*if (luz == 3 || luz == 4) {
+                                bigboundbox[i].getcollection()[j].setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
+                            }*/
+                            int theind = bigboundbox[i].getcollection()[j].getwhichone();
+                            //Rayo newray = bigboundbox[i].getcollection()[j].intersectray(pureray);
+                            if (luz == 3 || luz == 4) {
+                                escena7[theind]->setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
+                            }
+                            Rayo newray = escena7[theind]->intersectray(pureray);
+                            if (newray.gethit()) {
+                                //if newray's hitpoint is closer than current zbufs point
+                                if (newray.getorigin().getz() > zbuf.getorigin().getz()) {
+                                    //set zbuf to the new ray
+                                    zbuf = newray;
+                                    bbuf = newray.getwhichone(); //bbuf strat won't work this way anymore
+                                }
+                            }
+                            b++;
+                        }
+                    }
+                }
             }
             bool maria = true;
             bool tails = true;
@@ -466,10 +504,10 @@ void tracemanyluz(int luz) {
                 for (int k = 0; k < numobj; k++) {
                     if (k != bbuf) {
                         //if point is in shadow
-                        if (escena8[k]->intersect(shadowthehedgehog)) {
+                        if (escena7[k]->intersect(shadowthehedgehog)) {
                             maria = false;
                         }
-                        if (escena8[k]->intersect(sonicthehedgehog)) {
+                        if (escena7[k]->intersect(sonicthehedgehog)) {
                             tails = false;
                         }
                         //if surface is reflective
@@ -478,7 +516,7 @@ void tracemanyluz(int luz) {
                             refdir.normalize();
                             refdir.add(Vect(true).multiply(0.5)).normalize();
                             Rayo rray = Rayo(zbuf.getorigin(), refdir);
-                            Rayo reflray = escena8[k]->intersectray(rray);
+                            Rayo reflray = escena7[k]->intersectray(rray);
                             if (reflray.gethit()) {
                                 double ramt = zbuf.getreflect();
                                 Rayo ultimatelifeform, chilidog;
@@ -506,13 +544,13 @@ void tracemanyluz(int luz) {
                                 for (int k2 = 0; k2 < numobj; k2++) {
                                     if (k2 != k) {
                                         if (luz == 0 || luz == 2) {
-                                            if (escena8[k2]->intersect(ultimatelifeform)) {
+                                            if (escena7[k2]->intersect(ultimatelifeform)) {
                                                 reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
                                                 numshadows++;
                                             }
                                         }
                                         if (luz == 1 || luz == 2) {
-                                            if (escena8[k2]->intersect(chilidog)) {
+                                            if (escena7[k2]->intersect(chilidog)) {
                                                 reflray.setcolor(reflray.getshadow().getx(), reflray.getshadow().gety(), reflray.getshadow().getz());
                                                 numshadows++;
                                             }
@@ -530,7 +568,7 @@ void tracemanyluz(int luz) {
                         //if object is refractive
                         if (zbuf.getrefract() > 0) {
                             zbuf.setbounce(0);
-                            Rayo refrray = escena8[k]->intersectray(zbuf);
+                            Rayo refrray = escena7[k]->intersectray(zbuf);
                             if (refrray.gethit()) {
                                 //if this refraction intersection is closer than the previous one in loop
                                 if (zbuf.getorigin().minus(refrray.getorigin()).getlen() < zbuf.getorigin().minus(zbufrefr.getorigin()).getlen()) {
@@ -560,13 +598,13 @@ void tracemanyluz(int luz) {
                                     for (int k2 = 0; k2 < numobj; k2++) {
                                         if (k2 != k) {
                                             if (luz == 0 || luz == 2) {
-                                                if (escena8[k2]->intersect(ultimatelifeform)) {
+                                                if (escena7[k2]->intersect(ultimatelifeform)) {
                                                     refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
                                                     numshadows++;
                                                 }
                                             }
                                             if (luz == 1 || luz == 2) {
-                                                if (escena8[k2]->intersect(chilidog)) {
+                                                if (escena7[k2]->intersect(chilidog)) {
                                                     refrray.setcolor(refrray.getshadow().getx(), refrray.getshadow().gety(), refrray.getshadow().getz());
                                                     numshadows++;
                                                 }
@@ -669,14 +707,24 @@ void readscene(string filename) {
 }
 
 bool mediansplit(int subdivs, int bboxind) {
-    //}, vector<BoundBox> bbox) {
-    int m = 3; //max level of subdivision
-    int n = 1; //max number of objects in a bounding box
+    int m = 5; //max level of subdivision
+    int n = 4; //max number of objects in a bounding box
+    if (subdivs == 0) {
+        vector<Obj> thelaescena;
+        int i = 0;
+        for (auto* pelota : escena7) {
+            thelaescena.push_back(*pelota);
+            thelaescena[thelaescena.size() - 1].setwhichone(i);
+            i++;
+        }
+        bigboundbox.push_back(BoundBox(Punto(-1000000, -1000000, -1000000), Punto(1000000, 1000000, 1000000), thelaescena));
+    }
     if (subdivs < m && bigboundbox[bboxind].getnumcollection() > n) {
         vector<BoundBox> newboxes = bigboundbox[bboxind].split();
         bigboundbox.push_back(newboxes[0]);
         bigboundbox.push_back(newboxes[1]);
-        return mediansplit(subdivs + 1, bboxind + 1) && mediansplit(subdivs + 1, bboxind + 2);
+        ignorebox.push_back(bboxind);
+        return mediansplit(subdivs + 1, bigboundbox.size()-2) && mediansplit(subdivs + 1, bigboundbox.size() - 1);
     }
     return true;
 }

@@ -1,5 +1,6 @@
 #include "boundbox.h"
 #include "raytracer.h"
+#include "triangle.h"
 #include <cmath>
 #include <utility>
 #include <vector>
@@ -13,12 +14,6 @@ BoundBox::BoundBox() {
 	normal = (vert2.minus(vert1).cross(vert3.minus(vert1)));
 	normal.normalize();
 	d = -1 * (normal.dot(Vect(vert1.getx(), vert1.gety(), vert1.getz())));
-}
-
-BoundBox::BoundBox(Punto bmin, Punto bmax, Obj* adentro) {
-	vert1 = bmin;
-	vert2 = bmax;
-	inside = adentro;
 }
 
 BoundBox::BoundBox(Punto bmin, Punto bmax, vector<Obj> cllctn) {
@@ -59,6 +54,12 @@ void BoundBox::shrink() {
 			tempmaxz = collection[i].getmax().getz();
 		}
 	}
+	if (tempminz > 0.95) {
+		tempminz = 0.95;
+	}
+	if (tempmaxz > 0.99) {
+		tempmaxz = 0.98;
+	}
 	vert1 = Punto(tempminx, tempminy, tempminz);
 	vert2 = Punto(tempmaxx, tempmaxy, tempmaxz);
 	return;
@@ -66,6 +67,10 @@ void BoundBox::shrink() {
 
 int BoundBox::getnumcollection() {
 	return collection.size();
+}
+
+vector<Obj> BoundBox::getcollection() {
+	return collection;
 }
 
 vector<BoundBox> BoundBox::split() {
@@ -127,27 +132,57 @@ vector<BoundBox> BoundBox::split() {
 }
 
 bool BoundBox::intersect(Rayo r) {
-	double tbottom = normal.dot(r.getdirection());
-	if (tbottom == 0) {
-		return false;
-	}
-	Vect o = Vect(r.getorigin().getx(), r.getorigin().gety(), r.getorigin().getz());
-	double t = -1*(normal.dot(o)+d)/tbottom;
-	if (t <= 0) {
-		return false;
-	}
-	Vect inter = o.add((r.getdirection().multiply(t)));
-	Punto inters = Punto(inter.getx(), inter.gety(), inter.getz());
-	Vect lado1 = vert2.minus(vert1);
-	Vect lado2 = vert3.minus(vert2);
-	Vect lado3 = vert1.minus(vert3);
-	Vect c1 = inters.minus(vert1);
-	Vect c2 = inters.minus(vert2);
-	Vect c3 = inters.minus(vert3);
-	Vect inorm = normal.multiply(-1);
-	if (normal.dot(lado1.cross(c1)) > 0 && normal.dot(lado2.cross(c2)) > 0 && normal.dot(lado3.cross(c3)) > 0) {
+	Punto p1, p2, p3, p4, p5, p6, p7, p8;
+	p1 = vert1; //far bottom left
+	p2 = Punto(vert1.getx(), vert1.gety(), vert2.getz()); //near bottom left
+	p3 = Punto(vert1.getx(), vert2.gety(), vert1.getz()); //far top left
+	p4 = Punto(vert1.getx(), vert2.gety(), vert2.getz()); //near top left
+	p5 = Punto(vert2.getx(), vert1.gety(), vert1.getz()); //far bottom right
+	p6 = Punto(vert2.getx(), vert1.gety(), vert2.getz()); //near bottom right
+	p7 = Punto(vert2.getx(), vert2.gety(), vert1.getz()); //far top right
+	p8 = vert2; //near top right
+	Triangle t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12;
+	t1 = Triangle(p1, p2, p3); //left face
+	t2 = Triangle(p3, p2, p4); //left face
+	t3 = Triangle(p1, p5, p3); //dont need back face
+	t4 = Triangle(p5, p7, p3); //dont need back face
+	t5 = Triangle(p2, p1, p5); //bottom face
+	t6 = Triangle(p6, p2, p5); //bottom face
+	t7 = Triangle(p8, p3, p4); //top face
+	t8 = Triangle(p8, p7, p3); //top face
+	t9 = Triangle(p8, p5, p7); //right face
+	t10 = Triangle(p8, p6, p5); //right face
+	t11 = Triangle(p4, p6, p2); //front face
+	t12 = Triangle(p8, p4, p6); //front face
+	return true;
+	if (t12.intersect(r)) {
 		return true;
-	} else if (inorm.dot(lado1.cross(c1)) > 0 && inorm.dot(lado2.cross(c2)) > 0 && inorm.dot(lado3.cross(c3)) > 0) {
+	}
+	if (t11.intersect(r)) {
+		return true;
+	}
+	if (t10.intersect(r)) {
+		return true;
+	}
+	if (t9.intersect(r)) {
+		return true;
+	}
+	if (t2.intersect(r)) {
+		return true;
+	}
+	if (t1.intersect(r)) {
+		return true;
+	}
+	if (t8.intersect(r)) {
+		return true;
+	}
+	if (t7.intersect(r)) {
+		return true;
+	}
+	if (t6.intersect(r)) {
+		return true;
+	}
+	if (t5.intersect(r)) {
 		return true;
 	}
 	return false;

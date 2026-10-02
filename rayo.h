@@ -15,6 +15,7 @@ private:
 	double reflect;
 	double refract;
 	int bounce;
+	int whichone;
 public:
 	Rayo(const Punto &o, const Vect &dir);
 	Rayo(const Vect& dir);
@@ -23,6 +24,8 @@ public:
 	void setdirection(Vect dir);
 	Punto getorigin();
 	Vect getdirection();
+	void setwhichone(int w);
+	int getwhichone();
 	void sethit(bool b);
 	bool gethit();
 	void setcolor(double r, double g, double b);

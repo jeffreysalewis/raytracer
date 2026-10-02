@@ -14,6 +14,7 @@ Obj::Obj() {
 	od = Vect(1, 0, 1);
 	os = Vect(-1, -1, -1);
 	kgls = 16;
+	whichone = -1;
 }
 
 double Obj::getkd() {
@@ -54,6 +55,14 @@ Punto Obj::getmin() {
 
 Punto Obj::getmax() {
 	return Punto();
+}
+
+void Obj::setwhichone(int w) {
+	whichone = w;
+}
+
+int Obj::getwhichone() {
+	return whichone;
 }
 
 bool Obj::intersect(Rayo r) {

@@ -20,6 +20,7 @@ private:
 	double kgls;
 	double ior;
 	Vect luzdir = Vect(0, 1, 0);
+	int whichone;
 	//Vect luzdir2 = Vect(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 	//Vect luzdir2 = Vect(1, 1, 1);
 	//Vect luzcolor = Vect(1.0, 1.0, 1.0);
@@ -37,6 +38,8 @@ public:
 	virtual double getior();
 	virtual Punto getmin();
 	virtual Punto getmax();
+	virtual void setwhichone(int w);
+	virtual int getwhichone();
 	virtual bool intersect(Rayo r);
 	virtual bool intersect2(Rayo r);
 	virtual Rayo intersectray(Rayo r);

@@ -26,6 +26,7 @@ Triangle::Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak
 	wasluzptset = false;
 	bmin = Punto(min(min(vert1.getx(), vert2.getx()), vert3.getx()), min(min(vert1.gety(), vert2.gety()), vert3.gety()), min(min(vert1.getz(), vert2.getz()), vert3.getz()));
 	bmax = Punto(max(max(vert1.getx(), vert2.getx()), vert3.getx()), max(max(vert1.gety(), vert2.gety()), vert3.gety()), max(max(vert1.getz(), vert2.getz()), vert3.getz()));
+	whichone = -1;
 }
 
 Triangle::Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr) {
@@ -50,6 +51,7 @@ Triangle::Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak
 	wasluzptset = false;
 	bmin = Punto(min(min(vert1.getx(), vert2.getx()), vert3.getx()), min(min(vert1.gety(), vert2.gety()), vert3.gety()), min(min(vert1.getz(), vert2.getz()), vert3.getz()));
 	bmax = Punto(max(max(vert1.getx(), vert2.getx()), vert3.getx()), max(max(vert1.gety(), vert2.gety()), vert3.gety()), max(max(vert1.getz(), vert2.getz()), vert3.getz()));
+	whichone = -1;
 }
 
 Triangle::Triangle(Punto v1, Punto v2, Punto v3, Vect color, bool isarealluz) {
@@ -75,6 +77,16 @@ Triangle::Triangle(Punto v1, Punto v2, Punto v3, Vect color, bool isarealluz) {
 	isluz = isarealluz;
 	bmin = Punto(min(min(vert1.getx(), vert2.getx()), vert3.getx()), min(min(vert1.gety(), vert2.gety()), vert3.gety()), min(min(vert1.getz(), vert2.getz()), vert3.getz()));
 	bmax = Punto(max(max(vert1.getx(), vert2.getx()), vert3.getx()), max(max(vert1.gety(), vert2.gety()), vert3.gety()), max(max(vert1.getz(), vert2.getz()), vert3.getz()));
+	whichone = -1;
+}
+
+Triangle::Triangle(Punto v1, Punto v2, Punto v3) {
+	vert1 = v1;
+	vert2 = v2;
+	vert3 = v3;
+	normal = (vert2.minus(vert1).cross(vert3.minus(vert1)));
+	normal.normalize();
+	whichone = -1;
 }
 
 Triangle::Triangle() {
@@ -99,6 +111,7 @@ Triangle::Triangle() {
 	wasluzptset = false;
 	bmin = Punto(min(min(vert1.getx(), vert2.getx()), vert3.getx()), min(min(vert1.gety(), vert2.gety()), vert3.gety()), min(min(vert1.getz(), vert2.getz()), vert3.getz()));
 	bmax = Punto(max(max(vert1.getx(), vert2.getx()), vert3.getx()), max(max(vert1.gety(), vert2.gety()), vert3.gety()), max(max(vert1.getz(), vert2.getz()), vert3.getz()));
+	whichone = -1;
 }
 
 Punto Triangle::getvert1() {
@@ -157,6 +170,14 @@ Punto Triangle::getmax() {
 	return bmax;
 }
 
+void Triangle::setwhichone(int w) {
+	whichone = w;
+}
+
+int Triangle::getwhichone() {
+	return whichone;
+}
+
 bool Triangle::intersect(Rayo r) {
 	double tbottom = normal.dot(r.getdirection());
 	if (tbottom == 0) {
@@ -177,8 +198,10 @@ bool Triangle::intersect(Rayo r) {
 	Vect c3 = inters.minus(vert3);
 	Vect inorm = normal.multiply(-1);
 	if (normal.dot(lado1.cross(c1)) > 0 && normal.dot(lado2.cross(c2)) > 0 && normal.dot(lado3.cross(c3)) > 0) {
+		r.setwhichone(whichone);
 		return true;
 	} else if (inorm.dot(lado1.cross(c1)) > 0 && inorm.dot(lado2.cross(c2)) > 0 && inorm.dot(lado3.cross(c3)) > 0) {
+		r.setwhichone(whichone);
 		return true;
 	}
 	return false;
@@ -269,6 +292,7 @@ Rayo Triangle::intersectray(Rayo r) {
 		san.setshadow(ambient.getx(), ambient.gety(), ambient.getz());
 		san.setreflect(refl);
 		san.setrefract(1 - kt);
+		san.setwhichone(whichone);
 		return san;
 	}
 	Rayo san = Rayo();

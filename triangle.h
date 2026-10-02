@@ -30,6 +30,7 @@ private:
 	bool wasluzptset = false;
 	bool isluz = false;
 	Punto bmin, bmax;
+	int whichone;
 	//Vect luzdir2 = Vect(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 	//Vect luzdir2 = Vect(1, 1, 1);
 	//Vect luzcolor = Vect(1.0, 1.0, 1.0);
@@ -38,6 +39,7 @@ public:
 	Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak, Vect odd, Vect so, double kgloss, double ref);
 	Triangle(Punto v1, Punto v2, Punto v3, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr);
 	Triangle(Punto v1, Punto v2, Punto v3, Vect color, bool isarealuz);
+	Triangle(Punto v1, Punto v2, Punto v3);
 	Triangle();
 	Punto getvert1();
 	Punto getvert2();
@@ -53,6 +55,8 @@ public:
 	double getior() override;
 	Punto getmin() override;
 	Punto getmax() override;
+	void setwhichone(int w);
+	int getwhichone() override;
 	bool intersect(Rayo r) override;
 	bool intersect2(Rayo r) override;
 	Rayo intersectray(Rayo r) override;

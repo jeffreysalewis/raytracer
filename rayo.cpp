@@ -9,6 +9,7 @@ Rayo::Rayo(const Punto& o, const Vect& dir) {
 	reflect = 0;
 	refract = 0;
 	bounce = 0;
+	whichone = -1;
 }
 
 Rayo::Rayo(const Vect& dir) {
@@ -18,6 +19,7 @@ Rayo::Rayo(const Vect& dir) {
 	reflect = 0;
 	refract = 0;
 	bounce = 0;
+	whichone = -1;
 }
 
 Rayo::Rayo() {
@@ -27,6 +29,7 @@ Rayo::Rayo() {
 	reflect = 0;
 	refract = 0;
 	bounce = 0;
+	whichone = -1;
 }
 
 void Rayo::setorigin(Punto o) {
@@ -43,6 +46,14 @@ Punto Rayo::getorigin() {
 
 Vect Rayo::getdirection() {
 	return direction;
+}
+
+void Rayo::setwhichone(int w) {
+	whichone = w;
+}
+
+int Rayo::getwhichone() {
+	return whichone;
 }
 
 void Rayo::sethit(bool b) {

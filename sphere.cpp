@@ -24,6 +24,7 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vec
 	issphere = true;
 	bmin = center.add(Punto(-1*r, -1*r, -1*r));
 	bmax = center.add(Punto(r, r, r));
+	whichone = -1;
 }
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss, double ref) {
@@ -45,6 +46,7 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vec
 	issphere = true;
 	bmin = center.add(Punto(-1 * r, -1 * r, -1 * r));
 	bmax = center.add(Punto(r, r, r));
+	whichone = -1;
 }
 
 Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr) {
@@ -66,6 +68,7 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Ve
 	issphere = true;
 	bmin = center.add(Punto(-1 * r, -1 * r, -1 * r));
 	bmax = center.add(Punto(r, r, r));
+	whichone = -1;
 }
 
 Sphere::Sphere() {
@@ -86,6 +89,7 @@ Sphere::Sphere() {
 	issphere = true;
 	bmin = center.add(Punto(-1 * radius, -1 * radius, -1 * radius));
 	bmax = center.add(Punto(radius, radius, radius));
+	whichone = -1;
 }
 
 Punto Sphere::getcenter() {
@@ -136,6 +140,14 @@ Punto Sphere::getmax() {
 	return bmax;
 }
 
+void Sphere::setwhichone(int w) {
+	whichone = w;
+}
+
+int Sphere::getwhichone() {
+	return whichone;
+}
+
 void Sphere::setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor) {
 	if (ldirs.getz() > -100000) {
 		luzdir = ldirs;
@@ -155,6 +167,7 @@ bool Sphere::intersect(Rayo r) {
 	double oclen = oc.getlen();
 	bool inside = oclen < radius;
 	if (inside) {
+		r.setwhichone(whichone);
 		return true;
 	}
 	if (!inside && tca < 0) {
@@ -165,6 +178,7 @@ bool Sphere::intersect(Rayo r) {
 		return false;
 	}
 	double t = tca - sqrt(thc2);
+	r.setwhichone(whichone);
 	return true;
 }
 
@@ -190,6 +204,7 @@ bool Sphere::intersect2(Rayo r) {
 	if (discriminant < 0) {
 		return false;
 	}
+	r.setwhichone(whichone);
 	return true;
 }
 
@@ -311,6 +326,7 @@ Rayo Sphere::intersectray(Rayo r) {
 			trans.add(rnd.multiply(0.5));
 			trans.normalize();
 			fal.setdirection(trans);
+			fal.setwhichone(whichone);
 			return intersectray(fal);
 		}
 		else if (fal.getbounce() == 2) {
@@ -343,5 +359,6 @@ Rayo Sphere::intersectray(Rayo r) {
 	}
 	fal.setreflect(refl);
 	fal.setrefract(1-kt);
+	fal.setwhichone(whichone);
 	return fal;
 }
