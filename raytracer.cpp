@@ -6,6 +6,7 @@
 #include "obj.h"
 #include "triangle.h"
 #include "boundbox.h"
+#include "texture.h"
 
 #include <iostream>
 #include <fstream>
@@ -707,8 +708,8 @@ void readscene(string filename) {
 }
 
 bool mediansplit(int subdivs, int bboxind) {
-    int m = 5; //max level of subdivision
-    int n = 4; //max number of objects in a bounding box
+    int m = 3; //max level of subdivision
+    int n = 10; //max number of objects in a bounding box
     if (subdivs == 0) {
         vector<Obj> thelaescena;
         int i = 0;
