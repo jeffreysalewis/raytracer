@@ -27,6 +27,8 @@ private:
 	bool wasluzptset = false;
 	Punto bmin, bmax;
 	int whichone;
+	Texture tex;
+	bool hastex = false;
 	//Vect luzdir2 = Vect(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 	//Vect luzdir2 = Vect(1, 1, 1);
 	//Vect luzcolor = Vect(1.0, 1.0, 1.0);
@@ -54,5 +56,7 @@ public:
 	bool intersect(Rayo r) override;
 	bool intersect2(Rayo r) override;
 	Rayo intersectray(Rayo r) override;
+	void settex(Texture t) override;
+	Vect gettexcolor(Vect normal);
 };
 #endif

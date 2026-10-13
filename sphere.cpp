@@ -362,3 +362,12 @@ Rayo Sphere::intersectray(Rayo r) {
 	fal.setwhichone(whichone);
 	return fal;
 }
+
+void Sphere::settex(Texture t) {
+	tex = t;
+	return;
+}
+
+Vect Sphere::gettexcolor(Vect normal) {
+	return Vect();
+}
