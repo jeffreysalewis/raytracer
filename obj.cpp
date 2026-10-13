@@ -1,5 +1,6 @@
 #include "obj.h"
 #include "raytracer.h"
+#include "texture.h"
 #include <cmath>
 #include <utility>
 using namespace std;
@@ -78,5 +79,10 @@ Rayo Obj::intersectray(Rayo r) {
 }
 
 void Obj::setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor) {
+	return;
+}
+
+void Obj::settex(Texture t) {
+	tex = t;
 	return;
 }

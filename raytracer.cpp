@@ -391,7 +391,7 @@ void tracemany(bool isluzdir) {
 }
 
 void tracemanyluz(int luz) {
-    const int rayppixel = 10;
+    const int rayppixel = 3;
     //amt to step per ray
     double stepx = 1.77778 / width;
     double stepy = 1.0 / height;
@@ -708,7 +708,7 @@ void readscene(string filename) {
 }
 
 bool mediansplit(int subdivs, int bboxind) {
-    int m = 3; //max level of subdivision
+    int m = 2; //max level of subdivision
     int n = 10; //max number of objects in a bounding box
     if (subdivs == 0) {
         vector<Obj> thelaescena;

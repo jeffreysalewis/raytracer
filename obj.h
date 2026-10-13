@@ -2,6 +2,7 @@
 #include "punto.h"
 #include "vect.h"
 #include "rayo.h"
+#include "texture.h"
 #include <cmath>
 
 #ifndef OBJ_H
@@ -21,6 +22,7 @@ private:
 	double ior;
 	Vect luzdir = Vect(0, 1, 0);
 	int whichone;
+	Texture tex;
 	//Vect luzdir2 = Vect(1/sqrt(3), 1/sqrt(3), 1/sqrt(3));
 	//Vect luzdir2 = Vect(1, 1, 1);
 	//Vect luzcolor = Vect(1.0, 1.0, 1.0);
@@ -44,5 +46,6 @@ public:
 	virtual bool intersect2(Rayo r);
 	virtual Rayo intersectray(Rayo r);
 	virtual void setluces(Vect ldirs, Vect ldirscolor, Punto lpts, Vect lptscolor);
+	virtual void settex(Texture t);
 };
 #endif
