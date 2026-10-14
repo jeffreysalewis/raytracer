@@ -251,9 +251,14 @@ Rayo Sphere::intersectray(Rayo r) {
 	hitnormal.normalize();
 	Rayo fal = Rayo(hitpoint, hitnormal);
 	fal.sethit(true);
+	Vect theod = od;
+	if (hastex) {
+		Vect therevnormal = hitnormal.multiply(-1);
+		theod = gettexcolor(therevnormal);
+	}
 	Vect diffuse, rspec, vspec, spec;
 	if (!wasluzdirset && !wasluzptset) {
-		diffuse = od.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(theluzdir));
+		diffuse = theod.multiply(kd).multiply(luzcolor).multiply(hitnormal.dot(theluzdir));
 		rspec = hitnormal.multiply((2.0 * theluzdir.dot(hitnormal))).sub(theluzdir);
 		rspec.normalize();
 		vspec = r.getdirection().multiply(-1.0);
@@ -266,7 +271,7 @@ Rayo Sphere::intersectray(Rayo r) {
 	else {
 		if (wasluzdirset) {
 			theluzdir = luzdir;
-			diffuse = od.multiply(kd).multiply(luzdircolor).multiply(hitnormal.dot(theluzdir));
+			diffuse = theod.multiply(kd).multiply(luzdircolor).multiply(hitnormal.dot(theluzdir));
 			rspec = hitnormal.multiply((2.0 * theluzdir.dot(hitnormal))).sub(theluzdir);
 			rspec.normalize();
 			vspec = r.getdirection().multiply(-1.0);
@@ -279,7 +284,7 @@ Rayo Sphere::intersectray(Rayo r) {
 		if (wasluzptset) {
 			theluzdir = luzpt.minus(hitpoint);
 			theluzdir.normalize();
-			diffuse = diffuse.add(od.multiply(kd).multiply(luzptcolor).multiply(hitnormal.dot(theluzdir)));
+			diffuse = diffuse.add(theod.multiply(kd).multiply(luzptcolor).multiply(hitnormal.dot(theluzdir)));
 			rspec = hitnormal.multiply((2.0 * theluzdir.dot(hitnormal))).sub(theluzdir);
 			rspec.normalize();
 			vspec = r.getdirection().multiply(-1.0);
@@ -290,7 +295,7 @@ Rayo Sphere::intersectray(Rayo r) {
 			spec = spec.add(os.multiply(ks).multiply(luzptcolor).multiply(pow(max(vspec.dot(rspec), 0.0), kgls)));
 		}
 	}
-	Vect ambient = od.multiply(theambluz.multiply(ka));
+	Vect ambient = theod.multiply(theambluz.multiply(ka));
 	Vect totluz = diffuse.add(spec).add(ambient);
 	fal.setcolor(totluz.getx(), totluz.gety(), totluz.getz());
 	fal.setshadow(ambient.getx(), ambient.gety(), ambient.getz());
@@ -365,9 +370,13 @@ Rayo Sphere::intersectray(Rayo r) {
 
 void Sphere::settex(Texture t) {
 	tex = t;
+	hastex = true;
 	return;
 }
 
-Vect Sphere::gettexcolor(Vect normal) {
-	return Vect();
+Vect Sphere::gettexcolor(Vect revnormal) {
+	double pi = 2 * acos(0.0);
+	double u = 0.5 + asin(revnormal.gety())/pi;
+	double v = 0.5 + atan2(revnormal.getz(), revnormal.getx())/(2*pi);
+	return tex.getcolor(u, v);
 }

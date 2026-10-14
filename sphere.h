@@ -57,6 +57,6 @@ public:
 	bool intersect2(Rayo r) override;
 	Rayo intersectray(Rayo r) override;
 	void settex(Texture t) override;
-	Vect gettexcolor(Vect normal);
+	Vect gettexcolor(Vect revnormal);
 };
 #endif
