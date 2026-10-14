@@ -7,6 +7,10 @@ using namespace std;
 
 Texture::Texture() {
 	color = Vect();
+	Vect black = Vect(0.1, 0.1, 0.1);
+	Vect red = Vect(0.8, 0.1, 0.1);
+
+	img = { {black, red, black, red, black, red, black, red}, {red, black, red, black, red, black, red, black}, {black, red, black, red, black, red, black, red}, {red, black, red, black, red, black, red, black}, {black, red, black, red, black, red, black, red}, {red, black, red, black, red, black, red, black}, {black, red, black, red, black, red, black, red}, {red, black, red, black, red, black, red, black} };
 }
 
 Texture::Texture(vector<vector<Vect>> i) {

@@ -13,10 +13,11 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include <sstream>
 using namespace std;
 
-const int width = 1280;
-const int height = 720;
+const int width = 640;
+const int height = 360;
 int img[height][width][3];
 Punto camlookat(0, 0, 0);
 Punto camlookfrom(0, 0, 1);
@@ -68,6 +69,7 @@ Triangle tri2 = Triangle(Punto(0.0, -0.7, -0.6), Punto(0.0, -0.7, -3), Punto(-1.
 Obj* escena6[5] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4 };
 
 Sphere transphere = Sphere(Punto(-0.3, 0.0, -0.1), 0.1, 0.5, 0.4, 0.1, 0.1, Vect(1.0, 1.0, 1.0), Vect(1.0, 1.0, 1.0), 8.0, 0.0, 1.5);
+//Sphere texsphere = Sphere();
 Obj* escena7[6] = { &bsph3, &bsph4, &reftri1, &tri2, &ball4, &transphere};
 
 Sphere yellowsph = Sphere(Punto(-0.2, 0.1, 0.3), 0.1, 0.8, 0.1, 0.1, Vect(0.9, 0.8, 0.1), Vect(1.0, 1.0, 1.0), 10.0);
@@ -98,7 +100,7 @@ int main() {
     //trace();
     //tracemany(true);
     tracemanyluz(2);
-    ofstream Render("render7_2.ppm");
+    ofstream Render("render7_3.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -391,7 +393,7 @@ void tracemany(bool isluzdir) {
 }
 
 void tracemanyluz(int luz) {
-    const int rayppixel = 3;
+    const int rayppixel = 2;
     //amt to step per ray
     double stepx = 1.77778 / width;
     double stepy = 1.0 / height;
@@ -399,6 +401,7 @@ void tracemanyluz(int luz) {
     double initx = -0.88889 + stepx / 2;
     double inity = 0.5 - stepy / 2;
     int identity = 0;
+    escena7[0]->settex(Texture());
     for (auto* pelota : escena7) {
         if (luz < 3) {
             pelota->setluces(theluzdir, Vect(1, 1, 1), theluzpt, Vect(1, 1, 1));
@@ -705,6 +708,32 @@ void readscene(string filename) {
         cout << line;
     }
     SceneDescription.close();
+}
+
+Texture readtexture(string filename) {
+    string theppm;
+    ifstream MyReadFile(filename);
+    while (getline(MyReadFile, theppm)) {
+        cout << theppm;
+    }
+    MyReadFile.close();
+    int texwid = 0;
+    int texhi = 0;
+    vector<vector<Vect>> texim;
+    stringstream ss(theppm);
+    string token;
+    int i = 0;
+    while (getline(ss, token, '\n')) {
+        if (i == 1) {
+            stringstream widthheight(token);
+            string tokentoken;
+
+        }
+        //cout << token << endl;
+        i++;
+    }
+    Texture t = Texture(texim);
+    return t;
 }
 
 bool mediansplit(int subdivs, int bboxind) {
