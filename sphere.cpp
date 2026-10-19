@@ -71,6 +71,26 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Ve
 	whichone = -1;
 }
 
+Sphere::Sphere(Punto c, double r) {
+	//just for intersections
+	center = Punto(0, 0, 0);
+	radius = 0.4;
+	kd = 0.7;
+	ks = 0.2;
+	ka = 0.1;
+	kt = 1.0;
+	od = Vect(1, 0, 1);
+	os = Vect(1, 1, 1);
+	kgls = 16;
+	ior = 1.5;
+	luzdir = Vect(0, 0, -1000000000);
+	luzpt = Punto(0, 0, -1000000000);
+	wasluzdirset = false;
+	wasluzptset = false;
+	issphere = true;
+	whichone = -1;
+}
+
 Sphere::Sphere() {
 	center = Punto(0, 0, 0);
 	radius = 0.4;

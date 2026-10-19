@@ -37,6 +37,7 @@ public:
 	Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss);
 	Sphere(Punto c, double r, double dk, double sk, double ak, Vect odd, Vect so, double kgloss, double ref);
 	Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Vect odd, Vect so, double kgloss, double ref, double refr);
+	Sphere(Punto c, double r);
 	Sphere();
 	Punto getcenter();
 	double getradius();

@@ -1,6 +1,7 @@
 #include "boundbox.h"
 #include "raytracer.h"
 #include "triangle.h"
+#include "sphere.h"
 #include <cmath>
 #include <utility>
 #include <vector>
@@ -154,7 +155,11 @@ bool BoundBox::intersect(Rayo r) {
 	t10 = Triangle(p8, p6, p5); //right face
 	t11 = Triangle(p4, p6, p2); //front face
 	t12 = Triangle(p8, p4, p6); //front face
-	return true;
+	/*Punto doublecenter = vert1.add(vert2);
+	Punto center = Punto(doublecenter.getx()/2.0, doublecenter.gety()/2.0, doublecenter.getz()/2.0);
+	double rad = vert1.minus(vert2).getlen();
+	Sphere secretbbox = Sphere(center, rad);
+	return secretbbox.intersect(r);*/
 	if (t12.intersect(r)) {
 		return true;
 	}
