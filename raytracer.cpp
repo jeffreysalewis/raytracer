@@ -87,6 +87,9 @@ Triangle thearealuz = Triangle(Punto(0.0, 1.0, 0.9), Punto(-0.5, 1.0, -0.4), Pun
 int backcolor[3] = { 51, 51, 51 };
 int back[3] = { 0,0,0 };
 int maxbounce = 2;
+Vect* luzdirs[1] = { &luzdir4 };
+Punto* luzpts[1] = { &luzpt };
+Triangle* arealuces[1] = {&thearealuz};
 
 int main() {
     //fills img w background color
@@ -100,6 +103,7 @@ int main() {
     //trace();
     //tracemany(true);
     tracemanyluz(2);
+    //pathtrace();
     ofstream Render("render7_3.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
@@ -722,23 +726,6 @@ void pathtrace() {
             zbuf = Rayo(mindist, theluzdir);
             int b = 0;
             int bbuf = 0;
-            //cycle through all objects to see if ray hit them
-            //for (auto* pelota : escena7) {
-            //    ray.setbounce(0);
-            //    if (luz == 3 || luz == 4) {
-            //        pelota->setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
-            //    }
-            //    Rayo newray = pelota->intersectray(ray);
-            //    if (newray.gethit()) {
-            //        //if newray's hitpoint is closer than current zbufs point
-            //        if (newray.getorigin().getz() > zbuf.getorigin().getz()) {
-            //            //set zbuf to the new ray
-            //            zbuf = newray;
-            //            bbuf = b;
-            //        }
-            //    }
-            //    b++;
-            //}
             for (int i = 0; i < bigboundbox.size(); i++) {
                 bool shouldignore = false;
                 for (int k = 0; k < ignorebox.size(); k++) {
@@ -796,11 +783,22 @@ void pathtrace() {
                     Punto templuzpt = thearealuz.getpoint();
                     shadowthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(templuzpt.minus(zbuf.getorigin()).normalize())).normalize());
                 }
+                //loop through lights, 3 loops, one for dir, one for pt, & one for area
+                for (Vect* v : luzdirs) {
+
+                }
+                for (Punto* p : luzpts) {
+
+                }
+                for (Triangle* a : arealuces) {
+
+                }
                 bool emptyreflection = true;
                 bool emptyrefraction = true;
                 for (int k = 0; k < numobj; k++) {
                     if (k != bbuf) {
                         //if point is in shadow
+                        //loop through lights
                         if (escena7[k]->intersect(shadowthehedgehog)) {
                             maria = false;
                         }
@@ -976,6 +974,10 @@ void pathtrace() {
 
     }
     return;
+}
+
+Rayo diffuse(Rayo r) {
+    return r;
 }
 
 Rayo reflect(Rayo r) {
