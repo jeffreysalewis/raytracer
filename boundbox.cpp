@@ -17,7 +17,7 @@ BoundBox::BoundBox() {
 	d = -1 * (normal.dot(Vect(vert1.getx(), vert1.gety(), vert1.getz())));
 }
 
-BoundBox::BoundBox(Punto bmin, Punto bmax, vector<Obj> cllctn) {
+BoundBox::BoundBox(Punto bmin, Punto bmax, vector<Obj*> cllctn) {
 	vert1 = bmin;
 	vert2 = bmax;
 	collection = cllctn;
@@ -36,23 +36,23 @@ void BoundBox::shrink() {
 	double tempminx = 100000, tempminy = 100000, tempminz = 100000;
 	double tempmaxx = -100000, tempmaxy = -100000, tempmaxz = -100000;
 	for (int i = 0; i < collection.size(); i++) {
-		if (collection[i].getmin().getx() < tempminx) {
-			tempminx = collection[i].getmin().getx();
+		if (collection[i]->getmin().getx() < tempminx) {
+			tempminx = collection[i]->getmin().getx();
 		}
-		if (collection[i].getmin().gety() < tempminy) {
-			tempminy = collection[i].getmin().gety();
+		if (collection[i]->getmin().gety() < tempminy) {
+			tempminy = collection[i]->getmin().gety();
 		}
-		if (collection[i].getmin().getz() < tempminz) {
-			tempminz = collection[i].getmin().getz();
+		if (collection[i]->getmin().getz() < tempminz) {
+			tempminz = collection[i]->getmin().getz();
 		}
-		if (collection[i].getmax().getx() > tempmaxx) {
-			tempmaxx = collection[i].getmax().getx();
+		if (collection[i]->getmax().getx() > tempmaxx) {
+			tempmaxx = collection[i]->getmax().getx();
 		}
-		if (collection[i].getmax().gety() > tempmaxy) {
-			tempmaxy = collection[i].getmax().gety();
+		if (collection[i]->getmax().gety() > tempmaxy) {
+			tempmaxy = collection[i]->getmax().gety();
 		}
-		if (collection[i].getmax().getz() > tempmaxz) {
-			tempmaxz = collection[i].getmax().getz();
+		if (collection[i]->getmax().getz() > tempmaxz) {
+			tempmaxz = collection[i]->getmax().getz();
 		}
 	}
 	if (tempminz > 0.95) {
@@ -70,7 +70,7 @@ int BoundBox::getnumcollection() {
 	return collection.size();
 }
 
-vector<Obj> BoundBox::getcollection() {
+vector<Obj*> BoundBox::getcollection() {
 	return collection;
 }
 
@@ -111,18 +111,18 @@ vector<BoundBox> BoundBox::split() {
 		newminz2 = laxval / 2 + vert1.getz();
 		newmaxz = laxval / 2 + vert1.getz();
 	}
-	vector<Obj> a, b;
+	vector<Obj*> a, b;
 	for (int i = 0; i < collection.size(); i++) {
-		if (collection[i].getmin().getx() < newmaxx || collection[i].getmax().getx() > newminx) {
-			if (collection[i].getmin().gety() < newmaxy || collection[i].getmax().gety() > newminy) {
-				if (collection[i].getmin().getz() < newmaxz || collection[i].getmax().getz() > newminz) {
+		if (collection[i]->getmin().getx() < newmaxx || collection[i]->getmax().getx() > newminx) {
+			if (collection[i]->getmin().gety() < newmaxy || collection[i]->getmax().gety() > newminy) {
+				if (collection[i]->getmin().getz() < newmaxz || collection[i]->getmax().getz() > newminz) {
 					a.push_back(collection[i]);
 				}
 			}
 		}
-		if (collection[i].getmin().getx() < newmaxx2 || collection[i].getmax().getx() > newminx2) {
-			if (collection[i].getmin().gety() < newmaxy2 || collection[i].getmax().gety() > newminy2) {
-				if (collection[i].getmin().getz() < newmaxz2 || collection[i].getmax().getz() > newminz2) {
+		if (collection[i]->getmin().getx() < newmaxx2 || collection[i]->getmax().getx() > newminx2) {
+			if (collection[i]->getmin().gety() < newmaxy2 || collection[i]->getmax().gety() > newminy2) {
+				if (collection[i]->getmin().getz() < newmaxz2 || collection[i]->getmax().getz() > newminz2) {
 					b.push_back(collection[i]);
 				}
 			}
@@ -133,34 +133,35 @@ vector<BoundBox> BoundBox::split() {
 }
 
 bool BoundBox::intersect(Rayo r) {
-	Punto p1, p2, p3, p4, p5, p6, p7, p8;
-	p1 = vert1; //far bottom left
-	p2 = Punto(vert1.getx(), vert1.gety(), vert2.getz()); //near bottom left
-	p3 = Punto(vert1.getx(), vert2.gety(), vert1.getz()); //far top left
-	p4 = Punto(vert1.getx(), vert2.gety(), vert2.getz()); //near top left
-	p5 = Punto(vert2.getx(), vert1.gety(), vert1.getz()); //far bottom right
-	p6 = Punto(vert2.getx(), vert1.gety(), vert2.getz()); //near bottom right
-	p7 = Punto(vert2.getx(), vert2.gety(), vert1.getz()); //far top right
-	p8 = vert2; //near top right
-	Triangle t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12;
-	t1 = Triangle(p1, p2, p3); //left face
-	t2 = Triangle(p3, p2, p4); //left face
-	t3 = Triangle(p1, p5, p3); //dont need back face
-	t4 = Triangle(p5, p7, p3); //dont need back face
-	t5 = Triangle(p2, p1, p5); //bottom face
-	t6 = Triangle(p6, p2, p5); //bottom face
-	t7 = Triangle(p8, p3, p4); //top face
-	t8 = Triangle(p8, p7, p3); //top face
-	t9 = Triangle(p8, p5, p7); //right face
-	t10 = Triangle(p8, p6, p5); //right face
-	t11 = Triangle(p4, p6, p2); //front face
-	t12 = Triangle(p8, p4, p6); //front face
-	/*Punto doublecenter = vert1.add(vert2);
+	//Punto p1, p2, p3, p4, p5, p6, p7, p8;
+	//p1 = vert1; //far bottom left
+	//p2 = Punto(vert1.getx(), vert1.gety(), vert2.getz()); //near bottom left
+	//p3 = Punto(vert1.getx(), vert2.gety(), vert1.getz()); //far top left
+	//p4 = Punto(vert1.getx(), vert2.gety(), vert2.getz()); //near top left
+	//p5 = Punto(vert2.getx(), vert1.gety(), vert1.getz()); //far bottom right
+	//p6 = Punto(vert2.getx(), vert1.gety(), vert2.getz()); //near bottom right
+	//p7 = Punto(vert2.getx(), vert2.gety(), vert1.getz()); //far top right
+	//p8 = vert2; //near top right
+	//Triangle t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12;
+	//t1 = Triangle(p1, p2, p3); //left face
+	//t2 = Triangle(p3, p2, p4); //left face
+	//t3 = Triangle(p1, p5, p3); //dont need back face
+	//t4 = Triangle(p5, p7, p3); //dont need back face
+	//t5 = Triangle(p2, p1, p5); //bottom face
+	//t6 = Triangle(p6, p2, p5); //bottom face
+	//t7 = Triangle(p8, p3, p4); //top face
+	//t8 = Triangle(p8, p7, p3); //top face
+	//t9 = Triangle(p8, p5, p7); //right face
+	//t10 = Triangle(p8, p6, p5); //right face
+	//t11 = Triangle(p4, p6, p2); //front face
+	//t12 = Triangle(p8, p4, p6); //front face
+	Punto doublecenter = vert1.add(vert2);
 	Punto center = Punto(doublecenter.getx()/2.0, doublecenter.gety()/2.0, doublecenter.getz()/2.0);
-	double rad = vert1.minus(vert2).getlen();
+	Vect temp = vert1.minus(vert2);
+	double rad = vert1.minus(vert2).getlen()/2.0;
 	Sphere secretbbox = Sphere(center, rad);
-	return secretbbox.intersect(r);*/
-	if (t12.intersect(r)) {
+	return secretbbox.intersect(r);
+	/*if (t12.intersect(r)) {
 		return true;
 	}
 	if (t11.intersect(r)) {
@@ -190,7 +191,7 @@ bool BoundBox::intersect(Rayo r) {
 	if (t5.intersect(r)) {
 		return true;
 	}
-	return false;
+	return false;*/
 }
 
 bool BoundBox::intersect2(Rayo r) {

@@ -18,16 +18,16 @@ private:
 	Punto vert3;
 	Vect normal;
 	double d;
-	vector<Obj> collection;
+	vector<Obj*> collection;
 public:
 	BoundBox();
-	BoundBox(Punto bmin, Punto bmax, vector<Obj> cllctn);
+	BoundBox(Punto bmin, Punto bmax, vector<Obj*> cllctn);
 	Punto getmin() override;
 	Punto getmax() override;
 	//Vect getnormal();
 	void shrink();
 	int getnumcollection();
-	vector<Obj> getcollection();
+	vector<Obj*> getcollection();
 	vector<BoundBox> split();
 	bool intersect(Rayo r) override;
 	bool intersect2(Rayo r) override;

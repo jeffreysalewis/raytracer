@@ -73,8 +73,8 @@ Sphere::Sphere(Punto c, double r, double dk, double sk, double ak, double tk, Ve
 
 Sphere::Sphere(Punto c, double r) {
 	//just for intersections
-	center = Punto(0, 0, 0);
-	radius = 0.4;
+	center = c;
+	radius = r;
 	kd = 0.7;
 	ks = 0.2;
 	ka = 0.1;
@@ -88,6 +88,8 @@ Sphere::Sphere(Punto c, double r) {
 	wasluzdirset = false;
 	wasluzptset = false;
 	issphere = true;
+	bmin = center.add(Punto(-1 * r, -1 * r, -1 * r));
+	bmax = center.add(Punto(r, r, r));
 	whichone = -1;
 }
 

@@ -86,6 +86,8 @@ Triangle::Triangle(Punto v1, Punto v2, Punto v3) {
 	vert3 = v3;
 	normal = (vert2.minus(vert1).cross(vert3.minus(vert1)));
 	normal.normalize();
+	bmin = Punto(min(min(vert1.getx(), vert2.getx()), vert3.getx()), min(min(vert1.gety(), vert2.gety()), vert3.gety()), min(min(vert1.getz(), vert2.getz()), vert3.getz()));
+	bmax = Punto(max(max(vert1.getx(), vert2.getx()), vert3.getx()), max(max(vert1.gety(), vert2.gety()), vert3.gety()), max(max(vert1.getz(), vert2.getz()), vert3.getz()));
 	whichone = -1;
 }
 

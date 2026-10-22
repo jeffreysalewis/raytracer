@@ -87,9 +87,9 @@ Triangle thearealuz = Triangle(Punto(0.0, 1.0, 0.9), Punto(-0.5, 1.0, -0.4), Pun
 int backcolor[3] = { 51, 51, 51 };
 int back[3] = { 0,0,0 };
 int maxbounce = 2;
-Vect* luzdirs[1] = { &luzdir4 };
-Punto* luzpts[1] = { &luzpt };
-Triangle* arealuces[1] = {&thearealuz};
+vector<Vect> luzdirs = { luzdir4 };
+vector<Punto> luzpts = { luzpt };
+vector<Triangle> arealuces = {};
 
 int main() {
     //fills img w background color
@@ -102,9 +102,9 @@ int main() {
     }
     //trace();
     //tracemany(true);
-    tracemanyluz(2);
-    //pathtrace();
-    ofstream Render("render7_3.ppm");
+    //tracemanyluz(2);
+    pathtrace();
+    ofstream Render("renderpath7_2.ppm");
     Render << "P3\n";
     Render << width << " " << height << "\n";
     Render << "255\n";
@@ -463,8 +463,8 @@ void tracemanyluz(int luz) {
                             /*if (luz == 3 || luz == 4) {
                                 bigboundbox[i].getcollection()[j].setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
                             }*/
-                            int theind = bigboundbox[i].getcollection()[j].getwhichone();
-                            //Rayo newray = bigboundbox[i].getcollection()[j].intersectray(pureray);
+                            int theind = bigboundbox[i].getcollection()[j]->getwhichone();
+                            //Rayo newray = bigboundbox[i].getcollection()[j]->intersectray(pureray);
                             if (luz == 3 || luz == 4) {
                                 escena7[theind]->setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
                             }
@@ -736,11 +736,8 @@ void pathtrace() {
                 if (!shouldignore) {
                     if (bigboundbox[i].intersect(ray)) {
                         for (int j = 0; j < bigboundbox[i].getcollection().size(); j++) {
-                            /*if (luz == 3 || luz == 4) {
-                                bigboundbox[i].getcollection()[j].setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
-                            }*/
-                            int theind = bigboundbox[i].getcollection()[j].getwhichone();
-                            //Rayo newray = bigboundbox[i].getcollection()[j].intersectray(pureray);
+                            int theind = bigboundbox[i].getcollection()[j]->getwhichone();
+                            //Rayo newray = bigboundbox[i].getcollection()[j]->intersectray(pureray);
                             if (luz == 3 || luz == 4) {
                                 escena7[theind]->setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
                             }
@@ -760,50 +757,44 @@ void pathtrace() {
             }
             bool maria = true;
             bool tails = true;
+            vector<bool> eggman = {};
             if (zbuf.gethit()) {
                 Rayo shadowthehedgehog, sonicthehedgehog;
                 Rayo zbufrefr = Rayo();
                 zbufrefr.setorigin(mindist);
-                if (luz == 0) {
-                    shadowthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
-                }
-                else if (luz == 1) {
-                    shadowthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
-                }
-                else if (luz == 2) {
-                    shadowthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
-                    sonicthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(theluzpt.minus(zbuf.getorigin()).normalize())).normalize());
-                }
-                else if (luz == 3) {
-                    Punto templuzpt = thearealuz.getpoint();
-                    shadowthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(theluzdir)).normalize());
-                    sonicthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(templuzpt.minus(zbuf.getorigin()).normalize())).normalize());
-                }
-                else if (luz == 4) {
-                    Punto templuzpt = thearealuz.getpoint();
-                    shadowthehedgehog = Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(templuzpt.minus(zbuf.getorigin()).normalize())).normalize());
-                }
                 //loop through lights, 3 loops, one for dir, one for pt, & one for area
-                for (Vect* v : luzdirs) {
-
+                vector<Vect> todoluzes = {};
+                for (int z = 0; z < luzdirs.size(); z++) {
+                    todoluzes.push_back(luzdirs[z]);
                 }
-                for (Punto* p : luzpts) {
-
+                for (int z = 0; z < luzpts.size(); z++) {
+                    todoluzes.push_back((luzpts[z].minus(zbuf.getorigin())).normalize());
                 }
-                for (Triangle* a : arealuces) {
-
+                for (int z = 0; z < arealuces.size(); z++) {
+                    todoluzes.push_back((arealuces[z].getpoint().minus(zbuf.getorigin())).normalize());
+                }
+                vector<Rayo> teamdark = {};
+                //loop thru todoluzes and make rays to add to team dark
+                for (int t = 0; t < todoluzes.size(); t++) {
+                    teamdark.push_back(Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(todoluzes[t])).normalize()));
+                    eggman.push_back(true);
                 }
                 bool emptyreflection = true;
                 bool emptyrefraction = true;
                 for (int k = 0; k < numobj; k++) {
                     if (k != bbuf) {
                         //if point is in shadow
-                        //loop through lights
                         if (escena7[k]->intersect(shadowthehedgehog)) {
                             maria = false;
                         }
                         if (escena7[k]->intersect(sonicthehedgehog)) {
                             tails = false;
+                        }
+                        //loop through lights (team dark)
+                        for (int s = 0; s < teamdark.size(); s++) {
+                            if (escena7[k]->intersect(teamdark[s])) {
+                                eggman[s] = false;
+                            }
                         }
                         //if surface is reflective
                         if (zbuf.getreflect() > 0) {
@@ -927,37 +918,16 @@ void pathtrace() {
                     zbuf.setshadow(zbuf.getshadow().getx() * (1 - ramt) + ramt * backcolorv.getx(), zbuf.getshadow().gety() * (1 - ramt) + ramt * backcolorv.gety(), zbuf.getshadow().getz() * (1 - ramt) + ramt * backcolorv.getz());
                 }
                 //every ray add the color
-                if (luz != 2) {
-                    if (maria) {
-                        //regular color
-                        img[i][j / rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getcolor().getx() * 255));
-                        img[i][j / rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getcolor().gety() * 255));
-                        img[i][j / rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getcolor().getz() * 255));
-                    }
-                    else {
-                        //shadow color
-                        img[i][j / rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getshadow().getx() * 255));
-                        img[i][j / rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getshadow().gety() * 255));
-                        img[i][j / rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getshadow().getz() * 255));
+                int counteggs = 0;
+                for (int m = 0; m < eggman.size(); m++) {
+                    if (!eggman[m]) {
+                        counteggs++;
                     }
                 }
-                else {
-                    if (maria && tails) {
-                        img[i][j / rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getcolor().getx() * 255));
-                        img[i][j / rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getcolor().gety() * 255));
-                        img[i][j / rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getcolor().getz() * 255));
-                    }
-                    else if (maria || tails) {
-                        img[i][j / rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getcolor().getx() * 255)) / 2;
-                        img[i][j / rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getcolor().gety() * 255)) / 2;
-                        img[i][j / rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getcolor().getz() * 255)) / 2;
-                    }
-                    else {
-                        img[i][j / rayppixel][0] += (int)max(0.0, min(255.0, zbuf.getshadow().getx() * 255));
-                        img[i][j / rayppixel][1] += (int)max(0.0, min(255.0, zbuf.getshadow().gety() * 255));
-                        img[i][j / rayppixel][2] += (int)max(0.0, min(255.0, zbuf.getshadow().getz() * 255));
-                    }
-                }
+                double hatch = ((double)counteggs) / eggman.size();
+                img[i][j / rayppixel][0] += (int)max(0.0, min(255.0, ((zbuf.getshadow().getx() * hatch + zbuf.getcolor().getx() * (1 - hatch)) * 255)));
+                img[i][j / rayppixel][1] += (int)max(0.0, min(255.0, ((zbuf.getshadow().gety() * hatch + zbuf.getcolor().gety() * (1 - hatch)) * 255)));
+                img[i][j / rayppixel][2] += (int)max(0.0, min(255.0, ((zbuf.getshadow().getz() * hatch + zbuf.getcolor().getz() * (1 - hatch)) * 255)));
             }
             else {
                 img[i][j / rayppixel][0] += backcolor[0];
@@ -1035,11 +1005,11 @@ bool mediansplit(int subdivs, int bboxind) {
     int m = 2; //max level of subdivision
     int n = 10; //max number of objects in a bounding box
     if (subdivs == 0) {
-        vector<Obj> thelaescena;
+        vector<Obj*> thelaescena;
         int i = 0;
         for (auto* pelota : escena7) {
-            thelaescena.push_back(*pelota);
-            thelaescena[thelaescena.size() - 1].setwhichone(i);
+            thelaescena.push_back(pelota);
+            thelaescena[thelaescena.size() - 1]->setwhichone(i);
             i++;
         }
         bigboundbox.push_back(BoundBox(Punto(-1000000, -1000000, -1000000), Punto(1000000, 1000000, 1000000), thelaescena));
