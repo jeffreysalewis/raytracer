@@ -86,7 +86,7 @@ Punto theluzpt = luzpt;
 Triangle thearealuz = Triangle(Punto(0.0, 1.0, 0.9), Punto(-0.5, 1.0, -0.4), Punto(0.0, 1.0, -0.3), Vect(1.0, 1.0, 1.0), true);
 int backcolor[3] = { 51, 51, 51 };
 int back[3] = { 0,0,0 };
-int maxbounce = 2;
+int maxbounce = 5;
 vector<Vect> luzdirs = { luzdir4 };
 vector<Punto> luzpts = { luzpt };
 vector<Triangle> arealuces = {};
@@ -737,7 +737,6 @@ void pathtrace() {
                     if (bigboundbox[i].intersect(ray)) {
                         for (int j = 0; j < bigboundbox[i].getcollection().size(); j++) {
                             int theind = bigboundbox[i].getcollection()[j]->getwhichone();
-                            //Rayo newray = bigboundbox[i].getcollection()[j]->intersectray(pureray);
                             if (luz == 3 || luz == 4) {
                                 escena7[theind]->setluces(theluzdir, Vect(1, 1, 1), thearealuz.getpoint(), Vect(1, 1, 1));
                             }
@@ -778,6 +777,18 @@ void pathtrace() {
                 for (int t = 0; t < todoluzes.size(); t++) {
                     teamdark.push_back(Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(todoluzes[t])).normalize()));
                     eggman.push_back(true);
+                }
+                double ktot = zbuf.getkd() + zbuf.getks() + zbuf.getkt();
+                double krand = (rand() / (double)RAND_MAX) * ktot;
+                Rayo final;
+                if (krand < zbuf.getkd()) {
+                    final = diffuse(zbuf); //send diffuse ray
+                }
+                else if (krand < zbuf.getks()) {
+                    final = reflect(zbuf); //send specular/reflection ray
+                }
+                else {
+                    final = refract(Vect(), zbuf); //send refraction ray
                 }
                 bool emptyreflection = true;
                 bool emptyrefraction = true;
@@ -947,6 +958,44 @@ void pathtrace() {
 }
 
 Rayo diffuse(Rayo r) {
+    Vect randv = Vect(true);
+    //dot product normal and random vector, if negative, multiply rand vect by -1
+    if (r.getdirection().dot(randv) < 0) {
+        randv = randv.multiply(-1);
+    }
+    Rayo dray = Rayo(r.getorigin(), randv);
+    dray.setbounce(r.getbounce() + 1);
+    //then do intersection tests
+    Rayo zbuf;
+    Punto mindist = Punto(-100000000, -100000000, -100000000);
+    zbuf = Rayo(mindist, Vect());
+    for (int k = 0; k < numobj; k++) {
+        if (k != r.getwhichone()) {
+            Rayo temp = escena7[k]->intersectray(dray);
+            if (temp.gethit()) {
+                //if this intersecting object is closer
+                if (temp.getorigin().minus(dray.getorigin()).getlen() < zbuf.getorigin().minus(dray.getorigin()).getlen()) {
+                    zbuf = temp;
+                }
+            }
+        }
+    }
+    if (zbuf.gethit()) {
+        //then determine to send out next ray
+        if (zbuf.getbounce() < maxbounce) {
+            double ktot = zbuf.getkd() + zbuf.getks() + zbuf.getkt();
+            double krand = (rand() / (double)RAND_MAX) * ktot;
+            if (krand < zbuf.getkd()) {
+                return diffuse(zbuf); //send diffuse ray
+            }
+            else if (krand < zbuf.getks()) {
+                return reflect(zbuf); //send specular/reflection ray
+            }
+            else {
+                return refract(Vect(), zbuf); //send refraction ray
+            }
+        }
+    }
     return r;
 }
 

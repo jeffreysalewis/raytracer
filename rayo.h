@@ -14,6 +14,7 @@ private:
 	Vect shadow;
 	double reflect;
 	double refract;
+	double kd, ks, kt;
 	int bounce;
 	int whichone;
 public:
@@ -37,6 +38,12 @@ public:
 	void setbounce(int b);
 	double getreflect();
 	double getrefract();
+	void setkd(double d);
+	void setks(double s);
+	void setkt(double t);
+	double getkd();
+	double getks();
+	double getkt();
 	int getbounce();
 };
 #endif

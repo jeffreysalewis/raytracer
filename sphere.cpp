@@ -199,7 +199,7 @@ bool Sphere::intersect(Rayo r) {
 	if (thc2 < 0) {
 		return false;
 	}
-	double t = tca - sqrt(thc2);
+	//double t = tca - sqrt(thc2); //don't need this since it's true/false
 	r.setwhichone(whichone);
 	return true;
 }
@@ -272,6 +272,9 @@ Rayo Sphere::intersectray(Rayo r) {
 	Vect hitnormal = Vect((hitpoint.getx() - center.getx())/radius, (hitpoint.gety() - center.gety()) / radius, (hitpoint.getz() - center.getz()) / radius);
 	hitnormal.normalize();
 	Rayo fal = Rayo(hitpoint, hitnormal);
+	fal.setkd(kd);
+	fal.setks(ks);
+	fal.setkt(1-kt);
 	fal.sethit(true);
 	Vect theod = od;
 	if (hastex) {

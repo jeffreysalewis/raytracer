@@ -100,6 +100,30 @@ double Rayo::getrefract() {
 	return refract;
 }
 
+void Rayo::setkd(double d) {
+	kd = d;
+}
+
+void Rayo::setks(double s) {
+	ks = s;
+}
+
+void Rayo::setkt(double t) {
+	kt = t;
+}
+
+double Rayo::getkd() {
+	return kd;
+}
+
+double Rayo::getks() {
+	return kd;
+}
+
+double Rayo::getkt() {
+	return kd;
+}
+
 int Rayo::getbounce() {
 	return bounce;
 }

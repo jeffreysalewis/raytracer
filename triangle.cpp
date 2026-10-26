@@ -248,6 +248,9 @@ Rayo Triangle::intersectray(Rayo r) {
 		Vect theambluz = ambluz2;
 
 		Rayo san = Rayo(hitpoint, normal);
+		san.setkd(kd);
+		san.setks(ks);
+		san.setkt(1-kt);
 		san.sethit(true);
 		Vect diffuse, rspec, vspec, spec;
 		if (!wasluzdirset && !wasluzptset) {
