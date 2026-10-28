@@ -785,7 +785,7 @@ void pathtrace() {
                     final = diffuse(zbuf); //send diffuse ray
                 }
                 else if (krand < zbuf.getks()) {
-                    final = reflect(zbuf); //send specular/reflection ray
+                    final = reflect(di, zbuf); //send specular/reflection ray
                 }
                 else {
                     final = refract(Vect(), zbuf); //send refraction ray
@@ -1018,16 +1018,17 @@ Rayo diffuse(Rayo r) {
                 }
             }
             double hatch = ((double)counteggs) / eggman.size();
-            //double dist = r.getorigin().minus(zbuf.getorigin()).getlen(); //distance between diffuse surfaces double check if needed
+            double dist = r.getorigin().minus(zbuf.getorigin()).getlen(); //distance between diffuse surfaces double check if needed
             double ktot = zbuf.getkd() + zbuf.getks() + zbuf.getkt();
             double krand = (rand() / (double)RAND_MAX) * ktot;
+            double multiplier = 0.5 * min((1.0 / dist), 1.0);
             zbuf.setcolor(zbuf.getshadow().getx() * hatch + zbuf.getcolor().getx() * (1 - hatch), zbuf.getshadow().gety() * hatch + zbuf.getcolor().gety() * (1 - hatch), zbuf.getshadow().getz() * hatch + zbuf.getcolor().getz() * (1 - hatch));
-            zbuf.setcolor(r.getcolor().getx() + 0.1 * zbuf.getcolor().getx(), r.getcolor().gety() + 0.1 * zbuf.getcolor().gety(), r.getcolor().getz() + 0.1 * zbuf.getcolor().gety());
+            zbuf.setcolor(r.getcolor().getx() + multiplier * zbuf.getcolor().getx(), r.getcolor().gety() + multiplier * zbuf.getcolor().gety(), r.getcolor().getz() + multiplier * zbuf.getcolor().gety());
             if (krand < zbuf.getkd()) {
                 return diffuse(zbuf); //send diffuse ray
             }
             else if (krand < zbuf.getks()) {
-                return reflect(zbuf); //send specular/reflection ray
+                return reflect(r, zbuf); //send specular/reflection ray
             }
             else {
                 return refract(Vect(), zbuf); //send refraction ray
@@ -1037,19 +1038,88 @@ Rayo diffuse(Rayo r) {
     return r;
 }
 
-Rayo reflect(Rayo r) {
-    if (r.getbounce() > maxbounce) {
-        return r;
+Rayo reflect(Rayo r1, Rayo r2) {
+    if (r2.getbounce() > maxbounce) {
+        return r2;
     }
-    r.setbounce(r.getbounce() + 1);
-    //double randx = ((rand() / (double)RAND_MAX) * stepx) - (stepx / 2.0); //nudge ray a small random amt
-    //double randy = ((rand() / (double)RAND_MAX) * stepy) - (stepy / 2.0);
-    //Vect di = Punto(initx + stepx * (j / rayppixel) + randx, inity - stepy * i + randy, 0).minus(camlookfrom);
-    Vect di = Vect(false); //replace this with previous ray?
-    Vect refdir = (di).add((r.getdirection().multiply(di.dot(r.getdirection()))).multiply(-2)); //double check this
+    //r2.setbounce(r2.getbounce() + 1);
+    Vect refdir = (r1.getdirection()).add((r2.getdirection().multiply(r1.getdirection().dot(r2.getdirection()))).multiply(-2)); //double check this
     refdir.normalize();
     refdir.add(Vect(true).multiply(0.5)).normalize();
-    return r;
+    Rayo rray = Rayo(r2.getorigin(), refdir);
+    rray.setbounce(r2.getbounce() + 1);
+    Rayo zbuf;
+    Punto mindist = Punto(-100000000, -100000000, -100000000);
+    zbuf = Rayo(mindist, Vect());
+    for (int k = 0; k < numobj; k++) {
+        if (k != r2.getwhichone()) {
+            Rayo temp = escena7[k]->intersectray(rray);
+            if (temp.gethit()) {
+                //if this intersecting object is closer
+                if (temp.getorigin().minus(rray.getorigin()).getlen() < zbuf.getorigin().minus(rray.getorigin()).getlen()) {
+                    zbuf = temp;
+                }
+            }
+        }
+    }
+    if (zbuf.gethit()) {
+        if (zbuf.getbounce() < maxbounce) {
+            //loop through lights, 3 loops, one for dir, one for pt, & one for area
+            vector<Vect> todoluzes = {};
+            for (int z = 0; z < luzdirs.size(); z++) {
+                todoluzes.push_back(luzdirs[z]);
+            }
+            for (int z = 0; z < luzpts.size(); z++) {
+                todoluzes.push_back((luzpts[z].minus(zbuf.getorigin())).normalize());
+            }
+            for (int z = 0; z < arealuces.size(); z++) {
+                todoluzes.push_back((arealuces[z].getpoint().minus(zbuf.getorigin())).normalize());
+            }
+            vector<Rayo> teamdark = {};
+            vector<bool> eggman = {};
+            //loop thru todoluzes and make rays to add to team dark
+            for (int t = 0; t < todoluzes.size(); t++) {
+                teamdark.push_back(Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(todoluzes[t])).normalize()));
+                eggman.push_back(true);
+            }
+            for (int k = 0; k < numobj; k++) { //double check this
+                for (int s = 0; s < teamdark.size(); s++) {
+                    if (escena7[k]->intersect(teamdark[s])) {
+                        eggman[s] = false;
+                    }
+                }
+            }
+            int counteggs = 0;
+            for (int m = 0; m < eggman.size(); m++) {
+                if (!eggman[m]) {
+                    counteggs++;
+                }
+            }
+            double hatch = ((double)counteggs) / eggman.size();
+            double ktot = zbuf.getkd() + zbuf.getks() + zbuf.getkt();
+            double krand = (rand() / (double)RAND_MAX) * ktot;
+            double multiplier;
+            if (r1.getreflect()) {
+                multiplier = r1.getreflect();
+            }
+            else {
+                multiplier = 0.1 * r1.getks();
+            }
+            zbuf.setcolor(zbuf.getshadow().getx() * hatch + zbuf.getcolor().getx() * (1 - hatch), zbuf.getshadow().gety() * hatch + zbuf.getcolor().gety() * (1 - hatch), zbuf.getshadow().getz() * hatch + zbuf.getcolor().getz() * (1 - hatch));
+            zbuf.setcolor(r2.getcolor().getx() + multiplier * zbuf.getcolor().getx(), r2.getcolor().gety() + multiplier * zbuf.getcolor().gety(), r2.getcolor().getz() + multiplier * zbuf.getcolor().gety());
+            if (krand < zbuf.getkd()) {
+                return diffuse(zbuf); //send diffuse ray
+            }
+            else if (krand < zbuf.getks()) {
+                return reflect(r2, zbuf); //send specular/reflection ray
+            }
+            else {
+                return refract(Vect(), zbuf); //send refraction ray
+            }
+        }
+    }
+    r2.setcolor(r2.getcolor().getx() + r1.getkd() * backcolor[0], r2.getcolor().gety() + r1.getkd() * backcolor[1], r2.getcolor().getz() + r1.getkd() * backcolor[2]);
+    return r2;
 }
 
 Rayo refract(Vect i, Rayo r) {
@@ -1057,7 +1127,7 @@ Rayo refract(Vect i, Rayo r) {
         return r;
     }
     r.setbounce(r.getbounce() + 1);
-
+    //intersect against light (area first then maybe directional and pt) and add light
     return r;
 }
 
