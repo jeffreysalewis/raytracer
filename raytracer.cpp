@@ -958,6 +958,9 @@ void pathtrace() {
 }
 
 Rayo diffuse(Rayo r) {
+    if (r.getbounce() > maxbounce) {
+        return r;
+    }
     Vect randv = Vect(true);
     //dot product normal and random vector, if negative, multiply rand vect by -1
     if (r.getdirection().dot(randv) < 0) {
@@ -983,8 +986,43 @@ Rayo diffuse(Rayo r) {
     if (zbuf.gethit()) {
         //then determine to send out next ray
         if (zbuf.getbounce() < maxbounce) {
+            //loop through lights, 3 loops, one for dir, one for pt, & one for area
+            vector<Vect> todoluzes = {};
+            for (int z = 0; z < luzdirs.size(); z++) {
+                todoluzes.push_back(luzdirs[z]);
+            }
+            for (int z = 0; z < luzpts.size(); z++) {
+                todoluzes.push_back((luzpts[z].minus(zbuf.getorigin())).normalize());
+            }
+            for (int z = 0; z < arealuces.size(); z++) {
+                todoluzes.push_back((arealuces[z].getpoint().minus(zbuf.getorigin())).normalize());
+            }
+            vector<Rayo> teamdark = {};
+            vector<bool> eggman = {};
+            //loop thru todoluzes and make rays to add to team dark
+            for (int t = 0; t < todoluzes.size(); t++) {
+                teamdark.push_back(Rayo(zbuf.getorigin(), ((Vect(true).multiply(0.1)).add(todoluzes[t])).normalize()));
+                eggman.push_back(true);
+            }
+            for (int k = 0; k < numobj; k++) { //double check this
+                for (int s = 0; s < teamdark.size(); s++) {
+                    if (escena7[k]->intersect(teamdark[s])) {
+                        eggman[s] = false;
+                    }
+                }
+            }
+            int counteggs = 0;
+            for (int m = 0; m < eggman.size(); m++) {
+                if (!eggman[m]) {
+                    counteggs++;
+                }
+            }
+            double hatch = ((double)counteggs) / eggman.size();
+            //double dist = r.getorigin().minus(zbuf.getorigin()).getlen(); //distance between diffuse surfaces double check if needed
             double ktot = zbuf.getkd() + zbuf.getks() + zbuf.getkt();
             double krand = (rand() / (double)RAND_MAX) * ktot;
+            zbuf.setcolor(zbuf.getshadow().getx() * hatch + zbuf.getcolor().getx() * (1 - hatch), zbuf.getshadow().gety() * hatch + zbuf.getcolor().gety() * (1 - hatch), zbuf.getshadow().getz() * hatch + zbuf.getcolor().getz() * (1 - hatch));
+            zbuf.setcolor(r.getcolor().getx() + 0.1 * zbuf.getcolor().getx(), r.getcolor().gety() + 0.1 * zbuf.getcolor().gety(), r.getcolor().getz() + 0.1 * zbuf.getcolor().gety());
             if (krand < zbuf.getkd()) {
                 return diffuse(zbuf); //send diffuse ray
             }
@@ -1001,18 +1039,26 @@ Rayo diffuse(Rayo r) {
 
 Rayo reflect(Rayo r) {
     if (r.getbounce() > maxbounce) {
-        return Rayo();
+        return r;
     }
     r.setbounce(r.getbounce() + 1);
-    return Rayo();
+    //double randx = ((rand() / (double)RAND_MAX) * stepx) - (stepx / 2.0); //nudge ray a small random amt
+    //double randy = ((rand() / (double)RAND_MAX) * stepy) - (stepy / 2.0);
+    //Vect di = Punto(initx + stepx * (j / rayppixel) + randx, inity - stepy * i + randy, 0).minus(camlookfrom);
+    Vect di = Vect(false); //replace this with previous ray?
+    Vect refdir = (di).add((r.getdirection().multiply(di.dot(r.getdirection()))).multiply(-2)); //double check this
+    refdir.normalize();
+    refdir.add(Vect(true).multiply(0.5)).normalize();
+    return r;
 }
 
 Rayo refract(Vect i, Rayo r) {
     if (r.getbounce() > maxbounce) {
-        return Rayo();
+        return r;
     }
     r.setbounce(r.getbounce() + 1);
-    return Rayo();
+
+    return r;
 }
 
 void readscene(string filename) {
