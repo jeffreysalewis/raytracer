@@ -13,7 +13,7 @@ void tracemanyluz(int luz);
 void pathtrace();
 Rayo diffuse(Rayo r);
 Rayo reflect(Rayo r1, Rayo r2);
-Rayo refract(Vect i, Rayo r);
+Rayo refract(Rayo r1, Rayo r2);
 void readscene(std::string filename);
 Texture readtexture(string filename);
 bool mediansplit(int subdivs, int bboxind);
