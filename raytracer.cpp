@@ -86,7 +86,7 @@ Punto theluzpt = luzpt;
 Triangle thearealuz = Triangle(Punto(0.0, 1.0, 0.9), Punto(-0.5, 1.0, -0.4), Punto(0.0, 1.0, -0.3), Vect(1.0, 1.0, 1.0), true);
 int backcolor[3] = { 51, 51, 51 };
 int back[3] = { 0,0,0 };
-int maxbounce = 4;
+int maxbounce = 6;
 vector<Vect> luzdirs = { luzdir4 };
 vector<Punto> luzpts = { luzpt };
 vector<Triangle> arealuces = {};
@@ -691,7 +691,7 @@ void tracemanyluz(int luz) {
 
 void pathtrace() {
     int luz = 2;
-    const int rayppixel = 5;
+    const int rayppixel = 10;
     //amt to step per ray
     double stepx = 1.77778 / width;
     double stepy = 1.0 / height;
@@ -1043,7 +1043,8 @@ Rayo diffuse(Rayo r) {
             double dist = r.getorigin().minus(zbuf.getorigin()).getlen(); //distance between diffuse surfaces double check if needed
             double ktot = zbuf.getkd() + (zbuf.getks() / 10.0) + (1.0 - zbuf.getkt());
             double krand = (rand() / (double)RAND_MAX) * ktot;
-            double multiplier = (0.1/(zbuf.getbounce()*zbuf.getbounce())) * min((1.0 / dist), 1.0);
+            double multiplier = (0.00000000001/(zbuf.getbounce()*zbuf.getbounce())) * min((1.0 / dist), 0.1);
+            multiplier = 0.0;
             zbuf.setcolor(r.getcolor().getx() + multiplier * zbuf.getcolor().getx(), r.getcolor().gety() + multiplier * zbuf.getcolor().gety(), r.getcolor().getz() + multiplier * zbuf.getcolor().getz());
             if (zbuf.getreflect() > 0.1) {
                 double rrand = (rand() / (double)RAND_MAX);
@@ -1141,11 +1142,12 @@ Rayo reflect(Rayo r1, Rayo r2) {
             double krand = (rand() / (double)RAND_MAX) * ktot;
             double multiplier;
             if (r2.getreflect()) {
-                multiplier = 0.00001 * (r2.getreflect() / (zbuf.getbounce() * zbuf.getbounce()));
+                multiplier = 0.0000001 * (r2.getreflect() / (zbuf.getbounce() * zbuf.getbounce()));
             }
             else {
-                multiplier = (0.001 / (zbuf.getbounce() * zbuf.getbounce())) * r2.getks();
+                multiplier = (0.0000000000001 / (zbuf.getbounce() * zbuf.getbounce())) * r2.getks() / 10.0;
             }
+            multiplier = 0.0;
             zbuf.setcolor(r2.getcolor().getx() + multiplier * zbuf.getcolor().getx(), r2.getcolor().gety() + multiplier * zbuf.getcolor().gety(), r2.getcolor().getz() + multiplier * zbuf.getcolor().getz());
             if (zbuf.getreflect() > 0.1) {
                 double rrand = (rand() / (double)RAND_MAX);
@@ -1221,6 +1223,7 @@ Rayo refract(Rayo r1, Rayo r2) {
     //r2.setbounce(r2.getbounce() + 1);
     Rayo rfray = r2;
     rfray.setbounce(r2.getbounce() + 1);
+    rfray.sethit(false);
     //then do intersection tests
     Rayo zbuf;
     Punto mindist = Punto(-100000000, -100000000, -100000000);
@@ -1275,7 +1278,7 @@ Rayo refract(Rayo r1, Rayo r2) {
         }
     }
     //intersect against light (area first then maybe directional and pt) and add light
-    r2.setcolor(backcolor[0], backcolor[1], backcolor[2]);
+    r2.setcolor(backcolor[0] / 260.0, backcolor[1] / 260.0, backcolor[2] / 260.0);
     return r2;
 }
 
